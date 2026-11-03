@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- CCTV Express: emblema minimalista na linguagem da logo do ebooks.express (peças angulares chapadas, #FF3333).
+       Câmera de segurança tipo bullet, de corpo comprido inclinado para baixo, com viseira, lente na frente e braço de
+       fixação; atrás dela, três traços de velocidade (o "express"). -->
+  <title>CCTV Express</title>
+  <g fill="#FF3333" fill-rule="evenodd">
+    <!-- traços de velocidade -->
+    <path d="M30 168 L118 168 L104 190 L16 190 Z"/>
+    <path d="M44 210 L120 210 L106 232 L30 232 Z"/>
+    <path d="M58 252 L122 252 L108 274 L44 274 Z"/>
+    <g transform="rotate(14 300 220)">
+      <!-- viseira, passando à frente do corpo -->
+      <path d="M150 150 L486 150 L470 174 L150 174 Z"/>
+      <!-- corpo, com a lente vazada na frente -->
+      <path d="M150 184 L444 184 L444 276 L150 276 Z M404 230 m-34 0 a34 34 0 1 0 68 0 a34 34 0 1 0 -68 0 Z"/>
+      <!-- pupila da lente -->
+      <path d="M404 230 m-14 0 a14 14 0 1 0 28 0 a14 14 0 1 0 -28 0 Z"/>
+      <!-- traseira chanfrada -->
+      <path d="M128 192 L144 184 L144 276 L128 268 Z"/>
+    </g>
+    <!-- braço de fixação e base -->
+    <path d="M236 292 L278 300 L232 390 L198 390 Z"/>
+    <path d="M150 396 L300 396 L288 426 L138 426 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,51 @@
+{
+  "name": "cctv-express",
+  "productName": "CCTV Express",
+  "version": "0.1.0",
+  "description": "Monitoramento de câmeras IP (CCTV) para Windows: ao vivo, gravação, reprodução, PTZ e luz.",
+  "main": "src/main.js",
+  "private": true,
+  "author": "Stream.Builders",
+  "scripts": {
+    "postinstall": "node scripts/baixar-go2rtc.mjs",
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "45.2.2",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "builders.stream.cctvexpress",
+    "productName": "CCTV Express",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/go2rtc.exe",
+        "to": "go2rtc.exe"
+      },
+      {
+        "from": "vendor/GO2RTC-LICENSE",
+        "to": "GO2RTC-LICENSE"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "allowScripts": {
+    "electron@45.2.2": true,
+    "electron-winstaller@5.4.0": true
+  }
+}

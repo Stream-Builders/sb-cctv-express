@@ -1,0 +1,224 @@
+/* Propriedade intelectual e autoria de André "Tutankhamal" Borba (Stream.Builders) - ORCID 0009-0006-1743-1554. Uso autorizado mediante acordo escrito com o autor.
+ *
+ * A PECA .sb-btn da plataforma ebooks.express (lib @ebx/temas). Portada do mapa base de 12/10/2026
+ * (docs/estilo/mapa-botoes-base.html), que por sua vez veio de sb-vod-wl/www/front-user/app/globals.css.
+ *
+ * REGRA DESTA LIB: nenhuma cor de tenant mora aqui. Sem token nenhum, a peca sai NEUTRA (cinzas). Tudo o que da a
+ * cara de um tenant (cor, metal, forma, moldura, fonte, efeitos) chega por variaveis CSS emitidas por
+ * compilarTema() a partir do documento de tema do tenant, guardado na Biblioteca de temas do svc-catalog.
+ * As unicas cores literais sao as neutras, as da caixinha do icone (grafite, igual em todo tenant) e as semanticas.
+ */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 215deg; }
+
+/* PADRAO NEUTRO: o mesmo do NEUTRO em src/neutro.ts (um teste confere). */
+:root {
+  --accent: #A1A1AA; --accent-hover: #D4D4D8; --accent-fg: #111111; --accent-rgb: 161, 161, 170; --ring: #D4D4D8;
+  --sb-ink: #F4F4F5;
+}
+
+.sb-btn {
+  --sb-h: 3rem;
+  --sb-sk: calc(var(--sb-h) * var(--sb-btn-skew, 0.3));
+  --sb-ico: calc(var(--sb-h) * 1.18);
+  position: relative; display: inline-flex; align-items: stretch; height: var(--sb-h);
+  padding-block: 0; padding-inline: 0 var(--sb-sk); border: 0; background: none; cursor: pointer;
+  font-family: var(--sb-btn-font, inherit); isolation: isolate; max-width: min(100%, 20rem);
+  /* quando a peça é um link, o rótulo não herda o sublinhado dos links da página */
+  text-decoration: none;
+}
+.sb-btn__ico {
+  flex: 0 0 auto; width: calc(var(--sb-ico) + var(--sb-sk)); display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(var(--sb-sk) 0, 100% 0, calc(100% - var(--sb-sk)) 100%, 0 100%);
+  background: var(--sb-btn-ico-bg); color: var(--sb-btn-ico-fg) !important;
+}
+.sb-btn__ico > svg { width: auto; height: 48%; min-width: calc(var(--sb-h) * 0.48); min-height: calc(var(--sb-h) * 0.48); color: inherit; }
+@media (pointer: coarse) and (hover: none) { .sb-btn__ico > svg { height: 58%; } }
+:root {
+  --sb-btn-cil-rest: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 13%, rgba(0,0,0,0) 25%, rgba(0,0,0,.116) 38%, rgba(0,0,0,.313) 50%, rgba(0,0,0,.436) 63%, rgba(0,0,0,.589) 75%, rgba(0,0,0,.639) 88%, rgba(0,0,0,.639) 100%);
+  --sb-btn-cil-lit: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 13%, rgba(0,0,0,0) 25%, rgba(0,0,0,.053) 38%, rgba(0,0,0,.283) 50%, rgba(0,0,0,.43) 63%, rgba(0,0,0,.612) 75%, rgba(0,0,0,.672) 88%, rgba(0,0,0,.672) 100%);
+}
+.sb-btn {
+  --sb-btn-bg: var(--sb-btn-surface, var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10));
+  --sb-btn-blend: var(--sb-btn-surface-blend, normal);
+  --sb-btn-fg: var(--sb-btn-off-fg, var(--sb-ink));
+  --sb-btn-shadow: var(--sb-btn-off-shadow, 0 1px 2px rgba(0,0,0,.7));
+  --sb-btn-ico-bg: linear-gradient(180deg, #242427, #121214);
+  --sb-btn-ico-fg: var(--sb-btn-ink-fg, var(--sb-ink));
+}
+/* aceso: o rotulo vem da regra do rotulo (--sb-btn-on-fg, emitido pela lib); o preto e' so' o do neutro */
+.sb-btn:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) {
+  --sb-btn-bg: var(--sb-btn-surface-lit, var(--sb-btn-cil-lit), rgb(var(--accent-rgb)));
+  --sb-btn-blend: var(--sb-btn-surface-blend, normal);
+  --sb-btn-fg: var(--sb-btn-on-fg, #000000); --sb-btn-shadow: var(--sb-btn-on-shadow, none);
+}
+/* ativado e semanticas em repouso: face escura em todo tenant, rotulo na tinta clara (nunca o btn-rest-fg do tema) */
+.sb-btn.sb-btn--ativo { --sb-btn-bg: linear-gradient(rgba(var(--accent-rgb), .55), rgba(var(--accent-rgb), .55)), var(--sb-btn-off-base, #0d0d10); --sb-btn-fg: var(--sb-ink); --sb-btn-shadow: 0 1px 2px rgba(0,0,0,.7); }
+.sb-btn.sb-btn--ativo .sb-btn__body { box-shadow: inset 0 2px 5px rgba(0,0,0,.55), inset 0 0 0 1px rgba(var(--accent-rgb), .85); }
+.sb-btn.sb-btn--ativo .sb-btn__ico { box-shadow: inset 0 2px 5px rgba(0,0,0,.55); color: rgb(var(--accent-rgb)) !important; }
+.sb-btn.sb-btn--ativo .sb-btn__gloss { opacity: .25; }
+/* semanticas. A cor vem do tema (--sb-<nome>-rgb, emitida pela lib: o padrao colorido ou os tokens sem-*). Sem tema,
+   o NEUTRO: SO' CINZAS (13/10/2026), e confirmar e recusar se distinguem pelo icone e pelo texto. Rotulo do aceso pela
+   REGRA DO ROTULO: tinta clara sobre fundo escuro ou vermelho, preto so' sobre fundo claro. Os valores de reserva
+   abaixo sao os que a lib calcula para o neutro (um teste confere). */
+.sb-btn--ok { --accent-rgb: var(--sb-ok-rgb, 212, 212, 216); --sb-sem-on-fg: var(--sb-on-fg-ok, #000000); --sb-sem-on-shadow: var(--sb-on-shadow-ok, none); }
+.sb-btn--danger { --accent-rgb: var(--sb-danger-rgb, 113, 113, 122); --sb-sem-on-fg: var(--sb-on-fg-danger, var(--sb-ink)); --sb-sem-on-shadow: var(--sb-on-shadow-danger, 0 1px 2px rgba(0, 0, 0, 0.7)); }
+.sb-btn--info { --accent-rgb: var(--sb-info-rgb, 161, 161, 170); --sb-sem-on-fg: var(--sb-on-fg-info, #000000); --sb-sem-on-shadow: var(--sb-on-shadow-info, none); }
+.sb-btn--vip { --accent-rgb: var(--sb-vip-rgb, 228, 228, 231); --sb-sem-on-fg: var(--sb-on-fg-vip, #000000); --sb-sem-on-shadow: var(--sb-on-shadow-vip, none); }
+.sb-btn:is(.sb-btn--ok, .sb-btn--danger, .sb-btn--info, .sb-btn--vip) {
+  --sb-btn-bg: var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10);
+  --sb-btn-blend: normal; --sb-btn-fg: var(--sb-ink); --sb-btn-shadow: 0 1px 2px rgba(0,0,0,.7);
+}
+.sb-btn__body {
+  margin-inline-start: calc(var(--sb-sk) * -1); flex: 1 1 auto; min-width: 0;
+  padding-inline: calc(var(--sb-h) * 0.3) calc(var(--sb-h) * 0.42); display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(var(--sb-sk) 0, 100% 0, calc(100% - var(--sb-sk)) 100%, 0 100%);
+  background: var(--sb-btn-bg); background-blend-mode: var(--sb-btn-blend, normal);
+  color: var(--sb-btn-fg) !important; font-weight: 900; line-height: 1.1; letter-spacing: .06em;
+  white-space: normal; text-wrap: balance; -webkit-font-smoothing: antialiased; overflow-wrap: normal; word-break: keep-all;
+  text-shadow: var(--sb-btn-shadow); transition: background .2s ease, color .2s ease;
+}
+.sb-btn__label { display: block; width: 100%; text-align: center; text-transform: uppercase; font-weight: 900;
+  font-size: calc(var(--sb-h) * 0.32 * var(--cta-fit, 1)); line-height: 1.15; color: inherit; text-shadow: inherit; }
+.sb-btn:is(.sb-btn--ok, .sb-btn--danger, .sb-btn--info, .sb-btn--vip):is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) {
+  --sb-btn-bg: var(--sb-btn-cil-lit), rgb(var(--accent-rgb)); --sb-btn-blend: normal; --sb-btn-fg: var(--sb-sem-on-fg, #000000); --sb-btn-shadow: var(--sb-sem-on-shadow, none);
+}
+.sb-btn.sb-btn--ok { --sb-btn-bg: var(--sb-btn-surface-ok, var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10)); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--ok:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) { --sb-btn-bg: var(--sb-btn-surface-ok-lit, var(--sb-btn-cil-lit), rgb(var(--accent-rgb))); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--danger { --sb-btn-bg: var(--sb-btn-surface-danger, var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10)); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--danger:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) { --sb-btn-bg: var(--sb-btn-surface-danger-lit, var(--sb-btn-cil-lit), rgb(var(--accent-rgb))); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--info { --sb-btn-bg: var(--sb-btn-surface-info, var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10)); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--info:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) { --sb-btn-bg: var(--sb-btn-surface-info-lit, var(--sb-btn-cil-lit), rgb(var(--accent-rgb))); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--vip { --sb-btn-bg: var(--sb-btn-surface-vip, var(--sb-btn-cil-rest), linear-gradient(rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32)), rgba(var(--accent-rgb), var(--sb-btn-off-alpha, 0.32))), var(--sb-btn-off-base, #0d0d10)); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+.sb-btn.sb-btn--vip:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) { --sb-btn-bg: var(--sb-btn-surface-vip-lit, var(--sb-btn-cil-lit), rgb(var(--accent-rgb))); --sb-btn-blend: var(--sb-btn-surface-blend, normal); }
+/* anel: drop-shadow, que acompanha o clip-path (box-shadow nao acompanha) */
+.sb-btn { --sb-ring: 2px; filter: var(--sb-btn-rest-filter, none); }
+.sb-btn:is(:hover, :focus, :focus-visible, [aria-expanded='true'], [data-focused='true'], [data-lit='true']) {
+  filter: var(--sb-btn-lit-filter,
+    drop-shadow(var(--sb-ring) 0 0 var(--ring, rgb(var(--accent-rgb)))) drop-shadow(calc(var(--sb-ring) * -1) 0 0 var(--ring, rgb(var(--accent-rgb))))
+    drop-shadow(0 var(--sb-ring) 0 var(--ring, rgb(var(--accent-rgb)))) drop-shadow(0 calc(var(--sb-ring) * -1) 0 var(--ring, rgb(var(--accent-rgb))))) !important;
+}
+.sb-btn:focus, .sb-btn:focus-visible, .sb-btn:active { outline: none !important; box-shadow: none !important; }
+.sb-btn:disabled { cursor: not-allowed; opacity: .55; filter: none !important; }
+.sb-btn__gloss {
+  position: absolute; inset-block: 0; inset-inline: 0 var(--sb-sk); pointer-events: none; overflow: hidden;
+  clip-path: polygon(var(--sb-sk) 0, 100% 0, calc(100% - var(--sb-sk)) 100%, 0 100%);
+  background: linear-gradient(180deg, rgba(255,255,255, calc(var(--sb-btn-gloss, 0) * .16)) 0%, rgba(255,255,255, calc(var(--sb-btn-gloss, 0) * .02)) 46%, rgba(255,255,255,0) 60%, rgba(0,0,0, calc(var(--sb-btn-shade, 0) * .17)) 100%);
+}
+.sb-btn__gloss::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.08) 25%, rgba(255,255,255,.45) 50%, rgba(255,255,255,.08) 75%, transparent 100%);
+  transform: translateX(-150%) skewX(-20deg); animation: sb-varredura 6s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+@keyframes sb-varredura { 0%, 55% { transform: translateX(-150%) skewX(-20deg); } 85%, 100% { transform: translateX(250%) skewX(-20deg); } }
+.sb-btn--square { padding-inline-end: 0; }
+.sb-btn--square .sb-btn__gloss { inset: 0; }
+.sb-btn--square .sb-btn__ico { width: calc(var(--sb-ico) + var(--sb-sk)); flex-grow: 1; }
+/* pontas arredondadas e haste bojuda (btn-tip-radius, btn-bow): sem token, o poligono e' o paralelogramo de sempre */
+.sb-btn__body { clip-path: polygon(var(--sb-sk) 0, calc(100% - 1.344*var(--sb-tip-r,0px)) 0, calc(100% - 0.895*var(--sb-tip-r,0px)) calc(0.106*var(--sb-tip-r,0px)), calc(100% - 0.542*var(--sb-tip-r,0px)) calc(0.403*var(--sb-tip-r,0px)), calc(100% - 0.359*var(--sb-tip-r,0px)) calc(0.827*var(--sb-tip-r,0px)), calc(100% - 0.386*var(--sb-tip-r,0px)) calc(1.287*var(--sb-tip-r,0px)), calc(100% - 0.3*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(30% + 0.232*var(--sb-bow,0px)), calc(100% - 0.5*var(--sb-sk) + 0.958*var(--sb-bow,0px)) calc(50% + 0.287*var(--sb-bow,0px)), calc(100% - 0.7*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(70% + 0.232*var(--sb-bow,0px)), calc(100% - var(--sb-sk)) 100%, 0 100%); }
+.sb-btn__ico { clip-path: polygon(var(--sb-sk) 0, 100% 0, calc(100% - var(--sb-sk)) 100%, calc(1.344*var(--sb-tip-r,0px)) 100%, calc(0.895*var(--sb-tip-r,0px)) calc(100% - 0.106*var(--sb-tip-r,0px)), calc(0.542*var(--sb-tip-r,0px)) calc(100% - 0.403*var(--sb-tip-r,0px)), calc(0.359*var(--sb-tip-r,0px)) calc(100% - 0.827*var(--sb-tip-r,0px)), calc(0.386*var(--sb-tip-r,0px)) calc(100% - 1.287*var(--sb-tip-r,0px)), calc(0.3*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(70% - 0.232*var(--sb-bow,0px)), calc(0.5*var(--sb-sk) - 0.958*var(--sb-bow,0px)) calc(50% - 0.287*var(--sb-bow,0px)), calc(0.7*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(30% - 0.232*var(--sb-bow,0px))); }
+.sb-btn { --sb-clip-peca: polygon(var(--sb-sk) 0, calc(100% - 1.344*var(--sb-tip-r,0px)) 0, calc(100% - 0.895*var(--sb-tip-r,0px)) calc(0.106*var(--sb-tip-r,0px)), calc(100% - 0.542*var(--sb-tip-r,0px)) calc(0.403*var(--sb-tip-r,0px)), calc(100% - 0.359*var(--sb-tip-r,0px)) calc(0.827*var(--sb-tip-r,0px)), calc(100% - 0.386*var(--sb-tip-r,0px)) calc(1.287*var(--sb-tip-r,0px)), calc(100% - 0.3*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(30% + 0.232*var(--sb-bow,0px)), calc(100% - 0.5*var(--sb-sk) + 0.958*var(--sb-bow,0px)) calc(50% + 0.287*var(--sb-bow,0px)), calc(100% - 0.7*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(70% + 0.232*var(--sb-bow,0px)), calc(100% - var(--sb-sk)) 100%, calc(1.344*var(--sb-tip-r,0px)) 100%, calc(0.895*var(--sb-tip-r,0px)) calc(100% - 0.106*var(--sb-tip-r,0px)), calc(0.542*var(--sb-tip-r,0px)) calc(100% - 0.403*var(--sb-tip-r,0px)), calc(0.359*var(--sb-tip-r,0px)) calc(100% - 0.827*var(--sb-tip-r,0px)), calc(0.386*var(--sb-tip-r,0px)) calc(100% - 1.287*var(--sb-tip-r,0px)), calc(0.3*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(70% - 0.232*var(--sb-bow,0px)), calc(0.5*var(--sb-sk) - 0.958*var(--sb-bow,0px)) calc(50% - 0.287*var(--sb-bow,0px)), calc(0.7*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(30% - 0.232*var(--sb-bow,0px))); }
+.sb-btn--square .sb-btn__ico, .sb-btn__gloss { clip-path: var(--sb-clip-peca); }
+/* direita para a esquerda (arabe): o clip-path nao tem versao logica, entao e' espelhado (x -> 100% - x) */
+:where([dir='rtl']) .sb-btn__body { clip-path: polygon(calc(100% - var(--sb-sk)) 0, calc(1.344*var(--sb-tip-r,0px)) 0, calc(0.895*var(--sb-tip-r,0px)) calc(0.106*var(--sb-tip-r,0px)), calc(0.542*var(--sb-tip-r,0px)) calc(0.403*var(--sb-tip-r,0px)), calc(0.359*var(--sb-tip-r,0px)) calc(0.827*var(--sb-tip-r,0px)), calc(0.386*var(--sb-tip-r,0px)) calc(1.287*var(--sb-tip-r,0px)), calc(0.3*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(30% + 0.232*var(--sb-bow,0px)), calc(0.5*var(--sb-sk) - 0.958*var(--sb-bow,0px)) calc(50% + 0.287*var(--sb-bow,0px)), calc(0.7*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(70% + 0.232*var(--sb-bow,0px)), var(--sb-sk) 100%, 100% 100%); }
+:where([dir='rtl']) .sb-btn__ico { clip-path: polygon(calc(100% - var(--sb-sk)) 0, 0 0, var(--sb-sk) 100%, calc(100% - 1.344*var(--sb-tip-r,0px)) 100%, calc(100% - 0.895*var(--sb-tip-r,0px)) calc(100% - 0.106*var(--sb-tip-r,0px)), calc(100% - 0.542*var(--sb-tip-r,0px)) calc(100% - 0.403*var(--sb-tip-r,0px)), calc(100% - 0.359*var(--sb-tip-r,0px)) calc(100% - 0.827*var(--sb-tip-r,0px)), calc(100% - 0.386*var(--sb-tip-r,0px)) calc(100% - 1.287*var(--sb-tip-r,0px)), calc(100% - 0.3*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(70% - 0.232*var(--sb-bow,0px)), calc(100% - 0.5*var(--sb-sk) + 0.958*var(--sb-bow,0px)) calc(50% - 0.287*var(--sb-bow,0px)), calc(100% - 0.7*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(30% - 0.232*var(--sb-bow,0px))); }
+:where([dir='rtl']) .sb-btn { --sb-clip-peca: polygon(calc(100% - var(--sb-sk)) 0, calc(1.344*var(--sb-tip-r,0px)) 0, calc(0.895*var(--sb-tip-r,0px)) calc(0.106*var(--sb-tip-r,0px)), calc(0.542*var(--sb-tip-r,0px)) calc(0.403*var(--sb-tip-r,0px)), calc(0.359*var(--sb-tip-r,0px)) calc(0.827*var(--sb-tip-r,0px)), calc(0.386*var(--sb-tip-r,0px)) calc(1.287*var(--sb-tip-r,0px)), calc(0.3*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(30% + 0.232*var(--sb-bow,0px)), calc(0.5*var(--sb-sk) - 0.958*var(--sb-bow,0px)) calc(50% + 0.287*var(--sb-bow,0px)), calc(0.7*var(--sb-sk) - 0.775*var(--sb-bow,0px)) calc(70% + 0.232*var(--sb-bow,0px)), var(--sb-sk) 100%, calc(100% - 1.344*var(--sb-tip-r,0px)) 100%, calc(100% - 0.895*var(--sb-tip-r,0px)) calc(100% - 0.106*var(--sb-tip-r,0px)), calc(100% - 0.542*var(--sb-tip-r,0px)) calc(100% - 0.403*var(--sb-tip-r,0px)), calc(100% - 0.359*var(--sb-tip-r,0px)) calc(100% - 0.827*var(--sb-tip-r,0px)), calc(100% - 0.386*var(--sb-tip-r,0px)) calc(100% - 1.287*var(--sb-tip-r,0px)), calc(100% - 0.3*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(70% - 0.232*var(--sb-bow,0px)), calc(100% - 0.5*var(--sb-sk) + 0.958*var(--sb-bow,0px)) calc(50% - 0.287*var(--sb-bow,0px)), calc(100% - 0.7*var(--sb-sk) + 0.775*var(--sb-bow,0px)) calc(30% - 0.232*var(--sb-bow,0px))); }
+/* inversa (secundaria): corpo escuro, o accent so' no estado */
+/* o rótulo do secundário é o do tema (btn-inverse-fg), o mesmo que o medirContraste mede, em qualquer formato */
+.sb-btn--inverse .sb-btn__body { background: var(--sb-btn-inverse-bg, rgba(10, 10, 10, .92)); color: var(--sb-btn-inverse-fg, var(--sb-btn-off-fg, var(--sb-ink))) !important; }
+.sb-btn--inverse:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) { --sb-btn-fg: var(--sb-btn-off-fg, var(--sb-ink)); --sb-btn-shadow: 0 1px 2px rgba(0,0,0,.8); }
+/* o tema que traz btn-inverse-lit-stops / btn-inverse-lit-fg inverte as cores do secundário no aceso (fundo e rótulo);
+   sem eles, o aceso tinge o fundo escuro com o acento */
+.sb-btn--inverse:is(:hover, :focus-visible, [data-lit='true']) .sb-btn__body {
+  background: var(--sb-btn-inverse-lit-bg, var(--sb-btn-surface, linear-gradient(rgba(var(--accent-rgb), .28), rgba(var(--accent-rgb), .14)), rgba(15, 15, 18, .95)));
+  color: var(--sb-btn-inverse-lit-fg, var(--sb-btn-off-fg, var(--sb-ink))) !important;
+  text-shadow: var(--sb-btn-inverse-lit-shadow, var(--sb-btn-shadow));
+}
+.sb-btn--inverse:is(:hover, :focus-visible, [data-lit='true']) .sb-btn__ico { color: var(--accent) !important; }
+/* pressionado; crescer no aceso */
+.sb-btn[data-pressed='true'] { transform: translateY(1px) scale(.994); }
+.sb-btn[data-pressed='true'] .sb-btn__gloss { opacity: .35; }
+.sb-btn:active { transform: translateY(1.2px) scale(.988); }
+.sb-btn { transition: transform .12s ease, scale .16s cubic-bezier(.16, 1, .3, 1); }
+.sb-btn:is(:hover, :focus-visible, [data-focused='true']):not(:disabled) { scale: 1.05; }
+.sb-btn--block { width: 100%; max-width: 100%; padding-inline-end: 0; }
+.sb-btn--block .sb-btn__gloss { inset: 0; }
+.sb-btn--sm { --sb-h: 2.25rem; }
+.sb-btn--lg { --sb-h: 3.25rem; }
+
+/* ---------------- formatos round-square e pill: sem corte, cantos arredondados ----------------
+   O pill é o round-square com o raio inteiro (as pontas viram meia-lua) e um respiro maior nas pontas. */
+[data-theme-format="round-square"] { --fmt-radius: 5px; --fmt-radius-box: 8px; }
+[data-theme-format="pill"] { --fmt-radius: 999px; --fmt-radius-box: 999px; }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) .sb-btn { padding-inline-end: 0; }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) :is(.sb-btn__ico, .sb-btn__body, .sb-btn__gloss) { --sb-sk: 0px; clip-path: none; border-radius: var(--fmt-radius, .62rem); }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) .sb-btn__ico { width: var(--sb-ico); border-start-end-radius: 0; border-end-end-radius: 0; }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) .sb-btn__body { padding-inline: calc(var(--sb-h) * .3) calc(var(--sb-h) * .3); margin-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) .sb-btn__gloss { inset: 0; }
+:is([data-theme-format="round-square"], [data-theme-format="pill"]) .sb-btn--square .sb-btn__ico { border-start-end-radius: var(--fmt-radius, .62rem); border-end-end-radius: var(--fmt-radius, .62rem); }
+[data-theme-format="pill"] .sb-btn__ico { width: calc(var(--sb-ico) + var(--sb-h) * .14); padding-inline-start: calc(var(--sb-h) * .14); }
+[data-theme-format="pill"] .sb-btn__body { padding-inline-end: calc(var(--sb-h) * .48); }
+[data-theme-format="pill"] .sb-btn--square .sb-btn__ico { width: var(--sb-h); padding-inline-start: 0; }
+
+/* ---------------- formato hex: hexagono deitado com moldura e o icone num engaste hexagonal ----------------
+   A FACE e' o ::after (veste --sb-btn-bg), a MOLDURA e' o ::before. Sem token de moldura, a moldura sai do proprio
+   accent do tema (claro em cima, escuro embaixo): nenhuma cor de tenant de fallback. */
+[data-theme-format="hex"] {
+  --sb-moldura-padrao: linear-gradient(160deg, rgba(255,255,255,.55), rgba(255,255,255,0) 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.6)), rgb(var(--accent-rgb));
+}
+[data-theme-format="hex"] .sb-btn {
+  --sb-sk: 0px;
+  --sb-ponta: calc(var(--sb-h) * .33);
+  --sb-fw: var(--sb-btn-frame-w, 1.5px);
+  --sb-hexa: polygon(var(--sb-ponta) 0, calc(100% - var(--sb-ponta)) 0, 100% 50%, calc(100% - var(--sb-ponta)) 100%, var(--sb-ponta) 100%, 0 50%);
+  --sb-hexa-in: polygon(calc(var(--sb-ponta) - 1px) 0, calc(100% - var(--sb-ponta) + 1px) 0, 100% 50%, calc(100% - var(--sb-ponta) + 1px) 100%, calc(var(--sb-ponta) - 1px) 100%, 0 50%);
+  align-items: center; gap: calc(var(--sb-h) * .2);
+  padding-inline: calc(var(--sb-ponta) * .55) calc(var(--sb-ponta) + var(--sb-h) * .2);
+  filter: var(--sb-btn-rest-filter, drop-shadow(0 8px 14px rgba(0, 0, 0, .55)));
+}
+[data-theme-format="hex"] .sb-btn::before, [data-theme-format="hex"] .sb-btn::after { content: ""; position: absolute; z-index: -1; pointer-events: none; }
+[data-theme-format="hex"] .sb-btn::before { inset: 0; clip-path: var(--sb-hexa); background: var(--sb-btn-frame, var(--sb-moldura-padrao)); }
+[data-theme-format="hex"] .sb-btn::after { inset: var(--sb-fw); clip-path: var(--sb-hexa-in); background: var(--sb-btn-bg); background-blend-mode: var(--sb-btn-blend, normal); transition: background .2s ease; }
+[data-theme-format="hex"] .sb-btn__body { margin-inline-start: 0; padding-inline: 0; background: none; clip-path: none; letter-spacing: .14em; font-weight: 800; }
+[data-theme-format="hex"] .sb-btn__label { font-size: calc(var(--sb-h) * .28 * var(--cta-fit, 1)); font-weight: 800; }
+[data-theme-format="hex"] .sb-btn__ico { position: relative; isolation: isolate; align-self: center; width: calc(var(--sb-h) * .6); height: calc(var(--sb-h) * .52); background: none; clip-path: none; }
+[data-theme-format="hex"] .sb-btn__ico::before, [data-theme-format="hex"] .sb-btn__ico::after {
+  content: ""; position: absolute; z-index: -1; clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  rotate: 0deg; transition: rotate .8s cubic-bezier(.2, .8, .2, 1);
+}
+[data-theme-format="hex"] .sb-btn__ico::before { inset: 0; background: var(--sb-btn-frame, var(--sb-moldura-padrao)); }
+[data-theme-format="hex"] .sb-btn__ico::after { inset: 1.5px; background: var(--sb-btn-ico-bg); }
+[data-theme-format="hex"] .sb-btn__ico > svg { height: 56%; min-width: 0; min-height: 0; }
+[data-theme-format="hex"] .sb-btn__gloss { inset: var(--sb-fw); clip-path: var(--sb-hexa-in); }
+[data-theme-format="hex"] .sb-btn:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) .sb-btn__ico::before,
+[data-theme-format="hex"] .sb-btn:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true']) .sb-btn__ico::after { rotate: var(--sb-fx-giro, 0deg); }
+[data-theme-format="hex"] .sb-btn:is(:hover, :focus-visible, [data-focused='true'], [data-lit='true'])::before { animation: var(--sb-fx-circuito, none) 2.4s linear infinite; }
+@keyframes sb-circuito { from { --ang: 215deg; } to { --ang: 575deg; } }
+[data-theme-format="hex"] .sb-btn.sb-btn--ativo .sb-btn__body, [data-theme-format="hex"] .sb-btn.sb-btn--ativo .sb-btn__ico { box-shadow: none; }
+[data-theme-format="hex"] .sb-btn.sb-btn--ativo::after { box-shadow: inset 0 2px 5px rgba(0,0,0,.55); }
+[data-theme-format="hex"] .sb-btn--inverse::before { background: var(--sb-btn-frame-inverse, var(--sb-btn-frame, var(--sb-moldura-padrao))); }
+[data-theme-format="hex"] .sb-btn--inverse::after { background: var(--sb-btn-inverse-bg, rgba(10, 10, 10, .92)); }
+[data-theme-format="hex"] .sb-btn--inverse .sb-btn__body, [data-theme-format="hex"] .sb-btn--inverse:is(:hover, :focus-visible, [data-lit='true']) .sb-btn__body { background: none; color: var(--sb-btn-inverse-fg, var(--sb-btn-off-fg, var(--sb-ink))) !important; }
+[data-theme-format="hex"] .sb-btn--inverse:is(:hover, :focus-visible, [data-lit='true']) .sb-btn__body { color: var(--sb-btn-inverse-lit-fg, var(--sb-btn-inverse-fg, var(--sb-ink))) !important; }
+[data-theme-format="hex"] .sb-btn--square { width: calc(var(--sb-h) * 1.15); padding: 0; justify-content: center; }
+[data-theme-format="hex"] .sb-btn--square::before { clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); background: var(--sb-btn-frame, var(--sb-moldura-padrao)); }
+[data-theme-format="hex"] .sb-btn--square::after { clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); background: var(--sb-btn-ico-bg); }
+[data-theme-format="hex"] .sb-btn--square .sb-btn__ico { width: 100%; height: 100%; }
+[data-theme-format="hex"] .sb-btn--square .sb-btn__ico::before, [data-theme-format="hex"] .sb-btn--square .sb-btn__ico::after { display: none; }
+[data-theme-format="hex"] .sb-btn--square .sb-btn__ico > svg { height: 44%; }
+[data-theme-format="hex"] .sb-btn--square .sb-btn__gloss { clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+[data-theme-format="hex"] .sb-btn--block { padding-inline-end: calc(var(--sb-ponta) + var(--sb-h) * .2); }
+
+/* faiscas e onda do clique (ligadas pelo token btn-fx; src/efeitos.ts cria os elementos) */
+.sb-centelha { position: absolute; left: 50%; top: 45%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; pointer-events: none; z-index: 3;
+  background: radial-gradient(circle, #ffffff 0 30%, rgba(var(--accent-rgb), 1) 55%, rgba(var(--accent-rgb), 0) 72%); animation: sb-centelha 1s ease-out forwards; }
+@keyframes sb-centelha { 0% { opacity: 0; transform: translate(0, 0) scale(1); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--sobe)) scale(.35); } }
+.sb-onda { position: absolute; inset: 0; z-index: -2; pointer-events: none; clip-path: var(--sb-hexa, none);
+  background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0) 50%, rgba(var(--accent-rgb), .6) 100%); animation: sb-onda .7s ease-out forwards; }
+@keyframes sb-onda { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.14, 1.8); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-btn__gloss::after { animation: none; }
+  .sb-btn, [data-theme-format="hex"] .sb-btn__ico::before, [data-theme-format="hex"] .sb-btn__ico::after { transition: none; }
+  [data-theme-format="hex"] .sb-btn::before { animation: none !important; }
+  [data-theme-format="hex"] .sb-btn .sb-btn__ico::before, [data-theme-format="hex"] .sb-btn .sb-btn__ico::after { rotate: 0deg !important; }
+}

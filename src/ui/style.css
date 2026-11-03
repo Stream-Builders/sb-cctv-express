@@ -1,0 +1,109 @@
+/* CCTV Express: as cores e a peça .sb-btn são as do tenant ebooks.express (Stream.Builders): --accent (#FF3333) e
+   --sb-ink vêm de tema/tema.css (@ebx/temas). O estado de cada câmera é o elemento mais visível do quadro e usa cores de
+   semáforo próprias (verde, âmbar, vermelho), que precisam ser lidas na hora, independentemente da marca. */
+:root {
+  --fundo: #0b0d10;
+  --superficie: #14171c;
+  --superficie-2: #1c2027;
+  --borda: #2a2f38;
+  --texto: var(--sb-ink, #efe6d0);
+  --texto-suave: #a3abb8;
+  --destaque: var(--accent, #ff3333);
+  --vivo: #22c55e;
+  --gravando: #ef4444;
+  --alerta: #f59e0b;
+  --parado: #6b7280;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font: 15px/1.4 "Segoe UI", system-ui, sans-serif;
+  display: grid;
+  grid-template-rows: 56px 1fr;
+  overflow: hidden;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 16px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+}
+.marca { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 700; letter-spacing: 0.01em; color: var(--sb-ink, #efe6d0); }
+.marca b { color: var(--accent, #ff3333); font-weight: 800; }
+.mosaicos { display: flex; gap: 6px; }
+.resumo { margin-inline-start: auto; display: flex; gap: 10px; font-weight: 600; }
+
+.area { display: grid; grid-template-columns: 1fr 300px; min-height: 0; }
+
+.mosaico { display: grid; gap: 4px; padding: 4px; min-height: 0; background: #000; }
+.quadro {
+  position: relative; background: #050607; border: 2px solid transparent; border-radius: 6px; overflow: hidden;
+  min-height: 0; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.quadro--selecionado { border-color: var(--destaque); }
+.quadro video-stream, .quadro video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+.quadro__vazio { color: #4b5563; font-size: 14px; }
+.quadro__topo {
+  position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; background: linear-gradient(#000c, #0000); pointer-events: none;
+}
+.quadro__nome { font-weight: 600; text-shadow: 0 1px 2px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* os selos de estado: grandes, coloridos e com texto, nunca só um ícone */
+.selo {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
+}
+.selo::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.selo--vivo { background: #052e16; color: var(--vivo); border: 1px solid #166534; }
+.selo--conectando { background: #2d1f05; color: var(--alerta); border: 1px solid #92400e; }
+.selo--conectando::before { animation: piscar 1s infinite; }
+.selo--sem-sinal { background: #2a0a0a; color: #fca5a5; border: 1px solid #991b1b; }
+.selo--gravando { background: var(--gravando); color: #fff; border: 1px solid #fca5a5; }
+.selo--gravando::before { animation: piscar 1.2s infinite; }
+.selo--nao-grava { background: #1f2329; color: #d1d5db; border: 1px solid #4b5563; }
+@keyframes piscar { 50% { opacity: 0.25; } }
+
+.lateral { background: var(--superficie); border-inline-start: 1px solid var(--borda); display: flex; flex-direction: column; min-height: 0; }
+.lateral__cabeca { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--borda); }
+.lateral__cabeca h2 { margin: 0; font-size: 16px; }
+.lista { list-style: none; margin: 0; padding: 8px; overflow: auto; }
+.lista li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 10px;
+  border-radius: 8px; cursor: pointer;
+}
+.lista li:hover { background: var(--superficie-2); }
+.lista .ponto { width: 12px; height: 12px; border-radius: 50%; background: var(--parado); }
+.lista .ponto--vivo { background: var(--vivo); }
+.lista .ponto--conectando { background: var(--alerta); }
+.lista .ponto--sem-sinal { background: var(--gravando); }
+.lista small { color: var(--texto-suave); display: block; }
+.lista .editar { background: none; border: 1px solid var(--borda); color: var(--texto-suave); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+.lista .editar:hover { color: var(--texto); border-color: var(--destaque); }
+.lista__vazia { color: var(--texto-suave); padding: 16px; }
+
+.sb-btn__ico svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+dialog { background: var(--superficie); color: var(--texto); border: 1px solid var(--borda); border-radius: 12px; padding: 0; width: min(560px, 92vw); }
+dialog::backdrop { background: #000a; }
+form { display: grid; gap: 12px; padding: 20px; }
+form h2 { margin: 0 0 4px; font-size: 18px; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--texto-suave); }
+input, select {
+  height: 38px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--borda); background: var(--fundo);
+  color: var(--texto); font: inherit;
+}
+input:focus, select:focus { outline: 2px solid var(--destaque); outline-offset: 0; }
+.linha { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+.linha:has(> label:nth-child(2):last-child) { grid-template-columns: 1fr 1fr; }
+menu { display: flex; gap: 8px; margin: 8px 0 0; padding: 0; }
+.espaco { flex: 1; }
+.aviso { margin: 0; color: var(--alerta); min-height: 1em; font-size: 13px; }
+.so-rtsp[hidden] { display: none; }

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR" data-theme-format="skew" data-modo="escuro">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws://127.0.0.1:18984 http://127.0.0.1:18984; media-src 'self' blob: mediastream:; img-src 'self' data: blob:; style-src 'self'; script-src 'self'">
+  <title>CCTV Express</title>
+  <!-- as cores e a peça .sb-btn são as do tenant ebooks.express (Stream.Builders), da @ebx/temas -->
+  <!-- a peça vem antes: o padrão neutro dela (cinzas) é sobrescrito pelas variáveis do tema -->
+  <link rel="stylesheet" href="tema/sb-btn.css">
+  <link rel="stylesheet" href="tema/tema.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca"><img src="marca/emblema.svg" alt="" width="34" height="34"><span><b>cctv</b>.express</span></div>
+    <nav class="mosaicos" aria-label="Mosaico">
+      <button class="sb-btn sb-btn--sm" data-mosaico="1" title="1 câmera"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">1</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button class="sb-btn sb-btn--sm" data-mosaico="4" title="4 câmeras"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">4</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button class="sb-btn sb-btn--sm" data-mosaico="9" title="9 câmeras"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">9</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button class="sb-btn sb-btn--sm" data-mosaico="16" title="16 câmeras"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 4v16M12 4v16M16 4v16M4 8h16M4 12h16M4 16h16"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">16</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button class="sb-btn sb-btn--sm" data-mosaico="25" title="25 câmeras"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM7.2 4v16M10.4 4v16M13.6 4v16M16.8 4v16M4 7.2h16M4 10.4h16M4 13.6h16M4 16.8h16"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">25</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button class="sb-btn sb-btn--sm" data-mosaico="36" title="36 câmeras"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM6.7 4v16M9.3 4v16M12 4v16M14.7 4v16M17.3 4v16M4 6.7h16M4 9.3h16M4 12h16M4 14.7h16M4 17.3h16"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">36</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+    </nav>
+    <div class="resumo" id="resumo" aria-live="polite"></div>
+  </header>
+
+  <main class="area">
+    <section class="mosaico" id="mosaico" aria-label="Câmeras ao vivo"></section>
+    <aside class="lateral">
+      <div class="lateral__cabeca">
+        <h2>Câmeras</h2>
+        <button class="sb-btn sb-btn--sm" id="adicionar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">Adicionar</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
+      <ul class="lista" id="lista"></ul>
+    </aside>
+  </main>
+
+  <dialog id="dialogo">
+    <form method="dialog" id="formulario">
+      <h2 id="formulario-titulo">Adicionar câmera</h2>
+      <input type="hidden" name="id">
+      <label>Nome <input name="nome" placeholder="Ex.: Quintal" autocomplete="off"></label>
+      <label>Tipo
+        <select name="tipo">
+          <option value="xiongmai">Xiongmai / iCSee / XMeye (porta 34567)</option>
+          <option value="onvif">ONVIF (descobre o vídeo sozinho)</option>
+          <option value="rtsp">RTSP (endereço direto)</option>
+        </select>
+      </label>
+      <div class="linha">
+        <label>Endereço IP <input name="ip" placeholder="192.168.18.11" required autocomplete="off"></label>
+        <label>Porta <input name="porta" type="number" min="1" max="65535" placeholder="padrão"></label>
+        <label>Canal <input name="canal" type="number" min="1" max="64" value="1"></label>
+      </div>
+      <label class="so-rtsp">Endereço RTSP (sem usuário e senha) <input name="url" placeholder="rtsp://192.168.18.114:8554/live" autocomplete="off"></label>
+      <div class="linha">
+        <label>Usuário <input name="usuario" value="admin" autocomplete="off"></label>
+        <label>Senha <input name="senha" type="password" autocomplete="new-password" placeholder="guardada cifrada"></label>
+      </div>
+      <p class="aviso" id="formulario-aviso"></p>
+      <menu>
+        <button type="button" class="sb-btn sb-btn--sm sb-btn--danger" id="remover" hidden><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">Remover</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <span class="espaco"></span>
+        <button type="button" class="sb-btn sb-btn--sm" id="cancelar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">Cancelar</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <button type="submit" class="sb-btn sb-btn--sm sb-btn--ativo" value="salvar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label">Salvar</span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
