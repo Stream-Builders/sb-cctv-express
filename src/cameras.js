@@ -49,6 +49,8 @@ function salvar(dados) {
     canal: Number(dados.canal) || 1,
     usuario: String(dados.usuario || '').trim(),
     url: String(dados.url || '').trim(),
+    // grava por padrão; desligar é escolha explícita da pessoa
+    gravar: dados.gravar === undefined ? atual.gravar !== false : dados.gravar === true || dados.gravar === 'on',
   };
   // senha em branco na edição = manter a que já existe
   if (dados.senha) camera.senhaCifrada = cifrar(dados.senha);
@@ -62,4 +64,14 @@ function remover(id) {
   gravar(ler().filter((c) => c.id !== id));
 }
 
-module.exports = { ler, listar, salvar, remover, abrir };
+/** Liga ou desliga a gravação de uma câmera sem mexer no resto. */
+function definirGravacao(id, ligar) {
+  const lista = ler();
+  const c = lista.find((x) => x.id === id);
+  if (c) {
+    c.gravar = !!ligar;
+    gravar(lista);
+  }
+}
+
+module.exports = { ler, listar, salvar, remover, abrir, definirGravacao };

@@ -56,18 +56,20 @@ body {
 }
 .quadro__nome { font-weight: 600; text-shadow: 0 1px 2px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* os selos de estado: grandes, coloridos e com texto, nunca só um ícone */
+/* os selos de estado: grandes, coloridos e com texto, nunca só um ícone. Paralelogramo, no mesmo corte inclinado
+   da .sb-btn; o texto vai num span que desfaz a inclinação para continuar reto e legível. */
 .selo {
-  display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px;
+  display: inline-flex; align-items: center; padding: 3px 11px; border-radius: 2px; transform: skewX(-14deg);
   font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
 }
-.selo::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.selo__texto { display: inline-flex; align-items: center; gap: 6px; transform: skewX(14deg); }
+.selo__texto::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .selo--vivo { background: #052e16; color: var(--vivo); border: 1px solid #166534; }
-.selo--conectando { background: #2d1f05; color: var(--alerta); border: 1px solid #92400e; }
-.selo--conectando::before { animation: piscar 1s infinite; }
-.selo--sem-sinal { background: #2a0a0a; color: #fca5a5; border: 1px solid #991b1b; }
+.selo--conectando, .selo--iniciando { background: #2d1f05; color: var(--alerta); border: 1px solid #92400e; }
+.selo--conectando .selo__texto::before, .selo--iniciando .selo__texto::before { animation: piscar 1s infinite; }
+.selo--semSinal { background: #2a0a0a; color: #fca5a5; border: 1px solid #991b1b; }
 .selo--gravando { background: var(--gravando); color: #fff; border: 1px solid #fca5a5; }
-.selo--gravando::before { animation: piscar 1.2s infinite; }
+.selo--gravando .selo__texto::before { animation: piscar 1.2s infinite; }
 .selo--nao-grava { background: #1f2329; color: #d1d5db; border: 1px solid #4b5563; }
 @keyframes piscar { 50% { opacity: 0.25; } }
 
@@ -83,7 +85,7 @@ body {
 .lista .ponto { width: 12px; height: 12px; border-radius: 50%; background: var(--parado); }
 .lista .ponto--vivo { background: var(--vivo); }
 .lista .ponto--conectando { background: var(--alerta); }
-.lista .ponto--sem-sinal { background: var(--gravando); }
+.lista .ponto--semSinal { background: var(--gravando); }
 .lista small { color: var(--texto-suave); display: block; }
 .lista .editar { background: none; border: 1px solid var(--borda); color: var(--texto-suave); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
 .lista .editar:hover { color: var(--texto); border-color: var(--destaque); }
@@ -110,3 +112,23 @@ menu { display: flex; gap: 8px; margin: 8px 0 0; padding: 0; }
 
 /* vídeo ao vivo sem os controles do navegador (play, tempo, barra de progresso) */
 .quadro video::-webkit-media-controls { display: none !important; }
+
+/* atalhos de cada câmera: aparecem ao passar o mouse e ficam fixos na câmera selecionada */
+.quadro__barra {
+  position: absolute; inset-inline-end: 8px; bottom: 8px; display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s;
+}
+.quadro:hover .quadro__barra, .quadro--selecionado .quadro__barra, .quadro__barra:focus-within { opacity: 1; }
+.sb-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.topo > #abrir-config { margin-inline-start: 4px; }
+.lateral__acao { padding: 10px 16px; border-bottom: 1px solid var(--borda); }
+.marcar { display: flex; align-items: center; gap: 8px; color: var(--texto); font-size: 14px; }
+.marcar input { height: 18px; width: 18px; accent-color: var(--destaque); }
+.pasta { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+.linha--3 { grid-template-columns: 1fr 1fr 1fr; }
+form h3 { margin: 6px 0 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--destaque); }
+.ajuda { margin: 0; color: var(--texto-suave); font-size: 13px; }
+.painel { display: grid; gap: 12px; padding: 20px; }
+.painel h2 { margin: 0; font-size: 18px; }
+.lista--detectar { max-height: 50vh; padding: 0; }
+.lista--detectar li { cursor: default; }

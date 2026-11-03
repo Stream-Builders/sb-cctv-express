@@ -12,6 +12,7 @@ luz, com o estado de cada câmera sempre visível (ao vivo, conectando, sem sina
 - **Câmeras** em `cameras.json` na pasta de dados do app. A senha fica cifrada pelo Windows (safeStorage/DPAPI) e chega
   ao go2rtc só por variável de ambiente, nunca em arquivo aberto.
 - **Tipos de câmera:** Xiongmai / iCSee / XMeye (protocolo próprio, porta 34567), ONVIF e RTSP.
+- **Gravação:** um ffmpeg por câmera lê o RTSP local do go2rtc e grava MP4 fragmentado sem recomprimir; o selo GRAVANDO só acende quando o arquivo está crescendo.
 - **Visual:** as cores e a peça `.sb-btn` do tenant ebooks.express (`src/ui/tema/`, da `@ebx/temas`).
 
 ## Rodar
@@ -26,7 +27,8 @@ Gerar o instalador: `npm run dist` (saída em `dist/`).
 ## Etapas
 
 1. Ao vivo em mosaico com reconexão automática e estado visível — **feito**
-2. Gravação contínua em disco, com limite e rotação
+2. Gravação contínua em disco (padrão `C:cctv_expressecords`, blocos de 120 min ajustáveis, retenção por dias e espaço livre) — **feito**
+   - Detecção de câmeras na rede (ONVIF WS-Discovery + portas 34567/554/8554), 18 idiomas, configurações e splash 3D — **feito**
 3. Reprodução com linha do tempo e exportação de trechos
 4. PTZ e luz (branca e infravermelho)
 5. Detecção de movimento e alertas

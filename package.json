@@ -31,6 +31,10 @@
         "to": "go2rtc.exe"
       },
       {
+        "from": "vendor/ffmpeg.exe",
+        "to": "ffmpeg.exe"
+      },
+      {
         "from": "vendor/GO2RTC-LICENSE",
         "to": "GO2RTC-LICENSE"
       }

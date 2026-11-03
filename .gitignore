@@ -1,3 +1,4 @@
 node_modules/
 dist/
 vendor/go2rtc.exe
+vendor/ffmpeg.exe

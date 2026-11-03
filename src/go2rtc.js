@@ -8,6 +8,7 @@ const { join } = require('node:path');
 const cameras = require('./cameras');
 
 const PORTA_API = 18984;
+const PORTA_RTSP = 18554;
 let processo = null;
 
 function binario() {
@@ -46,8 +47,9 @@ function configurar() {
     'api:',
     `  listen: "127.0.0.1:${PORTA_API}"`,
     '  origin: "*"',
+    // RTSP só neste computador: é por ele que o gravador (ffmpeg) lê o vídeo, sem abrir outra conexão na câmera
     'rtsp:',
-    '  listen: ""',
+    `  listen: "127.0.0.1:${PORTA_RTSP}"`,
     'webrtc:',
     '  listen: ""',
     'log:',
@@ -78,4 +80,4 @@ function parar() {
   if (p && !p.killed) p.kill();
 }
 
-module.exports = { iniciar, parar, PORTA_API };
+module.exports = { iniciar, parar, PORTA_API, PORTA_RTSP };
