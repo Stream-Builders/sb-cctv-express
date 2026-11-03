@@ -107,3 +107,6 @@ menu { display: flex; gap: 8px; margin: 8px 0 0; padding: 0; }
 .espaco { flex: 1; }
 .aviso { margin: 0; color: var(--alerta); min-height: 1em; font-size: 13px; }
 .so-rtsp[hidden] { display: none; }
+
+/* vídeo ao vivo sem os controles do navegador (play, tempo, barra de progresso) */
+.quadro video::-webkit-media-controls { display: none !important; }

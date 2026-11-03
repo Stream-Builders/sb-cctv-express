@@ -56,6 +56,8 @@ function vigiar(id, quadro, componente) {
   const t = setInterval(() => {
     if (!quadro.isConnected) return clearInterval(t);
     const v = componente.querySelector('video');
+    // câmera ao vivo não tem play, tempo nem barra de progresso: o player do go2rtc liga os controles por padrão
+    if (v && v.controls) v.controls = false;
     const agora = v ? v.currentTime : 0;
     let novo;
     if (v && agora !== ultimoTempo && !v.paused) {
