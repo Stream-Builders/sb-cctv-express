@@ -96,7 +96,30 @@ async function reiniciar() {
 }
 
 ipcMain.handle('cameras:listar', () => cameras.listar());
+/** A porta informada responde ONVIF? (muita gente põe a porta ONVIF do VMS antigo achando que é a do vídeo) */
+async function portaOnvif(ip, porta) {
+  if (!ip || !porta) return false;
+  try {
+    const r = await fetch(`http://${ip}:${porta}/onvif/device_service`, {
+      method: 'POST', signal: AbortSignal.timeout(3000), headers: { 'Content-Type': 'application/soap+xml; charset=utf-8' },
+      body: '<?xml version="1.0" encoding="UTF-8"?><s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"><s:Body><GetSystemDateAndTime xmlns="http://www.onvif.org/ver10/device/wsdl"/></s:Body></s:Envelope>',
+    });
+    return /Envelope/i.test(await r.text());
+  } catch {
+    return false;
+  }
+}
+
 ipcMain.handle('cameras:salvar', async (_e, dados) => {
+  // RTSP numa porta que é ONVIF: vira ONVIF, e o endereço do vídeo vem da própria câmera
+  if (dados.tipo === 'rtsp') {
+    const url = String(dados.url || '').replace(/^(rstp|rtps):/i, 'rtsp:');
+    let ip = dados.ip, porta = Number(dados.porta) || null;
+    try { const u = new URL(url); ip = u.hostname || ip; porta = Number(u.port) || porta; } catch { /* sem endereço completo */ }
+    if (porta && porta !== 554 && (await portaOnvif(ip, porta))) {
+      dados = { ...dados, tipo: 'onvif', ip, porta, url: '' };
+    }
+  }
   const id = cameras.salvar(dados);
   await reiniciar();
   return id;
