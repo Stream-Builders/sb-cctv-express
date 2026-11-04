@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://cctvexpress.stream.builders"><img src="midia/banner.svg" alt="cctv.express - Stream.Builders" width="100%" /></a>
+  <a href="https://cctvexpress.stream.builders"><img src="midia/letreiro.gif" alt="cctv.express" width="100%" /></a>
 </p>
 
 <p align="center">
@@ -28,7 +28,6 @@
 
 ## <img src="src/ui/marca/emblema.svg" height="24" align="top" alt="" /> O que é
 
-<p align="center"><img src="midia/letreiro.gif" alt="cctv.express" width="640" /></p>
 
 Monitoramento de câmeras IP (CCTV) para Windows, da **Stream.Builders**. O estado de cada câmera fica sempre visível, em
 selos grandes e coloridos: **ao vivo**, **conectando**, **sem sinal**, **gravando** (o selo só acende quando o arquivo
@@ -98,6 +97,10 @@ npm run dist     # gera dist/CCTV Express Setup <versão>.exe (NSIS, Windows x64
 ## <img src="midia/icones/licenca.svg" height="22" align="top" alt="" /> Licença
 
 MIT. Veja [LICENSE](LICENSE). O app usa go2rtc (MIT), three.js (MIT) e FFmpeg (LGPL/GPL, baixado na instalação).
+
+<p align="center">
+  <a href="https://cctvexpress.stream.builders"><img src="midia/banner.svg" alt="cctv.express - Stream.Builders" width="100%" /></a>
+</p>
 
 <p align="center">
   <a href="https://stream.builders"><img src="https://img.shields.io/badge/STREAM.BUILDERS-000000?style=for-the-badge&logoColor=FF3333" alt="Stream.Builders" /></a>
