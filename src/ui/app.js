@@ -94,7 +94,8 @@ function barraDoQuadro(cam) {
   const barra = document.createElement('div');
   barra.className = 'quadro__barra';
   const ligada = cam.gravar !== false;
-  const gravar = botao({ icone: ICONES.gravar, quadrado: true, titulo: ligada ? t('quadro.pararGravacao') : t('quadro.gravar'), classes: ligada ? 'sb-btn--danger' : '' });
+  // gravando: o círculo preenchido em vermelho (pulsando como o REC); desligado: só o contorno
+  const gravar = botao({ icone: ICONES.gravar, quadrado: true, titulo: ligada ? t('quadro.pararGravacao') : t('quadro.gravar'), classes: ligada ? 'sb-btn--danger botao-gravando' : '' });
   gravar.addEventListener('click', async (e) => {
     e.stopPropagation();
     await window.cctv.definirGravacao(cam.id, !ligada);

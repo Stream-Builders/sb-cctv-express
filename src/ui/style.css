@@ -185,3 +185,7 @@ body { grid-template-columns: minmax(0, 1fr); }
 /* volume da câmera */
 .painel-som { min-width: 200px; }
 .painel-som label { display: grid; gap: 6px; font-size: 12px; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* botão de gravar ligado: o círculo preenchido em vermelho, pulsando como o REC */
+.botao-gravando .sb-btn__ico svg circle { fill: var(--gravando); stroke: var(--gravando); animation: piscar 1.4s infinite; }
+@media (prefers-reduced-motion: reduce) { .botao-gravando .sb-btn__ico svg circle { animation: none; } }
