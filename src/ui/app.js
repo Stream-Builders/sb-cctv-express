@@ -234,7 +234,10 @@ function vigiar(id, quadro, componente) {
       novo = 'vivo';
       paradoDesde = Date.now();
     } else {
-      novo = Date.now() - paradoDesde > 15000 ? 'semSinal' : 'conectando';
+      // tolerância: câmera de poucos quadros por segundo (ou vídeo reconvertido) chega em rajadas; o selo só sai de
+      // "ao vivo" depois de 4 s sem imagem nova, e vira "sem sinal" aos 15 s
+      const parado = Date.now() - paradoDesde;
+      novo = parado > 15000 ? 'semSinal' : parado > 4000 || estados.get(id) !== 'vivo' ? 'conectando' : 'vivo';
     }
     ultimoTempo = agora;
     if (novo !== estados.get(id)) {
