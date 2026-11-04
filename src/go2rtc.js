@@ -25,6 +25,22 @@ const enc = (s) => encodeURIComponent(s);
 // derrubam o player do navegador
 const SO_VIDEO = '#media=video';
 
+/**
+ * O go2rtc monta a linha de comando do ffmpeg separando por espaços: com o app instalado em "C:\Program Files", ele
+ * tentava rodar "C:\Program" e a reconversão (modo de compatibilidade) nunca subia. No Windows, o caminho curto (8.3)
+ * não tem espaço.
+ */
+function caminhoSemEspaco(caminho) {
+  if (process.platform !== 'win32' || !caminho.includes(' ')) return caminho;
+  try {
+    const { execFileSync } = require('node:child_process');
+    const curto = execFileSync('cmd.exe', ['/d', '/c', `for %I in ("${caminho}") do @echo %~sI`], { encoding: 'utf8', windowsVerbatimArguments: true, windowsHide: true }).trim();
+    return curto && !curto.includes(' ') ? curto : caminho;
+  } catch {
+    return caminho;
+  }
+}
+
 /** O endereço que o go2rtc usa para buscar o vídeo de cada câmera. */
 function fonte(c, i, env) {
   const usuario = enc(c.usuario || 'admin');
@@ -63,7 +79,7 @@ function configurar() {
     '  listen: ""',
     // o ffmpeg que vem com o app (quadros JPEG e conversões do go2rtc)
     'ffmpeg:',
-    `  bin: ${JSON.stringify(require('./gravador').binarioFfmpeg())}`,
+    `  bin: ${JSON.stringify(caminhoSemEspaco(require('./gravador').binarioFfmpeg()))}`,
     'log:',
     '  level: warn',
     'streams:',
