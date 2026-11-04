@@ -100,7 +100,11 @@ function lerLogo(svg) {
   return { caixa: { x: vb[0], y: vb[1], w: vb[2], h: vb[3] }, emblema, palavras, caixaEmblema };
 }
 
-export async function montar(canvas, urlLogo = '../ui/marca/logo.svg') {
+/**
+ * ciclo (segundos): em laço, como nos cartões de branding: a câmera entra e acende, o nome acende em neon, fica aceso,
+ * apaga (o neon piscando e morrendo, a câmera esmaecendo) e tudo recomeça. Sem ciclo (o splash), acende uma vez.
+ */
+export async function montar(canvas, urlLogo = '../ui/marca/logo.svg', { ciclo = 0 } = {}) {
   const svg = await (await fetch(urlLogo)).text();
   const logo = lerLogo(svg);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -199,12 +203,24 @@ export async function montar(canvas, urlLogo = '../ui/marca/logo.svg') {
   flip.add(pivo);
 
   const _cor = new THREE.Color();
-  function aplicar(t) {
+  const APAGAR = 1.4;
+  /** o neon apagando no fim do ciclo: o nome pisca e morre, a câmera esmaece */
+  function apagando(t, texto, seed) {
+    if (!ciclo) return 1;
+    const u = (t - (ciclo - APAGAR - 0.4)) / APAGAR;
+    if (u <= 0) return 1;
+    if (u >= 1) return 0;
+    if (!texto) return 1 - suave(u);
+    const i = Math.floor(u * 10);
+    return hash(seed * 31.3 + i * 7.7) < 1 - u ? 1 - 0.5 * u : 0.02;
+  }
+  function aplicar(tTotal) {
+    const t = ciclo ? tTotal % ciclo : tTotal;
     const e0 = suave(t / ENTRA);
     pivo.rotation.y = -2.4 * (1 - e0);
     pivo.position.z = -260 * (1 - e0);
     for (const p of partes) {
-      const e = p.texto ? neon(t, p.t0, p.seed) : acenderSuave(t, p.t0);
+      const e = (p.texto ? neon(t, p.t0, p.seed) : acenderSuave(t, p.t0)) * apagando(t, p.texto, p.seed);
       const acesa = Math.min(e, 1);
       p.core.color.copy(_cor.copy(p.apagado).lerp(p.aceso, acesa));
       p.core.envMapIntensity = 1.5 - 1.15 * acesa;
