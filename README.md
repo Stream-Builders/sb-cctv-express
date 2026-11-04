@@ -26,7 +26,7 @@
 
 ---
 
-## 🎥 O que é
+## <img src="src/ui/marca/emblema.svg" height="24" align="top" alt="" /> O que é
 
 <p align="center"><img src="midia/letreiro.gif" alt="cctv.express" width="640" /></p>
 
@@ -35,11 +35,11 @@ selos grandes e coloridos: **ao vivo**, **conectando**, **sem sinal**, **gravand
 está crescendo no disco) e **movimento**. Tudo roda no seu computador: o vídeo vai da câmera para o seu disco, sem
 passar por servidor de ninguém.
 
-### ⬇️ [Baixar para Windows](https://github.com/Stream-Builders/sb-cctv-express/releases/latest) · 🌐 [cctvexpress.stream.builders](https://cctvexpress.stream.builders)
+### <img src="midia/icones/baixar.svg" height="22" align="top" alt="" /> [Baixar para Windows](https://github.com/Stream-Builders/sb-cctv-express/releases/latest) &nbsp;·&nbsp; <img src="midia/icones/site.svg" height="22" align="top" alt="" /> [cctvexpress.stream.builders](https://cctvexpress.stream.builders)
 
 ---
 
-## ✨ Recursos
+## <img src="midia/icones/recursos.svg" height="22" align="top" alt="" /> Recursos
 
 - **Ao vivo em mosaico:** 1, 4, 9, 16, 25 ou 36 câmeras, reconexão automática, tela cheia com dois cliques, sem recomprimir.
 - **Gravação contínua:** em `C:\cctv_express\records`, blocos de 120 minutos (ajustáveis), retenção por dias e por espaço livre.
@@ -52,7 +52,7 @@ passar por servidor de ninguém.
 
 ---
 
-## 🛠️ Como funciona
+## <img src="midia/icones/engrenagem.svg" height="22" align="top" alt="" /> Como funciona
 
 | Peça | Papel |
 |---|---|
@@ -68,7 +68,7 @@ passar por servidor de ninguém.
 
 ---
 
-## 🚀 Desenvolvimento
+## <img src="midia/icones/terminal.svg" height="22" align="top" alt="" /> Desenvolvimento
 
 ```bash
 npm install      # baixa o go2rtc e o ffmpeg nas versões fixadas e copia o three.js
@@ -82,7 +82,7 @@ npm run dist     # gera dist/CCTV Express Setup <versão>.exe (NSIS, Windows x64
 
 ---
 
-## 🗺️ Etapas
+## <img src="midia/icones/etapas.svg" height="22" align="top" alt="" /> Etapas
 
 - [x] Ao vivo em mosaico com reconexão automática e estado visível
 - [x] Gravação contínua em disco, com retenção por dias e espaço livre
@@ -95,7 +95,7 @@ npm run dist     # gera dist/CCTV Express Setup <versão>.exe (NSIS, Windows x64
 
 ---
 
-## 📄 Licença
+## <img src="midia/icones/licenca.svg" height="22" align="top" alt="" /> Licença
 
 MIT. Veja [LICENSE](LICENSE). O app usa go2rtc (MIT), three.js (MIT) e FFmpeg (LGPL/GPL, baixado na instalação).
 
