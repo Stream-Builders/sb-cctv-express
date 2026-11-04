@@ -7,7 +7,7 @@
   "private": true,
   "author": "Stream.Builders",
   "scripts": {
-    "postinstall": "node scripts/baixar-go2rtc.mjs",
+    "postinstall": "node scripts/baixar-go2rtc.mjs && node scripts/copiar-three.mjs",
     "start": "electron .",
     "dist": "electron-builder --win"
   },
@@ -54,5 +54,8 @@
   },
   "overrides": {
     "minimatch": "11.0.4"
+  },
+  "dependencies": {
+    "three": "0.187.0"
   }
 }

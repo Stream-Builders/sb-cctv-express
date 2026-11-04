@@ -2,16 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data: blob:">
   <title>CCTV Express</title>
   <link rel="stylesheet" href="splash.css">
 </head>
 <body>
   <div class="cena">
-    <div class="emblema" id="emblema" aria-hidden="true"></div>
-    <div class="sombra" aria-hidden="true"></div>
-    <img class="palavra" src="../ui/marca/palavra.svg" alt="cctv.express">
+    <canvas id="letreiro" aria-label="cctv.express"></canvas>
   </div>
-  <script src="splash.js"></script>
+  <script type="module" src="splash.js"></script>
 </body>
 </html>

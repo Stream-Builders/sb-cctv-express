@@ -26,14 +26,14 @@ function criarSplash() {
   if (process.env.CCTV_SPLASH_PRINT) {
     s.webContents.once('did-finish-load', () => setTimeout(async () => {
       require('node:fs').writeFileSync(process.env.CCTV_SPLASH_PRINT, (await s.webContents.capturePage()).toPNG());
-    }, 2500));
+    }, 3400));
   }
   return s;
 }
 
 function criarJanela() {
   const splash = criarSplash();
-  const minimo = new Promise((ok) => setTimeout(ok, 2800));
+  const minimo = new Promise((ok) => setTimeout(ok, 3800));
   janela = new BrowserWindow({
     show: false,
     width: 1440,
