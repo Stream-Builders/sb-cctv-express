@@ -27,7 +27,7 @@ Gerar o instalador: `npm run dist` (saída em `dist/`).
 ## Etapas
 
 1. Ao vivo em mosaico com reconexão automática e estado visível — **feito**
-2. Gravação contínua em disco (padrão `C:cctv_expressecords`, blocos de 120 min ajustáveis, retenção por dias e espaço livre) — **feito**
+2. Gravação contínua em disco (padrão \`C:\cctv_express\records\`, blocos de 120 min ajustáveis, retenção por dias e espaço livre) — **feito**
    - Detecção de câmeras na rede (ONVIF WS-Discovery + portas 34567/554/8554), 18 idiomas, configurações e splash 3D — **feito**
 3. Reprodução com linha do tempo e exportação de trechos (MP4 sem recomprimir) — **feito**
 4. PTZ e luz (Xiongmai pelo DVRIP; PTZ ONVIF para as demais marcas) — **feito**
