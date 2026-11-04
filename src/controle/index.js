@@ -30,10 +30,18 @@ async function abrir(c) {
     const funcoes = await cliente.habilidade('SystemFunction').catch(() => null);
     const outras = funcoes?.SystemFunction?.OtherFunction || {};
     const modo = luz?.Ret === 100 ? luz['Camera.WhiteLight']?.WorkMode : null;
+    // câmera de duas lentes (fixa + PTZ): cada canal tem a sua porta PTZ; a lente fixa vem com o protocolo "None"
+    const titulos = await cliente.ler('ChannelTitle').catch(() => null);
+    const canais = Array.isArray(titulos?.ChannelTitle) ? titulos.ChannelTitle : [];
+    const uart = await cliente.ler('Uart.PTZ').catch(() => null);
+    const portas = Array.isArray(uart?.['Uart.PTZ']) ? uart['Uart.PTZ'] : [];
+    const porta = portas[Math.max(0, (c.canal || 1) - 1)];
+    const ptzNoCanal = portas.length < 2 || !porta || porta.ProtocolName !== 'None';
     return {
+      canais,
       tipo: 'xiongmai', cliente, luz: luz?.Ret === 100 ? luz['Camera.WhiteLight'] : null,
       caps: {
-        ptz: !!(outras.SupportPTZDirectionControl || outras.SupportPTZTour),
+        ptz: !!(outras.SupportPTZDirectionControl || outras.SupportPTZTour) && ptzNoCanal,
         luz: modo ? Object.keys(MODOS_LUZ) : null,
         luzAtual: Object.keys(MODOS_LUZ).find((k) => MODOS_LUZ[k] === modo) || null,
       },
@@ -88,9 +96,14 @@ async function luz(id, modo) {
   return modo;
 }
 
+/** Os nomes dos canais (lentes) de uma câmera Xiongmai; uma lente só = lista de um. */
+async function canais(id) {
+  return (await conexao(id)).canais || [];
+}
+
 function fecharTodas() {
   for (const p of conexoes.values()) p.then((c) => c.cliente?.fechar?.()).catch(() => {});
   conexoes.clear();
 }
 
-module.exports = { capacidades, ptz, luz, fecharTodas, MODOS_LUZ };
+module.exports = { capacidades, ptz, luz, canais, fecharTodas, MODOS_LUZ };

@@ -75,4 +75,24 @@ function definirGravacao(id, ligar) {
   }
 }
 
-module.exports = { ler, listar, salvar, remover, abrir, definirGravacao };
+/**
+ * Câmera de várias lentes (ex.: fixa + PTZ no mesmo aparelho): acrescenta as lentes que faltam como câmeras próprias,
+ * com o mesmo endereço e senha, e marca a câmera como verificada para não recriar uma lente que a pessoa apagou.
+ */
+function completarLentes(id, titulos) {
+  const lista = ler();
+  const base = lista.find((c) => c.id === id);
+  if (!base || base.lentesVerificadas) return 0;
+  base.lentesVerificadas = true;
+  let novas = 0;
+  titulos.forEach((titulo, i) => {
+    const canal = i + 1;
+    if (lista.some((c) => c.ip === base.ip && c.tipo === base.tipo && (c.canal || 1) === canal)) return;
+    lista.push({ ...base, id: randomUUID(), canal, nome: `${base.nome} · ${titulo || canal}` });
+    novas++;
+  });
+  gravar(lista);
+  return novas;
+}
+
+module.exports = { ler, listar, salvar, remover, abrir, definirGravacao, completarLentes };

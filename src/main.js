@@ -96,6 +96,17 @@ async function reiniciar() {
   }, 1500);
 }
 
+/** Câmeras Xiongmai ainda não verificadas: pergunta quantas lentes têm e cadastra as que faltam (até 6 s). */
+async function completarLentes() {
+  const pendentes = cameras.ler().filter((c) => c.tipo === 'xiongmai' && (c.canal || 1) === 1 && !c.lentesVerificadas);
+  await Promise.all(pendentes.map(async (c) => {
+    try {
+      const titulos = await Promise.race([controle.canais(c.id), new Promise((_, n) => setTimeout(() => n(new Error('tempo')), 6000))]);
+      if (titulos.length) cameras.completarLentes(c.id, titulos);
+    } catch { /* câmera fora do ar: tenta de novo na próxima abertura */ }
+  }));
+}
+
 ipcMain.handle('cameras:listar', () => cameras.listar());
 /** A porta informada responde ONVIF? (muita gente põe a porta ONVIF do VMS antigo achando que é a do vídeo) */
 async function portaOnvif(ip, porta) {
@@ -122,6 +133,7 @@ ipcMain.handle('cameras:salvar', async (_e, dados) => {
     }
   }
   const id = cameras.salvar(dados);
+  await completarLentes();
   await reiniciar();
   return id;
 });
@@ -172,7 +184,7 @@ ipcMain.handle('sistema:idioma', () => app.getPreferredSystemLanguages()[0] || a
 
 app.whenReady().then(() => {
   gravacoes.servir();
-  motorPronto = reiniciar();
+  motorPronto = completarLentes().then(() => reiniciar());
   criarJanela();
 });
 
