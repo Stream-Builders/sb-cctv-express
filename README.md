@@ -4,16 +4,16 @@
 
 <p align="center">
   <a href="https://cctvexpress.stream.builders">
-    <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=28&pause=1000&color=FF3333&center=true&vCenter=true&width=900&lines=CCTV+EXPRESS;VMS+open+source+para+c%C3%A2meras+IP;Ao+vivo+%C2%B7+Grava%C3%A7%C3%A3o+%C2%B7+Reprodu%C3%A7%C3%A3o+%C2%B7+PTZ+%C2%B7+Luz;Detec%C3%A7%C3%A3o+de+movimento+e+alertas;Sem+nuvem%2C+sem+mensalidade;Open+source+IP+camera+VMS+for+Windows" alt="CCTV Express" />
+    <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=28&pause=1000&color=FF3333&center=true&vCenter=true&width=900&lines=CCTV+EXPRESS;Open+source+VMS+for+IP+cameras;Live+%C2%B7+Recording+%C2%B7+Playback+%C2%B7+PTZ+%C2%B7+Light;Motion+detection+and+alerts;No+cloud%2C+no+subscription;Runs+on+Windows+10+and+11" alt="CCTV Express" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Stream-Builders/sb-cctv-express/releases/latest"><img src="https://img.shields.io/github/v/release/Stream-Builders/sb-cctv-express?style=for-the-badge&label=BAIXAR&labelColor=000000&color=FF3333" alt="Baixar" /></a>
+  <a href="https://github.com/Stream-Builders/sb-cctv-express/releases/latest"><img src="https://img.shields.io/github/v/release/Stream-Builders/sb-cctv-express?style=for-the-badge&label=DOWNLOAD&labelColor=000000&color=FF3333" alt="Download" /></a>
   <a href="https://cctvexpress.stream.builders"><img src="https://img.shields.io/badge/SITE-000000?style=for-the-badge&logo=googlechrome&logoColor=FF3333" alt="Site" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/MIT-000000?style=for-the-badge&logo=opensourceinitiative&logoColor=FF3333" alt="Licença MIT" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/MIT-000000?style=for-the-badge&logo=opensourceinitiative&logoColor=FF3333" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/WINDOWS_10_%7C_11-000000?style=for-the-badge&logo=windows&logoColor=FF3333" alt="Windows" />
-  <img src="https://img.shields.io/badge/18_IDIOMAS-000000?style=for-the-badge&logo=googletranslate&logoColor=FF3333" alt="18 idiomas" />
+  <img src="https://img.shields.io/badge/18_LANGUAGES-000000?style=for-the-badge&logo=googletranslate&logoColor=FF3333" alt="18 languages" />
 </p>
 
 <p align="center">
@@ -26,77 +26,76 @@
 
 ---
 
-## <img src="src/ui/marca/emblema.svg" height="24" align="top" alt="" /> O que é
+## <img src="src/ui/marca/emblema.svg" height="24" align="top" alt="" /> What it is
 
+IP camera (CCTV) monitoring for Windows, by **Stream.Builders**. Each camera's state is always visible in large,
+colored badges: **live**, **connecting**, **no signal**, **recording** (the badge only lights up while the file is
+actually growing on disk) and **motion**. Everything runs on your computer: video goes from the camera to your disk
+without passing through anyone's server.
 
-Monitoramento de câmeras IP (CCTV) para Windows, da **Stream.Builders**. O estado de cada câmera fica sempre visível, em
-selos grandes e coloridos: **ao vivo**, **conectando**, **sem sinal**, **gravando** (o selo só acende quando o arquivo
-está crescendo no disco) e **movimento**. Tudo roda no seu computador: o vídeo vai da câmera para o seu disco, sem
-passar por servidor de ninguém.
-
-### <img src="midia/icones/baixar.svg" height="22" align="top" alt="" /> [Baixar para Windows](https://github.com/Stream-Builders/sb-cctv-express/releases/latest) &nbsp;·&nbsp; <img src="midia/icones/site.svg" height="22" align="top" alt="" /> [cctvexpress.stream.builders](https://cctvexpress.stream.builders)
-
----
-
-## <img src="midia/icones/recursos.svg" height="22" align="top" alt="" /> Recursos
-
-- **Ao vivo em mosaico:** 1, 4, 9, 16, 25 ou 36 câmeras, reconexão automática, tela cheia com dois cliques, sem recomprimir.
-- **Gravação contínua:** em `C:\cctv_express\records`, blocos de 120 minutos (ajustáveis), retenção por dias e por espaço livre.
-- **Reprodução:** linha do tempo do dia com as marcas de movimento; marque início e fim e exporte o trecho em MP4.
-- **PTZ e luz:** mova e aproxime segurando o botão; luz inteligente, colorida, infravermelho ou sempre acesa.
-- **Detecção de movimento:** sensibilidade ajustável, selo na tela, marca na linha do tempo e aviso do Windows.
-- **Encontra as câmeras:** ONVIF (WS-Discovery), RTSP e Xiongmai/iCSee/XMeye na sua rede.
-- **Compatibilidade automática:** câmera com perfil H264 que o navegador recusa passa a ser reconvertida (com a placa de vídeo, se houver).
-- **18 idiomas**, seguindo o idioma do Windows.
+### <img src="midia/icones/baixar.svg" height="22" align="top" alt="" /> [Download for Windows](https://github.com/Stream-Builders/sb-cctv-express/releases/latest) &nbsp;·&nbsp; <img src="midia/icones/site.svg" height="22" align="top" alt="" /> [cctvexpress.stream.builders](https://cctvexpress.stream.builders)
 
 ---
 
-## <img src="midia/icones/engrenagem.svg" height="22" align="top" alt="" /> Como funciona
+## <img src="midia/icones/recursos.svg" height="22" align="top" alt="" /> Features
 
-| Peça | Papel |
+- **Live grid:** 1, 4, 9, 16, 25 or 36 cameras, automatic reconnection, double-click full screen, no re-encoding.
+- **Continuous recording:** to `C:\cctv_express\records`, in 120-minute segments (adjustable), with retention by days and by free space.
+- **Playback:** a daily timeline with motion markers; set a start and end and export the clip as MP4.
+- **PTZ and light:** pan, tilt and zoom by holding the button; smart, color, infrared or always-on light.
+- **Motion detection:** adjustable sensitivity, on-screen badge, timeline marker and Windows notification.
+- **Camera discovery:** ONVIF (WS-Discovery), RTSP and Xiongmai/iCSee/XMeye on your network.
+- **Automatic compatibility:** cameras with an H.264 profile the browser rejects are transcoded on the fly (on the GPU, when available).
+- **18 languages**, following the Windows language.
+
+---
+
+## <img src="midia/icones/engrenagem.svg" height="22" align="top" alt="" /> How it works
+
+| Part | Role |
 |---|---|
-| **Electron** | A janela do app (Windows; Mac depois). |
-| **go2rtc** (MIT) | Motor de vídeo escondido, só em `127.0.0.1`: conecta nas câmeras, reconecta sozinho e entrega o vídeo ao vivo por WebSocket. |
-| **FFmpeg** | Gravação em MP4 fragmentado sem recomprimir, detecção de movimento (filtro `scene`) e exportação de trechos. |
-| **ONVIF / DVRIP** | PTZ e luz: Xiongmai pelo protocolo próprio (porta 34567), as demais marcas por ONVIF. |
-| **three.js** | O letreiro 3D do splash e do site. |
+| **Electron** | The app window (Windows; Mac later). |
+| **go2rtc** (MIT) | Hidden video engine, bound to `127.0.0.1` only: connects to the cameras, reconnects on its own and delivers live video over WebSocket. |
+| **FFmpeg** | Recording to fragmented MP4 without re-encoding, motion detection (`scene` filter) and clip export. |
+| **ONVIF / DVRIP** | PTZ and light: Xiongmai through its own protocol (port 34567), other brands through ONVIF. |
+| **three.js** | The 3D sign on the splash screen and the website. |
 
-- **Câmeras** ficam em `cameras.json` na pasta de dados do app. A senha é cifrada pelo Windows (safeStorage/DPAPI) e chega
-  ao go2rtc só por variável de ambiente, nunca em arquivo aberto.
-- **Visual:** as cores e a peça `.sb-btn` do tenant ebooks.express (`src/ui/tema/`, da `@ebx/temas`).
+- **Cameras** are stored in `cameras.json` in the app's data folder. Passwords are encrypted by Windows (safeStorage/DPAPI)
+  and reach go2rtc only through environment variables, never in a plain file.
+- **Look:** the colors and the `.sb-btn` component of the ebooks.express tenant (`src/ui/tema/`, from `@ebx/temas`).
 
 ---
 
-## <img src="midia/icones/terminal.svg" height="22" align="top" alt="" /> Desenvolvimento
+## <img src="midia/icones/terminal.svg" height="22" align="top" alt="" /> Development
 
 ```bash
-npm install      # baixa o go2rtc e o ffmpeg nas versões fixadas e copia o three.js
-npm start        # abre o app
-npm run dist     # gera dist/CCTV Express Setup <versão>.exe (NSIS, Windows x64)
+npm install      # downloads the pinned go2rtc and ffmpeg and copies three.js
+npm start        # opens the app
+npm run dist     # builds dist/CCTV Express Setup <version>.exe (NSIS, Windows x64)
 ```
 
-- **Letreiro em vídeo:** `electron scripts/gravar-letreiro.js midia` gera `midia/letreiro.mp4` e `midia/letreiro.gif`.
-- **Site:** `site/` é a landing de [cctvexpress.stream.builders](https://cctvexpress.stream.builders) (Vercel, projeto
-  `cctvexpress`). Antes do deploy, `node scripts/montar-site.mjs`; depois `npx vercel deploy --prod --yes` dentro de `site/`.
+- **Sign as video:** `electron scripts/gravar-letreiro.js midia` renders `midia/letreiro.mp4` and `midia/letreiro.gif`.
+- **Website:** `site/` is the landing page at [cctvexpress.stream.builders](https://cctvexpress.stream.builders) (Vercel,
+  project `cctvexpress`). Before deploying, run `node scripts/montar-site.mjs`; then `npx vercel deploy --prod --yes` inside `site/`.
 
 ---
 
-## <img src="midia/icones/etapas.svg" height="22" align="top" alt="" /> Etapas
+## <img src="midia/icones/etapas.svg" height="22" align="top" alt="" /> Roadmap
 
-- [x] Ao vivo em mosaico com reconexão automática e estado visível
-- [x] Gravação contínua em disco, com retenção por dias e espaço livre
-- [x] Detecção de câmeras na rede, 18 idiomas, configurações e splash 3D
-- [x] Reprodução com linha do tempo e exportação de trechos
-- [x] PTZ e luz (Xiongmai e ONVIF)
-- [x] Detecção de movimento e alertas
-- [x] Instalador para Windows
-- [ ] Interface pelo navegador na rede local (celular e outros computadores da casa)
+- [x] Live grid with automatic reconnection and visible state
+- [x] Continuous recording to disk, with retention by days and free space
+- [x] Network camera discovery, 18 languages, settings and 3D splash
+- [x] Playback with timeline and clip export
+- [x] PTZ and light (Xiongmai and ONVIF)
+- [x] Motion detection and alerts
+- [x] Windows installer
+- [ ] Browser interface on the local network (phones and other computers at home)
 
 ---
 
-## <img src="midia/icones/licenca.svg" height="22" align="top" alt="" /> Licença
+## <img src="midia/icones/licenca.svg" height="22" align="top" alt="" /> License
 
-MIT. Veja [LICENSE](LICENSE). O app usa go2rtc (MIT), three.js (MIT) e FFmpeg (LGPL/GPL, baixado na instalação).
+MIT. See [LICENSE](LICENSE). The app uses go2rtc (MIT), three.js (MIT) and FFmpeg (LGPL/GPL, downloaded at install time).
 
 <p align="center">
   <a href="https://cctvexpress.stream.builders"><img src="midia/banner.svg" alt="cctv.express - Stream.Builders" width="100%" /></a>
