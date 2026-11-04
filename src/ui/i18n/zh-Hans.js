@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "灯光模式",
   "quadro.ptz": "云台控制",
   "quadro.telaCheia": "全屏",
-  "quadro.emBreve": "{nome}：将在下一版本推出",
-  "luz.auto": "自动",
-  "luz.branca": "白光",
-  "luz.infravermelho": "红外",
+  "luz.infravermelho": "仅红外",
   "topo.configuracoes": "设置",
   "form.adicionar": "添加摄像机",
   "form.editar": "编辑摄像机",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "已添加",
   "detectar.adicionar": "添加",
   "detectar.portas": "端口 {p}",
-  "detectar.procurarDeNovo": "重新查找"
+  "detectar.procurarDeNovo": "重新查找",
+  "quadro.semRecurso": "{nome}：此摄像机未报告该功能",
+  "luz.inteligente": "智能（红外，检测到时开灯）",
+  "luz.colorida": "全彩（夜间白光）",
+  "luz.acesa": "灯常亮",
+  "ptz.cima": "上",
+  "ptz.baixo": "下",
+  "ptz.esquerda": "左",
+  "ptz.direita": "右",
+  "ptz.aproximar": "放大",
+  "ptz.afastar": "缩小"
 };

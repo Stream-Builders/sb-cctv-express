@@ -8,7 +8,7 @@ const { join } = require('node:path');
 const cameras = require('./cameras');
 const config = require('./config');
 
-const { PORTA_RTSP } = require('./go2rtc');
+const PORTA_RTSP = 18554; // o mesmo do go2rtc.js (RTSP local)
 const processos = new Map(); // id -> { proc, pasta, parar }
 let limpeza = null;
 
@@ -139,4 +139,4 @@ function estados() {
   return r;
 }
 
-module.exports = { iniciar, pararTodas, estados, limpar, pastaDaCamera };
+module.exports = { binarioFfmpeg: binario, iniciar, pararTodas, estados, limpar, pastaDaCamera };

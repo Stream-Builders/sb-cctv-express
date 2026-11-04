@@ -132,3 +132,19 @@ form h3 { margin: 6px 0 0; font-size: 14px; text-transform: uppercase; letter-sp
 .painel h2 { margin: 0; font-size: 18px; }
 .lista--detectar { max-height: 50vh; padding: 0; }
 .lista--detectar li { cursor: default; }
+
+/* painéis de PTZ e luz sobre a câmera */
+.painel-quadro {
+  position: absolute; inset-inline-end: 8px; bottom: 52px; padding: 8px; border-radius: 6px;
+  background: #0b0d10e6; border: 1px solid var(--borda); display: grid; gap: 6px; cursor: default;
+}
+.painel-ptz { grid-template-columns: repeat(3, auto); grid-template-areas: ". cima ." "esquerda . direita" ". baixo ." "aproximar . afastar"; }
+.painel-ptz [data-dir="cima"] { grid-area: cima; }
+.painel-ptz [data-dir="baixo"] { grid-area: baixo; }
+.painel-ptz [data-dir="esquerda"] { grid-area: esquerda; }
+.painel-ptz [data-dir="direita"] { grid-area: direita; }
+.painel-ptz [data-dir="aproximar"] { grid-area: aproximar; }
+.painel-ptz [data-dir="afastar"] { grid-area: afastar; }
+.painel-ptz .sb-btn { touch-action: none; user-select: none; }
+.painel-luz { grid-template-columns: 1fr; min-width: 190px; }
+.quadro:has(.painel-quadro) .quadro__barra { opacity: 1; }

@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Mode lampu",
   "quadro.ptz": "Kontrol PTZ",
   "quadro.telaCheia": "Layar penuh",
-  "quadro.emBreve": "{nome}: hadir di pembaruan berikutnya",
-  "luz.auto": "Otomatis",
-  "luz.branca": "Lampu putih",
-  "luz.infravermelho": "Inframerah",
+  "luz.infravermelho": "Hanya inframerah",
   "topo.configuracoes": "Pengaturan",
   "form.adicionar": "Tambah kamera",
   "form.editar": "Ubah kamera",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Sudah ditambahkan",
   "detectar.adicionar": "Tambah",
   "detectar.portas": "port {p}",
-  "detectar.procurarDeNovo": "Cari lagi"
+  "detectar.procurarDeNovo": "Cari lagi",
+  "quadro.semRecurso": "{nome}: kamera ini tidak melaporkan fitur ini",
+  "luz.inteligente": "Pintar (inframerah, lampu saat deteksi)",
+  "luz.colorida": "Berwarna (lampu putih malam hari)",
+  "luz.acesa": "Lampu selalu menyala",
+  "ptz.cima": "Atas",
+  "ptz.baixo": "Bawah",
+  "ptz.esquerda": "Kiri",
+  "ptz.direita": "Kanan",
+  "ptz.aproximar": "Perbesar",
+  "ptz.afastar": "Perkecil"
 };

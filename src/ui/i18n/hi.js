@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "लाइट मोड",
   "quadro.ptz": "PTZ नियंत्रण",
   "quadro.telaCheia": "पूर्ण स्क्रीन",
-  "quadro.emBreve": "{nome}: अगले अपडेट में आएगा",
-  "luz.auto": "स्वचालित",
-  "luz.branca": "सफ़ेद रोशनी",
-  "luz.infravermelho": "इन्फ्रारेड",
+  "luz.infravermelho": "केवल इन्फ्रारेड",
   "topo.configuracoes": "सेटिंग्स",
   "form.adicionar": "कैमरा जोड़ें",
   "form.editar": "कैमरा बदलें",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "पहले से जोड़ा गया",
   "detectar.adicionar": "जोड़ें",
   "detectar.portas": "पोर्ट {p}",
-  "detectar.procurarDeNovo": "फिर से खोजें"
+  "detectar.procurarDeNovo": "फिर से खोजें",
+  "quadro.semRecurso": "{nome}: यह कैमरा यह सुविधा नहीं बताता",
+  "luz.inteligente": "स्मार्ट (इन्फ्रारेड, पहचान पर रोशनी)",
+  "luz.colorida": "रंगीन (रात में सफ़ेद रोशनी)",
+  "luz.acesa": "रोशनी हमेशा चालू",
+  "ptz.cima": "ऊपर",
+  "ptz.baixo": "नीचे",
+  "ptz.esquerda": "बाएँ",
+  "ptz.direita": "दाएँ",
+  "ptz.aproximar": "ज़ूम इन",
+  "ptz.afastar": "ज़ूम आउट"
 };

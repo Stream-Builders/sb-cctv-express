@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Işık modu",
   "quadro.ptz": "PTZ kontrolü",
   "quadro.telaCheia": "Tam ekran",
-  "quadro.emBreve": "{nome}: bir sonraki sürümde geliyor",
-  "luz.auto": "Otomatik",
-  "luz.branca": "Beyaz ışık",
-  "luz.infravermelho": "Kızılötesi",
+  "luz.infravermelho": "Yalnızca kızılötesi",
   "topo.configuracoes": "Ayarlar",
   "form.adicionar": "Kamera ekle",
   "form.editar": "Kamerayı düzenle",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Zaten eklendi",
   "detectar.adicionar": "Ekle",
   "detectar.portas": "portlar {p}",
-  "detectar.procurarDeNovo": "Yeniden ara"
+  "detectar.procurarDeNovo": "Yeniden ara",
+  "quadro.semRecurso": "{nome}: bu kamera bu özelliği bildirmiyor",
+  "luz.inteligente": "Akıllı (kızılötesi, algılamada ışık)",
+  "luz.colorida": "Renkli (gece beyaz ışık)",
+  "luz.acesa": "Işık her zaman açık",
+  "ptz.cima": "Yukarı",
+  "ptz.baixo": "Aşağı",
+  "ptz.esquerda": "Sola",
+  "ptz.direita": "Sağa",
+  "ptz.aproximar": "Yakınlaştır",
+  "ptz.afastar": "Uzaklaştır"
 };

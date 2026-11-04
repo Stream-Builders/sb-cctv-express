@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Modo de luz",
   "quadro.ptz": "Control PTZ",
   "quadro.telaCheia": "Pantalla completa",
-  "quadro.emBreve": "{nome}: llega en la próxima versión",
-  "luz.auto": "Automático",
-  "luz.branca": "Luz blanca",
-  "luz.infravermelho": "Infrarrojo",
+  "luz.infravermelho": "Solo infrarrojo",
   "topo.configuracoes": "Configuración",
   "form.adicionar": "Agregar cámara",
   "form.editar": "Editar cámara",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Ya agregada",
   "detectar.adicionar": "Agregar",
   "detectar.portas": "puertos {p}",
-  "detectar.procurarDeNovo": "Buscar de nuevo"
+  "detectar.procurarDeNovo": "Buscar de nuevo",
+  "quadro.semRecurso": "{nome}: esta cámara no informa este recurso",
+  "luz.inteligente": "Inteligente (infrarrojo, luz al detectar)",
+  "luz.colorida": "A color (luz blanca de noche)",
+  "luz.acesa": "Luz siempre encendida",
+  "ptz.cima": "Arriba",
+  "ptz.baixo": "Abajo",
+  "ptz.esquerda": "Izquierda",
+  "ptz.direita": "Derecha",
+  "ptz.aproximar": "Acercar",
+  "ptz.afastar": "Alejar"
 };

@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Modalità luce",
   "quadro.ptz": "Controllo PTZ",
   "quadro.telaCheia": "Schermo intero",
-  "quadro.emBreve": "{nome}: arriva nel prossimo aggiornamento",
-  "luz.auto": "Automatica",
-  "luz.branca": "Luce bianca",
-  "luz.infravermelho": "Infrarossi",
+  "luz.infravermelho": "Solo infrarossi",
   "topo.configuracoes": "Impostazioni",
   "form.adicionar": "Aggiungi telecamera",
   "form.editar": "Modifica telecamera",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Già aggiunta",
   "detectar.adicionar": "Aggiungi",
   "detectar.portas": "porte {p}",
-  "detectar.procurarDeNovo": "Cerca di nuovo"
+  "detectar.procurarDeNovo": "Cerca di nuovo",
+  "quadro.semRecurso": "{nome}: questa telecamera non segnala questa funzione",
+  "luz.inteligente": "Intelligente (infrarossi, luce al rilevamento)",
+  "luz.colorida": "A colori (luce bianca di notte)",
+  "luz.acesa": "Luce sempre accesa",
+  "ptz.cima": "Su",
+  "ptz.baixo": "Giù",
+  "ptz.esquerda": "Sinistra",
+  "ptz.direita": "Destra",
+  "ptz.aproximar": "Avvicina",
+  "ptz.afastar": "Allontana"
 };

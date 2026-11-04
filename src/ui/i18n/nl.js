@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Lichtmodus",
   "quadro.ptz": "PTZ-bediening",
   "quadro.telaCheia": "Volledig scherm",
-  "quadro.emBreve": "{nome}: komt in de volgende update",
-  "luz.auto": "Automatisch",
-  "luz.branca": "Wit licht",
-  "luz.infravermelho": "Infrarood",
+  "luz.infravermelho": "Alleen infrarood",
   "topo.configuracoes": "Instellingen",
   "form.adicionar": "Camera toevoegen",
   "form.editar": "Camera bewerken",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Al toegevoegd",
   "detectar.adicionar": "Toevoegen",
   "detectar.portas": "poorten {p}",
-  "detectar.procurarDeNovo": "Opnieuw zoeken"
+  "detectar.procurarDeNovo": "Opnieuw zoeken",
+  "quadro.semRecurso": "{nome}: deze camera meldt deze functie niet",
+  "luz.inteligente": "Slim (infrarood, licht bij detectie)",
+  "luz.colorida": "Kleur (wit licht 's nachts)",
+  "luz.acesa": "Licht altijd aan",
+  "ptz.cima": "Omhoog",
+  "ptz.baixo": "Omlaag",
+  "ptz.esquerda": "Links",
+  "ptz.direita": "Rechts",
+  "ptz.aproximar": "Inzoomen",
+  "ptz.afastar": "Uitzoomen"
 };

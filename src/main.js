@@ -7,6 +7,7 @@ const go2rtc = require('./go2rtc');
 const gravador = require('./gravador');
 const config = require('./config');
 const descoberta = require('./descoberta');
+const controle = require('./controle');
 
 // uma janela só: abrir de novo traz a que já está aberta
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -71,6 +72,7 @@ app.on('second-instance', () => {
 
 /** Motor e gravador recomeçam juntos sempre que a lista de câmeras muda. */
 function reiniciar() {
+  controle.fecharTodas();
   go2rtc.iniciar();
   // o gravador lê do go2rtc: espera ele subir
   setTimeout(() => gravador.iniciar(), 1500);
@@ -90,6 +92,9 @@ ipcMain.handle('cameras:gravacao', (_e, id, ligar) => {
   cameras.definirGravacao(id, ligar);
   gravador.iniciar();
 });
+ipcMain.handle('controle:capacidades', (_e, id) => controle.capacidades(id));
+ipcMain.handle('controle:ptz', (_e, id, direcao, parar) => controle.ptz(id, direcao, parar));
+ipcMain.handle('controle:luz', (_e, id, modo) => controle.luz(id, modo));
 ipcMain.handle('cameras:detectar', () => descoberta.detectar());
 ipcMain.handle('motor:porta', () => go2rtc.PORTA_API);
 ipcMain.handle('gravacao:estados', () => gravador.estados());
@@ -118,5 +123,6 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => app.quit());
 app.on('before-quit', () => {
   gravador.pararTodas();
+  controle.fecharTodas();
   go2rtc.parar();
 });

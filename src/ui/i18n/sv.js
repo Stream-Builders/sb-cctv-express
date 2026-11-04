@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Ljusläge",
   "quadro.ptz": "PTZ-styrning",
   "quadro.telaCheia": "Helskärm",
-  "quadro.emBreve": "{nome}: kommer i nästa uppdatering",
-  "luz.auto": "Automatiskt",
-  "luz.branca": "Vitt ljus",
-  "luz.infravermelho": "IR",
+  "luz.infravermelho": "Endast IR",
   "topo.configuracoes": "Inställningar",
   "form.adicionar": "Lägg till kamera",
   "form.editar": "Redigera kamera",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Redan tillagd",
   "detectar.adicionar": "Lägg till",
   "detectar.portas": "portar {p}",
-  "detectar.procurarDeNovo": "Sök igen"
+  "detectar.procurarDeNovo": "Sök igen",
+  "quadro.semRecurso": "{nome}: kameran rapporterar inte den här funktionen",
+  "luz.inteligente": "Smart (IR, ljus vid detektering)",
+  "luz.colorida": "Färg (vitt ljus på natten)",
+  "luz.acesa": "Ljus alltid på",
+  "ptz.cima": "Upp",
+  "ptz.baixo": "Ner",
+  "ptz.esquerda": "Vänster",
+  "ptz.direita": "Höger",
+  "ptz.aproximar": "Zooma in",
+  "ptz.afastar": "Zooma ut"
 };

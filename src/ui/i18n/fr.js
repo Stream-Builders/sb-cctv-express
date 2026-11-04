@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Mode d’éclairage",
   "quadro.ptz": "Commande PTZ",
   "quadro.telaCheia": "Plein écran",
-  "quadro.emBreve": "{nome} : arrive dans la prochaine version",
-  "luz.auto": "Automatique",
-  "luz.branca": "Lumière blanche",
-  "luz.infravermelho": "Infrarouge",
+  "luz.infravermelho": "Infrarouge seul",
   "topo.configuracoes": "Paramètres",
   "form.adicionar": "Ajouter une caméra",
   "form.editar": "Modifier la caméra",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Déjà ajoutée",
   "detectar.adicionar": "Ajouter",
   "detectar.portas": "ports {p}",
-  "detectar.procurarDeNovo": "Rechercher à nouveau"
+  "detectar.procurarDeNovo": "Rechercher à nouveau",
+  "quadro.semRecurso": "{nome} : cette caméra ne signale pas cette fonction",
+  "luz.inteligente": "Intelligent (infrarouge, lumière à la détection)",
+  "luz.colorida": "Couleur (lumière blanche la nuit)",
+  "luz.acesa": "Lumière toujours allumée",
+  "ptz.cima": "Haut",
+  "ptz.baixo": "Bas",
+  "ptz.esquerda": "Gauche",
+  "ptz.direita": "Droite",
+  "ptz.aproximar": "Zoom avant",
+  "ptz.afastar": "Zoom arrière"
 };

@@ -97,11 +97,21 @@ function barraDoQuadro(cam) {
     await window.cctv.definirGravacao(cam.id, !ligada);
     await carregar();
   });
-  // luz e PTZ: os atalhos já ficam no lugar; o comando na câmera chega na etapa 4
-  const luz = botao({ icone: ICONES.luz, quadrado: true, titulo: t('quadro.emBreve', { nome: t('quadro.luz') }) });
-  const ptz = botao({ icone: ICONES.ptz, quadrado: true, titulo: t('quadro.emBreve', { nome: t('quadro.ptz') }) });
+  // luz e PTZ: ficam ativos só se a câmera informar o recurso (as capacidades chegam da própria câmera)
+  const luz = botao({ icone: ICONES.luz, quadrado: true, titulo: t('quadro.luz') });
+  const ptz = botao({ icone: ICONES.ptz, quadrado: true, titulo: t('quadro.ptz') });
   luz.disabled = true;
   ptz.disabled = true;
+  window.cctv.capacidades(cam.id).then((caps) => {
+    if (caps.luz) {
+      luz.disabled = false;
+      luz.addEventListener('click', (e) => { e.stopPropagation(); alternarPainel(barra, 'luz', () => painelLuz(cam, caps)); });
+    } else luz.title = t('quadro.semRecurso', { nome: t('quadro.luz') });
+    if (caps.ptz) {
+      ptz.disabled = false;
+      ptz.addEventListener('click', (e) => { e.stopPropagation(); alternarPainel(barra, 'ptz', () => painelPtz(cam)); });
+    } else ptz.title = t('quadro.semRecurso', { nome: t('quadro.ptz') });
+  });
   const cheia = botao({ icone: ICONES.telaCheia, quadrado: true, titulo: t('quadro.telaCheia') });
   cheia.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -110,6 +120,68 @@ function barraDoQuadro(cam) {
   });
   barra.append(gravar, luz, ptz, cheia);
   return barra;
+}
+
+/** Abre o painel pedido sobre o quadro (ou fecha, se for o mesmo que já está aberto). */
+function alternarPainel(barra, tipo, criar) {
+  const quadro = barra.closest('.quadro');
+  const aberto = quadro.querySelector('.painel-quadro');
+  if (aberto) aberto.remove();
+  if (aberto?.dataset.tipo === tipo) return;
+  const p = criar();
+  p.dataset.tipo = tipo;
+  p.addEventListener('click', (e) => e.stopPropagation());
+  p.addEventListener('dblclick', (e) => e.stopPropagation());
+  quadro.append(p);
+}
+
+const SETA = {
+  cima: '<path d="M12 5l-7 8h14z"/>', baixo: '<path d="M12 19l-7-8h14z"/>',
+  esquerda: '<path d="M5 12l8-7v14z"/>', direita: '<path d="M19 12l-8-7v14z"/>',
+  aproximar: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>',
+  afastar: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8 11h6"/>',
+};
+
+/** PTZ: segurar o botão move a câmera; soltar (ou sair do botão) para. */
+function painelPtz(cam) {
+  const p = document.createElement('div');
+  p.className = 'painel-quadro painel-ptz';
+  for (const dir of ['cima', 'esquerda', 'direita', 'baixo', 'aproximar', 'afastar']) {
+    const b = botao({ icone: SETA[dir], quadrado: true, titulo: t(`ptz.${dir}`) });
+    b.dataset.dir = dir;
+    let movendo = false;
+    const parar = () => { if (movendo) { movendo = false; b.classList.remove('sb-btn--ativo'); window.cctv.ptz(cam.id, dir, true).catch(() => {}); } };
+    b.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      b.setPointerCapture(e.pointerId);
+      movendo = true;
+      b.classList.add('sb-btn--ativo');
+      window.cctv.ptz(cam.id, dir, false).catch(() => parar());
+    });
+    b.addEventListener('pointerup', parar);
+    b.addEventListener('pointercancel', parar);
+    b.addEventListener('lostpointercapture', parar);
+    p.append(b);
+  }
+  return p;
+}
+
+/** Luz: os modos que a câmera tem, com o atual marcado. */
+function painelLuz(cam, caps) {
+  const p = document.createElement('div');
+  p.className = 'painel-quadro painel-luz';
+  for (const modo of caps.luz) {
+    const b = botao({ icone: ICONES.luz, rotulo: t(`luz.${modo}`), classes: caps.luzAtual === modo ? 'sb-btn--ativo' : '' });
+    b.addEventListener('click', async () => {
+      try {
+        await window.cctv.luz(cam.id, modo);
+        caps.luzAtual = modo;
+        for (const x of p.children) x.classList.toggle('sb-btn--ativo', x === b);
+      } catch { /* a câmera recusou: o modo marcado continua o anterior */ }
+    });
+    p.append(b);
+  }
+  return p;
 }
 
 function quadroDaCamera(cam) {

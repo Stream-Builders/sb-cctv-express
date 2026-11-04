@@ -52,6 +52,9 @@ function configurar() {
     `  listen: "127.0.0.1:${PORTA_RTSP}"`,
     'webrtc:',
     '  listen: ""',
+    // o ffmpeg que vem com o app (quadros JPEG e conversões do go2rtc)
+    'ffmpeg:',
+    `  bin: ${JSON.stringify(require('./gravador').binarioFfmpeg())}`,
     'log:',
     '  level: warn',
     'streams:',

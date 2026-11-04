@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "ライトモード",
   "quadro.ptz": "PTZ 操作",
   "quadro.telaCheia": "全画面",
-  "quadro.emBreve": "{nome}：次のアップデートで対応",
-  "luz.auto": "自動",
-  "luz.branca": "白色ライト",
-  "luz.infravermelho": "赤外線",
+  "luz.infravermelho": "赤外線のみ",
   "topo.configuracoes": "設定",
   "form.adicionar": "カメラを追加",
   "form.editar": "カメラを編集",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "追加済み",
   "detectar.adicionar": "追加",
   "detectar.portas": "ポート {p}",
-  "detectar.procurarDeNovo": "もう一度探す"
+  "detectar.procurarDeNovo": "もう一度探す",
+  "quadro.semRecurso": "{nome}：このカメラはこの機能を通知していません",
+  "luz.inteligente": "スマート（赤外線、検知時に点灯）",
+  "luz.colorida": "カラー（夜間は白色ライト）",
+  "luz.acesa": "ライト常時点灯",
+  "ptz.cima": "上",
+  "ptz.baixo": "下",
+  "ptz.esquerda": "左",
+  "ptz.direita": "右",
+  "ptz.aproximar": "ズームイン",
+  "ptz.afastar": "ズームアウト"
 };

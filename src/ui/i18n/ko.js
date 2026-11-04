@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "조명 모드",
   "quadro.ptz": "PTZ 제어",
   "quadro.telaCheia": "전체 화면",
-  "quadro.emBreve": "{nome}: 다음 업데이트에서 제공",
-  "luz.auto": "자동",
-  "luz.branca": "백색광",
-  "luz.infravermelho": "적외선",
+  "luz.infravermelho": "적외선만",
   "topo.configuracoes": "설정",
   "form.adicionar": "카메라 추가",
   "form.editar": "카메라 편집",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "이미 추가됨",
   "detectar.adicionar": "추가",
   "detectar.portas": "포트 {p}",
-  "detectar.procurarDeNovo": "다시 찾기"
+  "detectar.procurarDeNovo": "다시 찾기",
+  "quadro.semRecurso": "{nome}: 이 카메라는 이 기능을 지원한다고 알리지 않습니다",
+  "luz.inteligente": "스마트 (적외선, 감지 시 조명)",
+  "luz.colorida": "컬러 (야간 백색광)",
+  "luz.acesa": "조명 항상 켜기",
+  "ptz.cima": "위",
+  "ptz.baixo": "아래",
+  "ptz.esquerda": "왼쪽",
+  "ptz.direita": "오른쪽",
+  "ptz.aproximar": "확대",
+  "ptz.afastar": "축소"
 };

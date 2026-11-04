@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Режим подсветки",
   "quadro.ptz": "Управление PTZ",
   "quadro.telaCheia": "Во весь экран",
-  "quadro.emBreve": "{nome}: появится в следующем обновлении",
-  "luz.auto": "Авто",
-  "luz.branca": "Белый свет",
-  "luz.infravermelho": "ИК-подсветка",
+  "luz.infravermelho": "Только ИК",
   "topo.configuracoes": "Настройки",
   "form.adicionar": "Добавить камеру",
   "form.editar": "Изменить камеру",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Уже добавлена",
   "detectar.adicionar": "Добавить",
   "detectar.portas": "порты {p}",
-  "detectar.procurarDeNovo": "Искать снова"
+  "detectar.procurarDeNovo": "Искать снова",
+  "quadro.semRecurso": "{nome}: камера не сообщает об этой функции",
+  "luz.inteligente": "Умный (ИК, свет при обнаружении)",
+  "luz.colorida": "Цветной (белый свет ночью)",
+  "luz.acesa": "Свет всегда включён",
+  "ptz.cima": "Вверх",
+  "ptz.baixo": "Вниз",
+  "ptz.esquerda": "Влево",
+  "ptz.direita": "Вправо",
+  "ptz.aproximar": "Приблизить",
+  "ptz.afastar": "Отдалить"
 };

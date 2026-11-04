@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Lichtmodus",
   "quadro.ptz": "PTZ-Steuerung",
   "quadro.telaCheia": "Vollbild",
-  "quadro.emBreve": "{nome}: kommt im nächsten Update",
-  "luz.auto": "Automatisch",
-  "luz.branca": "Weißlicht",
-  "luz.infravermelho": "Infrarot",
+  "luz.infravermelho": "Nur Infrarot",
   "topo.configuracoes": "Einstellungen",
   "form.adicionar": "Kamera hinzufügen",
   "form.editar": "Kamera bearbeiten",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Bereits hinzugefügt",
   "detectar.adicionar": "Hinzufügen",
   "detectar.portas": "Ports {p}",
-  "detectar.procurarDeNovo": "Erneut suchen"
+  "detectar.procurarDeNovo": "Erneut suchen",
+  "quadro.semRecurso": "{nome}: diese Kamera meldet diese Funktion nicht",
+  "luz.inteligente": "Intelligent (Infrarot, Licht bei Erkennung)",
+  "luz.colorida": "Farbe (Weißlicht nachts)",
+  "luz.acesa": "Licht immer an",
+  "ptz.cima": "Hoch",
+  "ptz.baixo": "Runter",
+  "ptz.esquerda": "Links",
+  "ptz.direita": "Rechts",
+  "ptz.aproximar": "Heranzoomen",
+  "ptz.afastar": "Herauszoomen"
 };

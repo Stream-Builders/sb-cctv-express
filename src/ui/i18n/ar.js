@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "وضع الإضاءة",
   "quadro.ptz": "التحكم PTZ",
   "quadro.telaCheia": "ملء الشاشة",
-  "quadro.emBreve": "{nome}: يصل في التحديث القادم",
-  "luz.auto": "تلقائي",
-  "luz.branca": "ضوء أبيض",
-  "luz.infravermelho": "أشعة تحت حمراء",
+  "luz.infravermelho": "أشعة تحت حمراء فقط",
   "topo.configuracoes": "الإعدادات",
   "form.adicionar": "إضافة كاميرا",
   "form.editar": "تعديل الكاميرا",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "مضافة مسبقًا",
   "detectar.adicionar": "إضافة",
   "detectar.portas": "المنافذ {p}",
-  "detectar.procurarDeNovo": "البحث مجددًا"
+  "detectar.procurarDeNovo": "البحث مجددًا",
+  "quadro.semRecurso": "{nome}: هذه الكاميرا لا تُبلغ عن هذه الميزة",
+  "luz.inteligente": "ذكي (أشعة تحت حمراء، ضوء عند الاكتشاف)",
+  "luz.colorida": "ملوّن (ضوء أبيض ليلًا)",
+  "luz.acesa": "الضوء مضاء دائمًا",
+  "ptz.cima": "أعلى",
+  "ptz.baixo": "أسفل",
+  "ptz.esquerda": "يسار",
+  "ptz.direita": "يمين",
+  "ptz.aproximar": "تكبير",
+  "ptz.afastar": "تصغير"
 };

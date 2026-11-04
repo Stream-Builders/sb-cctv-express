@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Tryb światła",
   "quadro.ptz": "Sterowanie PTZ",
   "quadro.telaCheia": "Pełny ekran",
-  "quadro.emBreve": "{nome}: w następnej wersji",
-  "luz.auto": "Automatyczny",
-  "luz.branca": "Białe światło",
-  "luz.infravermelho": "Podczerwień",
+  "luz.infravermelho": "Tylko podczerwień",
   "topo.configuracoes": "Ustawienia",
   "form.adicionar": "Dodaj kamerę",
   "form.editar": "Edytuj kamerę",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Już dodana",
   "detectar.adicionar": "Dodaj",
   "detectar.portas": "porty {p}",
-  "detectar.procurarDeNovo": "Szukaj ponownie"
+  "detectar.procurarDeNovo": "Szukaj ponownie",
+  "quadro.semRecurso": "{nome}: ta kamera nie zgłasza tej funkcji",
+  "luz.inteligente": "Inteligentny (podczerwień, światło przy wykryciu)",
+  "luz.colorida": "Kolor (białe światło nocą)",
+  "luz.acesa": "Światło zawsze włączone",
+  "ptz.cima": "W górę",
+  "ptz.baixo": "W dół",
+  "ptz.esquerda": "W lewo",
+  "ptz.direita": "W prawo",
+  "ptz.aproximar": "Przybliż",
+  "ptz.afastar": "Oddal"
 };

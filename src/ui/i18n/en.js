@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Light mode",
   "quadro.ptz": "PTZ control",
   "quadro.telaCheia": "Full screen",
-  "quadro.emBreve": "{nome}: coming in the next app update",
-  "luz.auto": "Automatic",
-  "luz.branca": "White light",
-  "luz.infravermelho": "Infrared",
+  "luz.infravermelho": "Infrared only",
   "topo.configuracoes": "Settings",
   "form.adicionar": "Add camera",
   "form.editar": "Edit camera",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Already added",
   "detectar.adicionar": "Add",
   "detectar.portas": "ports {p}",
-  "detectar.procurarDeNovo": "Search again"
+  "detectar.procurarDeNovo": "Search again",
+  "quadro.semRecurso": "{nome}: this camera does not report this feature",
+  "luz.inteligente": "Smart (infrared, light on detection)",
+  "luz.colorida": "Full color (white light at night)",
+  "luz.acesa": "Light always on",
+  "ptz.cima": "Up",
+  "ptz.baixo": "Down",
+  "ptz.esquerda": "Left",
+  "ptz.direita": "Right",
+  "ptz.aproximar": "Zoom in",
+  "ptz.afastar": "Zoom out"
 };

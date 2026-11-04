@@ -24,10 +24,7 @@ export default {
   "quadro.luz": "Chế độ đèn",
   "quadro.ptz": "Điều khiển PTZ",
   "quadro.telaCheia": "Toàn màn hình",
-  "quadro.emBreve": "{nome}: có trong bản cập nhật tới",
-  "luz.auto": "Tự động",
-  "luz.branca": "Đèn trắng",
-  "luz.infravermelho": "Hồng ngoại",
+  "luz.infravermelho": "Chỉ hồng ngoại",
   "topo.configuracoes": "Cài đặt",
   "form.adicionar": "Thêm camera",
   "form.editar": "Sửa camera",
@@ -67,5 +64,15 @@ export default {
   "detectar.jaAdicionada": "Đã thêm",
   "detectar.adicionar": "Thêm",
   "detectar.portas": "cổng {p}",
-  "detectar.procurarDeNovo": "Tìm lại"
+  "detectar.procurarDeNovo": "Tìm lại",
+  "quadro.semRecurso": "{nome}: camera này không báo tính năng này",
+  "luz.inteligente": "Thông minh (hồng ngoại, bật đèn khi phát hiện)",
+  "luz.colorida": "Có màu (đèn trắng ban đêm)",
+  "luz.acesa": "Đèn luôn bật",
+  "ptz.cima": "Lên",
+  "ptz.baixo": "Xuống",
+  "ptz.esquerda": "Trái",
+  "ptz.direita": "Phải",
+  "ptz.aproximar": "Phóng to",
+  "ptz.afastar": "Thu nhỏ"
 };
