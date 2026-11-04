@@ -37,3 +37,7 @@ Gerar o instalador: `npm run dist` (saída em `dist/`).
 ## Instalar
 
 `npm run dist` gera `dist/CCTV Express Setup <versão>.exe` (instalador NSIS para Windows x64, com go2rtc e ffmpeg embutidos).
+
+## Licença
+
+MIT. Veja [LICENSE](LICENSE). O app usa go2rtc (MIT), three.js (MIT) e FFmpeg (LGPL/GPL, baixado na instalação).

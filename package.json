@@ -57,5 +57,8 @@
   },
   "dependencies": {
     "three": "0.187.0"
-  }
+  },
+  "license": "MIT",
+  "repository": "github:Stream-Builders/sb-cctv-express",
+  "homepage": "https://cctvexpress.stream.builders"
 }
