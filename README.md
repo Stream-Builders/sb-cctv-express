@@ -1,4 +1,8 @@
+<p align="center"><img src="midia/letreiro.gif" alt="cctv.express" width="800"></p>
+
 # CCTV Express
+
+**[Baixar para Windows](https://github.com/Stream-Builders/sb-cctv-express/releases/latest)** · [cctvexpress.stream.builders](https://cctvexpress.stream.builders)
 
 Monitoramento de câmeras IP (CCTV) para Windows, da Stream.Builders: ao vivo em mosaico, gravação, reprodução, PTZ e
 luz, com o estado de cada câmera sempre visível (ao vivo, conectando, sem sinal, gravando).

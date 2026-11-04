@@ -240,7 +240,19 @@ export async function montar(canvas) {
     raiz.rotation.y += (-0.16 + 0.08 * Math.sin(t * 0.6) - raiz.rotation.y) * k;
     raiz.rotation.x += (0.05 - raiz.rotation.x) * k;
     renderer.render(scene, camera);
-    if (tFixo === null) requestAnimationFrame(laco);
+    if (tFixo === null && !gravando) requestAnimationFrame(laco);
+  }
+  // ?gravar: o relógio fica parado e quem grava avança quadro a quadro (window.letreiroEm(t) desenha o instante t)
+  const gravando = new URLSearchParams(location.search).has('gravar');
+  if (gravando) {
+    window.letreiroEm = (t) => {
+      aplicar(t);
+      raiz.rotation.y = -0.16 + 0.08 * Math.sin(t * 0.6);
+      raiz.rotation.x = 0.05;
+      renderer.render(scene, camera);
+      return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    };
+    window.letreiroPronto = true;
   }
   requestAnimationFrame(laco);
 }

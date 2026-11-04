@@ -3,3 +3,4 @@ dist/
 vendor/go2rtc.exe
 vendor/ffmpeg.exe
 src/splash/vendor/
+midia/quadros/
