@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "구간 내보내기",
   "reproducao.semGravacao": "이 날은 녹화가 없습니다.",
   "reproducao.exportado": "구간을 내보냈습니다.",
-  "deteccao.movimento": "움직임"
+  "deteccao.movimento": "움직임",
+  "quadro.ligarSom": "소리 켜기",
+  "quadro.mudo": "음소거",
+  "quadro.volume": "음량"
 };

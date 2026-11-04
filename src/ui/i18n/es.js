@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Exportar fragmento",
   "reproducao.semGravacao": "No hay grabaciones este día.",
   "reproducao.exportado": "Fragmento exportado.",
-  "deteccao.movimento": "Movimiento"
+  "deteccao.movimento": "Movimiento",
+  "quadro.ligarSom": "Activar sonido",
+  "quadro.mudo": "Silenciar",
+  "quadro.volume": "Volumen"
 };

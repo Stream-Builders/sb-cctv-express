@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Ausschnitt exportieren",
   "reproducao.semGravacao": "Keine Aufnahmen an diesem Tag.",
   "reproducao.exportado": "Ausschnitt exportiert.",
-  "deteccao.movimento": "Bewegung"
+  "deteccao.movimento": "Bewegung",
+  "quadro.ligarSom": "Ton einschalten",
+  "quadro.mudo": "Stummschalten",
+  "quadro.volume": "Lautstärke"
 };

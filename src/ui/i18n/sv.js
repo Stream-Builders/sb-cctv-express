@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Exportera klipp",
   "reproducao.semGravacao": "Inga inspelningar denna dag.",
   "reproducao.exportado": "Klipp exporterat.",
-  "deteccao.movimento": "Rörelse"
+  "deteccao.movimento": "Rörelse",
+  "quadro.ligarSom": "Slå på ljud",
+  "quadro.mudo": "Stäng av ljud",
+  "quadro.volume": "Volym"
 };

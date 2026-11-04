@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "تصدير المقطع",
   "reproducao.semGravacao": "لا توجد تسجيلات في هذا اليوم.",
   "reproducao.exportado": "تم تصدير المقطع.",
-  "deteccao.movimento": "حركة"
+  "deteccao.movimento": "حركة",
+  "quadro.ligarSom": "تشغيل الصوت",
+  "quadro.mudo": "كتم الصوت",
+  "quadro.volume": "مستوى الصوت"
 };

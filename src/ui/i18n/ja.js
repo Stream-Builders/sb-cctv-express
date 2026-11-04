@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "クリップを書き出す",
   "reproducao.semGravacao": "この日の録画はありません。",
   "reproducao.exportado": "クリップを書き出しました。",
-  "deteccao.movimento": "動き"
+  "deteccao.movimento": "動き",
+  "quadro.ligarSom": "音声をオン",
+  "quadro.mudo": "ミュート",
+  "quadro.volume": "音量"
 };

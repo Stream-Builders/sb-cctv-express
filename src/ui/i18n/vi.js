@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Xuất đoạn",
   "reproducao.semGravacao": "Không có bản ghi trong ngày này.",
   "reproducao.exportado": "Đã xuất đoạn.",
-  "deteccao.movimento": "Chuyển động"
+  "deteccao.movimento": "Chuyển động",
+  "quadro.ligarSom": "Bật âm thanh",
+  "quadro.mudo": "Tắt tiếng",
+  "quadro.volume": "Âm lượng"
 };

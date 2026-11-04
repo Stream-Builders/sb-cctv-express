@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Exportar trecho",
   "reproducao.semGravacao": "Nenhuma gravação neste dia.",
   "reproducao.exportado": "Trecho exportado.",
-  "deteccao.movimento": "Movimento"
+  "deteccao.movimento": "Movimento",
+  "quadro.ligarSom": "Ligar o som",
+  "quadro.mudo": "Deixar no mudo",
+  "quadro.volume": "Volume"
 };

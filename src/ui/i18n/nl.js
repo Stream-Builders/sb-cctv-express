@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Fragment exporteren",
   "reproducao.semGravacao": "Geen opnamen op deze dag.",
   "reproducao.exportado": "Fragment geëxporteerd.",
-  "deteccao.movimento": "Beweging"
+  "deteccao.movimento": "Beweging",
+  "quadro.ligarSom": "Geluid aan",
+  "quadro.mudo": "Dempen",
+  "quadro.volume": "Volume"
 };

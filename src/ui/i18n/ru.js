@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Экспортировать фрагмент",
   "reproducao.semGravacao": "В этот день записей нет.",
   "reproducao.exportado": "Фрагмент экспортирован.",
-  "deteccao.movimento": "Движение"
+  "deteccao.movimento": "Движение",
+  "quadro.ligarSom": "Включить звук",
+  "quadro.mudo": "Без звука",
+  "quadro.volume": "Громкость"
 };

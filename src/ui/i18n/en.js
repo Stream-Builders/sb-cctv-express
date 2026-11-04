@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Export clip",
   "reproducao.semGravacao": "No recordings on this day.",
   "reproducao.exportado": "Clip exported.",
-  "deteccao.movimento": "Motion"
+  "deteccao.movimento": "Motion",
+  "quadro.ligarSom": "Turn sound on",
+  "quadro.mudo": "Mute",
+  "quadro.volume": "Volume"
 };

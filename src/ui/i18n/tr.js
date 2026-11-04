@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Klibi dışa aktar",
   "reproducao.semGravacao": "Bu günde kayıt yok.",
   "reproducao.exportado": "Klip dışa aktarıldı.",
-  "deteccao.movimento": "Hareket"
+  "deteccao.movimento": "Hareket",
+  "quadro.ligarSom": "Sesi aç",
+  "quadro.mudo": "Sesi kapat",
+  "quadro.volume": "Ses düzeyi"
 };

@@ -32,8 +32,9 @@ function iniciarCamera(c, cfg) {
     '-hide_banner', '-loglevel', 'error', '-nostdin',
     '-rtsp_transport', 'tcp', '-timeout', '10000000',
     '-i', `rtsp://127.0.0.1:${PORTA_RTSP}/${c.id}`,
-    // só o vídeo, copiado: sem recomprimir (o áudio G.711 das câmeras não cabe em MP4 sem conversão)
-    '-map', '0:v:0', '-c', 'copy', '-an',
+    // o vídeo copiado (sem recomprimir) e o áudio, se a câmera tiver, convertido para AAC (o G.711 das câmeras não
+    // cabe em MP4); o volume da tela não mexe aqui: a gravação sempre leva o áudio inteiro
+    '-map', '0:v:0', '-map', '0:a:0?', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '64k',
     '-f', 'segment', '-segment_time', String(segundos), '-segment_atclocktime', '1', '-reset_timestamps', '1',
     '-strftime', '1', '-segment_format', 'mp4',
     '-segment_format_options', 'movflags=+frag_keyframe+empty_moov+default_base_moof',

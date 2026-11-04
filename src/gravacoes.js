@@ -1,7 +1,7 @@
 // As gravações já feitas: lista por câmera e dia (pelo nome do arquivo, que é a hora de início), serve os arquivos para
 // o player por um protocolo próprio (gravacao://, com suporte a Range) e exporta trechos sem recomprimir.
 const { app, protocol, net } = require('electron');
-const { spawn } = require('node:child_process');
+const { spawn, spawnSync } = require('node:child_process');
 const { readdirSync, statSync, existsSync, writeFileSync, unlinkSync } = require('node:fs');
 const { join, resolve, relative, sep } = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -72,9 +72,13 @@ function exportar(id, de, ate, destino) {
   const lista = join(app.getPath('temp'), `cctv-export-${Date.now()}.txt`);
   writeFileSync(lista, arquivos.map((x) => `file '${join(raiz, decodeURIComponent(x.url.split('/arquivo/')[1])).replace(/'/g, "'\\''")}'`).join('\n'));
   const deslocamento = Math.max(0, (de - arquivos[0].inicio) / 1000);
+  // a marca hvc1 (para o H265 abrir em qualquer player do Windows) só vale para H265: no H264 ela quebra o arquivo
+  const primeiro = join(raiz, decodeURIComponent(arquivos[0].url.split('/arquivo/')[1]));
+  const sonda = spawnSync(gravador.binarioFfmpeg(), ['-hide_banner', '-i', primeiro], { encoding: 'utf8', windowsHide: true });
+  const marca = /Video: hevc/.test(sonda.stderr || '') ? ['-tag:v', 'hvc1'] : [];
   const duracao = (ate - de) / 1000;
   const args = ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', lista,
-    '-ss', deslocamento.toFixed(2), '-t', duracao.toFixed(2), '-c', 'copy', '-tag:v', 'hvc1', '-movflags', '+faststart', destino];
+    '-ss', deslocamento.toFixed(2), '-t', duracao.toFixed(2), '-c', 'copy', ...marca, '-movflags', '+faststart', destino];
   return new Promise((ok, falha) => {
     const p = spawn(gravador.binarioFfmpeg(), args, { windowsHide: true });
     let erro = '';

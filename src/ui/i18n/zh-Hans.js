@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "导出片段",
   "reproducao.semGravacao": "这一天没有录像。",
   "reproducao.exportado": "片段已导出。",
-  "deteccao.movimento": "移动"
+  "deteccao.movimento": "移动",
+  "quadro.ligarSom": "打开声音",
+  "quadro.mudo": "静音",
+  "quadro.volume": "音量"
 };

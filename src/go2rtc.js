@@ -21,9 +21,8 @@ function binario() {
 
 const enc = (s) => encodeURIComponent(s);
 
-// só o vídeo das câmeras RTSP: o app não usa áudio (a gravação descarta), e alguns áudios (PCMU a 16 kHz, por exemplo)
-// derrubam o player do navegador
-const SO_VIDEO = '#media=video';
+// o áudio das câmeras vai junto: o ao vivo toca (com volume por câmera na tela) e a gravação grava em AAC
+const SO_VIDEO = '';
 
 /**
  * O go2rtc monta a linha de comando do ffmpeg separando por espaços: com o app instalado em "C:\Program Files", ele
@@ -86,9 +85,9 @@ function configurar() {
   ];
   cameras.ler().forEach((c, i) => {
     linhas.push(`  "${c.id}":`, `    - ${JSON.stringify(fonte(c, i, env))}`);
-    // compatibilidade: o mesmo vídeo reconvertido em H264 comum (com a placa de vídeo, se houver), para câmeras cujo
+    // compatibilidade: o mesmo vídeo reconvertido em H264 comum (e o áudio em AAC) (com a placa de vídeo, se houver), para câmeras cujo
     // perfil H264 o navegador recusa. O ffmpeg só roda enquanto alguém assiste a este stream.
-    linhas.push(`  "${c.id}_compat":`, `    - ${JSON.stringify(`ffmpeg:${c.id}#video=h264#width=1920#hardware`)}`);
+    linhas.push(`  "${c.id}_compat":`, `    - ${JSON.stringify(`ffmpeg:${c.id}#video=h264#audio=aac#width=1920#hardware`)}`);
   });
   const arq = join(app.getPath('userData'), 'go2rtc.yaml');
   writeFileSync(arq, `${linhas.join('\n')}\n`);

@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "Ekspor klip",
   "reproducao.semGravacao": "Tidak ada rekaman pada hari ini.",
   "reproducao.exportado": "Klip diekspor.",
-  "deteccao.movimento": "Gerakan"
+  "deteccao.movimento": "Gerakan",
+  "quadro.ligarSom": "Nyalakan suara",
+  "quadro.mudo": "Bisukan",
+  "quadro.volume": "Volume"
 };

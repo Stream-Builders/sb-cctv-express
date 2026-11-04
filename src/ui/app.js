@@ -29,6 +29,8 @@ const ICONES = {
   luz: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
   ptz: '<circle cx="12" cy="12" r="3"/><path d="M12 2l3 3H9zM12 22l-3-3h6zM2 12l3-3v6zM22 12l-3 3V9z"/>',
   telaCheia: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  som: '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  mudo: '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
 };
 
 function botao({ icone, rotulo, titulo, classes = '', quadrado = false }) {
@@ -119,8 +121,65 @@ function barraDoQuadro(cam) {
     telaCheia = telaCheia ? null : cam.id;
     desenharMosaico();
   });
-  barra.append(gravar, luz, ptz, cheia);
+  // som: o clique liga ou deixa no mudo e abre o volume. Só a tela: a gravação leva o áudio inteiro sempre.
+  const prefs = somDaCamera(cam.id);
+  const som = botao({ icone: prefs.mudo ? ICONES.mudo : ICONES.som, quadrado: true, titulo: prefs.mudo ? t('quadro.ligarSom') : t('quadro.mudo') });
+  som.dataset.papel = 'som';
+  desenharBotaoSom(som, cam.id);
+  som.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const p = somDaCamera(cam.id);
+    guardarSom(cam.id, { ...p, mudo: !p.mudo });
+    desenharBotaoSom(som, cam.id);
+    alternarPainel(barra, 'som', () => painelSom(cam, som));
+  });
+  barra.append(som, gravar, luz, ptz, cheia);
   return barra;
+}
+
+// ---------- som por câmera (preferência só desta tela, guardada neste computador) ----------
+function somDaCamera(id) {
+  try {
+    return { mudo: true, volume: 0.8, ...JSON.parse(localStorage.getItem(`som:${id}`) || '{}') };
+  } catch {
+    return { mudo: true, volume: 0.8 };
+  }
+}
+function guardarSom(id, p) {
+  try { localStorage.setItem(`som:${id}`, JSON.stringify(p)); } catch { /* sem armazenamento: vale até fechar */ }
+  aplicarSom(id);
+}
+function aplicarSom(id) {
+  const p = somDaCamera(id);
+  const v = document.querySelector(`.quadro[data-id="${id}"] video`);
+  if (v) { v.muted = p.mudo; v.volume = p.volume; }
+}
+function desenharBotaoSom(b, id) {
+  const p = somDaCamera(id);
+  b.querySelector('svg').innerHTML = p.mudo ? ICONES.mudo : ICONES.som;
+  b.title = p.mudo ? t('quadro.ligarSom') : t('quadro.mudo');
+  b.setAttribute('aria-label', b.title);
+  b.classList.toggle('sb-btn--ativo', !p.mudo);
+}
+
+/** O volume da câmera: o controle deslizante e o mudo. */
+function painelSom(cam, botaoSom) {
+  const p = document.createElement('div');
+  p.className = 'painel-quadro painel-som';
+  const rotulo = document.createElement('label');
+  rotulo.textContent = t('quadro.volume');
+  const faixa = document.createElement('input');
+  faixa.type = 'range';
+  faixa.min = '0';
+  faixa.max = '100';
+  faixa.value = String(Math.round(somDaCamera(cam.id).volume * 100));
+  faixa.addEventListener('input', () => {
+    guardarSom(cam.id, { ...somDaCamera(cam.id), volume: Number(faixa.value) / 100, mudo: Number(faixa.value) === 0 });
+    desenharBotaoSom(botaoSom, cam.id);
+  });
+  rotulo.append(faixa);
+  p.append(rotulo);
+  return p;
 }
 
 /** Abre o painel pedido sobre o quadro (ou fecha, se for o mesmo que já está aberto). */
@@ -222,6 +281,12 @@ function vigiar(id, quadro, componente) {
     const v = componente.querySelector('video');
     // câmera ao vivo não tem play, tempo nem barra de progresso: o player do go2rtc liga os controles por padrão
     if (v && v.controls) v.controls = false;
+    // o player do go2rtc começa no mudo: vale a preferência de som desta câmera
+    if (v) {
+      const p = somDaCamera(id);
+      if (v.muted !== p.mudo) v.muted = p.mudo;
+      if (Math.abs(v.volume - p.volume) > 0.01) v.volume = p.volume;
+    }
     // o navegador recusou o vídeo (perfil H264 que ele não decodifica): passa para o stream reconvertido, uma vez só
     if (v && v.error && !quadro.dataset.compat) {
       quadro.dataset.compat = '1';

@@ -50,7 +50,8 @@ function criarJanela() {
     icon: join(__dirname, '..', 'build', 'icon.png'),
     title: 'CCTV Express',
     autoHideMenuBar: true,
-    webPreferences: { preload: join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false },
+    // o som das câmeras toca sem precisar de clique antes (o volume e o mudo ficam por câmera na tela)
+    webPreferences: { preload: join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, autoplayPolicy: 'no-user-gesture-required' },
   });
   Menu.setApplicationMenu(null);
   // a tela só carrega com o motor no ar (ele espera as câmeras ONVIF informarem o endereço do vídeo): o splash cobre

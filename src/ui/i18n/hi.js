@@ -86,5 +86,8 @@ export default {
   "reproducao.exportar": "क्लिप निर्यात करें",
   "reproducao.semGravacao": "इस दिन कोई रिकॉर्डिंग नहीं।",
   "reproducao.exportado": "क्लिप निर्यात हुई।",
-  "deteccao.movimento": "गति"
+  "deteccao.movimento": "गति",
+  "quadro.ligarSom": "आवाज़ चालू करें",
+  "quadro.mudo": "म्यूट करें",
+  "quadro.volume": "वॉल्यूम"
 };
