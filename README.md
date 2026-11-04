@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="midia/letreiro.gif" alt="cctv.express" width="800" />
+  <a href="https://cctvexpress.stream.builders"><img src="midia/banner.svg" alt="cctv.express - Stream.Builders" width="100%" /></a>
 </p>
 
 <p align="center">
@@ -27,6 +27,8 @@
 ---
 
 ## 🎥 O que é
+
+<p align="center"><img src="midia/letreiro.gif" alt="cctv.express" width="640" /></p>
 
 Monitoramento de câmeras IP (CCTV) para Windows, da **Stream.Builders**. O estado de cada câmera fica sempre visível, em
 selos grandes e coloridos: **ao vivo**, **conectando**, **sem sinal**, **gravando** (o selo só acende quando o arquivo
