@@ -32,3 +32,8 @@ Gerar o instalador: `npm run dist` (saída em `dist/`).
 3. Reprodução com linha do tempo e exportação de trechos (MP4 sem recomprimir) — **feito**
 4. PTZ e luz (Xiongmai pelo DVRIP; PTZ ONVIF para as demais marcas) — **feito**
 5. Detecção de movimento (sensibilidade ajustável), selo MOVIMENTO, marcas na linha do tempo e aviso do Windows — **feito**
+
+
+## Instalar
+
+`npm run dist` gera `dist/CCTV Express Setup <versão>.exe` (instalador NSIS para Windows x64, com go2rtc e ffmpeg embutidos).
