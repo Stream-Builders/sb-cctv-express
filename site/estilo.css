@@ -1,0 +1,56 @@
+/* Landing do CCTV Express: as cores e a peça .sb-btn do tenant ebooks.express (Stream.Builders), como no app. */
+:root {
+  --fundo: #07080a;
+  --superficie: #101318;
+  --borda: #2a2f38;
+  --texto: var(--sb-ink, #efe6d0);
+  --suave: #a3abb8;
+  --destaque: var(--accent, #ff3333);
+  --vivo: #22c55e;
+  --alerta: #f59e0b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--fundo); color: var(--texto); font: 17px/1.55 "Segoe UI", system-ui, sans-serif; overflow-x: hidden; }
+a { color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+#fundo { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+.hero, main, .rodape { position: relative; z-index: 1; }
+
+.hero { min-height: 100svh; display: grid; justify-items: center; align-content: center; gap: 18px; padding: 24px 16px 64px; text-align: center; }
+#letreiro { width: min(1100px, 100%); height: min(52vh, 520px); display: block; }
+.hero__frase { max-width: 720px; margin: 0; font-size: clamp(18px, 2.4vw, 24px); }
+.hero__acoes { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.hero__nota { margin: 0; color: var(--suave); font-size: 14px; }
+
+main { display: grid; gap: 72px; padding: 0 16px 96px; max-width: 1100px; margin: 0 auto; }
+section h2 { font-size: clamp(24px, 3.4vw, 36px); margin: 0 0 12px; }
+section p { color: var(--suave); margin: 0 0 18px; max-width: 760px; }
+
+.estado, .aberto { background: color-mix(in srgb, var(--superficie) 88%, transparent); border: 1px solid var(--borda); border-radius: 8px; padding: clamp(20px, 4vw, 40px); }
+.selos { display: flex; flex-wrap: wrap; gap: 14px; }
+.selo { display: inline-flex; align-items: center; padding: 6px 16px; border-radius: 2px; transform: skewX(-14deg); font-size: 15px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.selo__texto { display: inline-flex; align-items: center; gap: 8px; transform: skewX(14deg); }
+.selo__texto::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+.selo--vivo { background: #052e16; color: var(--vivo); border: 1px solid #166534; }
+.selo--gravando { background: #ef4444; color: #fff; border: 1px solid #fca5a5; }
+.selo--gravando .selo__texto::before { animation: piscar 1.2s infinite; }
+.selo--movimento { background: #2d1f05; color: var(--alerta); border: 1px solid #b45309; }
+.selo--semSinal { background: #2a0a0a; color: #fca5a5; border: 1px solid #991b1b; }
+@keyframes piscar { 50% { opacity: 0.25; } }
+
+.recursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.recursos article { background: color-mix(in srgb, var(--superficie) 88%, transparent); border: 1px solid var(--borda); border-inline-start: 3px solid var(--destaque); border-radius: 6px; padding: 20px; }
+.recursos h3 { margin: 0 0 8px; font-size: 18px; }
+.recursos p { margin: 0; font-size: 15px; }
+
+.sb-btn__ico svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.rodape { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 28px 16px; border-top: 1px solid var(--borda); color: var(--suave); }
+.rodape b { color: var(--destaque); }
+
+@media (prefers-reduced-motion: reduce) { .selo--gravando .selo__texto::before { animation: none; } }
+.hero__acoes .sb-btn__label { white-space: nowrap; }
+.hero__acoes .sb-btn { max-width: none; width: auto; }

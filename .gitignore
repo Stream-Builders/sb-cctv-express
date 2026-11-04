@@ -4,3 +4,9 @@ vendor/go2rtc.exe
 vendor/ffmpeg.exe
 src/splash/vendor/
 midia/quadros/
+site/vendor/
+site/letreiro.js
+site/marca/
+site/tema/
+site/.vercel/
+site/.env.local

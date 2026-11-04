@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR" data-theme-format="skew" data-modo="escuro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CCTV Express: monitoramento de câmeras que funciona</title>
+  <meta name="description" content="VMS open source e gratuito para câmeras IP: ao vivo em mosaico, gravação contínua, reprodução com linha do tempo, PTZ, luz e detecção de movimento. Para Windows.">
+  <meta property="og:title" content="CCTV Express">
+  <meta property="og:description" content="Monitoramento de câmeras IP que funciona. Open source, gratuito, para Windows.">
+  <meta property="og:image" content="https://cctvexpress.stream.builders/marca/icone.png">
+  <link rel="icon" href="marca/icone.png">
+  <link rel="stylesheet" href="tema/sb-btn.css">
+  <link rel="stylesheet" href="tema/tema.css">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <canvas id="fundo" aria-hidden="true"></canvas>
+
+  <header class="hero">
+    <canvas id="letreiro" aria-label="cctv.express"></canvas>
+    <h1 class="sr" data-t="titulo">CCTV Express</h1>
+    <p class="hero__frase" data-t="frase">Monitoramento de câmeras IP que funciona. Você sempre sabe o que está ao vivo e o que está gravando.</p>
+    <div class="hero__acoes">
+      <a class="sb-btn sb-btn--lg sb-btn--ativo" href="https://github.com/Stream-Builders/sb-cctv-express/releases/latest">
+        <span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
+        <span class="sb-btn__body"><span class="sb-btn__label" data-t="baixar">Baixar para Windows</span></span><span class="sb-btn__gloss" aria-hidden="true"></span>
+      </a>
+      <a class="sb-btn sb-btn--lg" href="https://github.com/Stream-Builders/sb-cctv-express">
+        <span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6.2 0C6.6 2.8 5.6 3.1 5.6 3.1a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span>
+        <span class="sb-btn__body"><span class="sb-btn__label" data-t="codigo">Código no GitHub</span></span><span class="sb-btn__gloss" aria-hidden="true"></span>
+      </a>
+    </div>
+    <p class="hero__nota" data-t="nota">Gratuito e open source (MIT) · Windows 10 e 11 · 18 idiomas</p>
+  </header>
+
+  <main>
+    <section class="estado">
+      <h2 data-t="estadoTitulo">O estado de cada câmera, na cara</h2>
+      <p data-t="estadoTexto">Nada de ícone branco minúsculo sobre fundo azul. Cada câmera mostra em selos grandes e coloridos se está ao vivo, se está gravando de verdade (o selo só acende quando o arquivo está crescendo no disco) e se houve movimento.</p>
+      <div class="selos" aria-hidden="true">
+        <span class="selo selo--vivo"><span class="selo__texto" data-t="seloVivo">Ao vivo</span></span>
+        <span class="selo selo--gravando"><span class="selo__texto" data-t="seloGravando">Gravando</span></span>
+        <span class="selo selo--movimento"><span class="selo__texto" data-t="seloMovimento">Movimento</span></span>
+        <span class="selo selo--semSinal"><span class="selo__texto" data-t="seloSemSinal">Sem sinal</span></span>
+      </div>
+    </section>
+
+    <section class="recursos">
+      <article><h3 data-t="r1t">Ao vivo em mosaico</h3><p data-t="r1">1, 4, 9, 16, 25 ou 36 câmeras, reconexão automática e tela cheia com dois cliques, sem recomprimir o vídeo.</p></article>
+      <article><h3 data-t="r2t">Gravação contínua</h3><p data-t="r2">Em C:\cctv_express\records, blocos de 120 minutos (ajustáveis), retenção por dias e por espaço livre, o mais antigo sai primeiro.</p></article>
+      <article><h3 data-t="r3t">Reprodução e exportação</h3><p data-t="r3">Linha do tempo do dia com as marcas de movimento; marque início e fim e exporte o trecho em MP4.</p></article>
+      <article><h3 data-t="r4t">PTZ e luz</h3><p data-t="r4">Mova e aproxime a câmera segurando o botão; troque entre luz inteligente, colorida, infravermelho ou sempre acesa.</p></article>
+      <article><h3 data-t="r5t">Detecção de movimento</h3><p data-t="r5">Sensibilidade ajustável, selo na tela, marca na linha do tempo e aviso do Windows.</p></article>
+      <article><h3 data-t="r6t">Encontra as câmeras</h3><p data-t="r6">Detecta câmeras ONVIF, RTSP e Xiongmai/iCSee/XMeye na sua rede. Senhas cifradas pelo Windows.</p></article>
+    </section>
+
+    <section class="aberto">
+      <h2 data-t="abertoTitulo">Open source, sem nuvem, sem mensalidade</h2>
+      <p data-t="abertoTexto">Tudo roda no seu computador: o vídeo vai da câmera para o seu disco, sem passar por servidor de ninguém. O código é aberto, sob licença MIT.</p>
+      <a class="sb-btn" href="https://github.com/Stream-Builders/sb-cctv-express">
+        <span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span>
+        <span class="sb-btn__body"><span class="sb-btn__label" data-t="verCodigo">Ver o código</span></span><span class="sb-btn__gloss" aria-hidden="true"></span>
+      </a>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <img src="marca/emblema.svg" alt="" width="28" height="27">
+    <span><b>cctv</b>.express · <a href="https://stream.builders">Stream.Builders</a></span>
+  </footer>
+
+  <script type="module" src="pagina.js"></script>
+</body>
+</html>

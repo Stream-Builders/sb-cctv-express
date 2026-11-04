@@ -45,3 +45,7 @@ Gerar o instalador: `npm run dist` (saída em `dist/`).
 ## Licença
 
 MIT. Veja [LICENSE](LICENSE). O app usa go2rtc (MIT), three.js (MIT) e FFmpeg (LGPL/GPL, baixado na instalação).
+
+## Site
+
+`site/` é a landing de [cctvexpress.stream.builders](https://cctvexpress.stream.builders) (Vercel, projeto `cctvexpress`). Antes do deploy: `node scripts/montar-site.mjs` (copia o letreiro, o three.js e a marca), depois `npx vercel deploy --prod --yes` dentro de `site/`.

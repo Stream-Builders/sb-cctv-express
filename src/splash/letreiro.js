@@ -100,8 +100,8 @@ function lerLogo(svg) {
   return { caixa: { x: vb[0], y: vb[1], w: vb[2], h: vb[3] }, emblema, palavras, caixaEmblema };
 }
 
-export async function montar(canvas) {
-  const svg = await (await fetch('../ui/marca/logo.svg')).text();
+export async function montar(canvas, urlLogo = '../ui/marca/logo.svg') {
+  const svg = await (await fetch(urlLogo)).text();
   const logo = lerLogo(svg);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -227,6 +227,8 @@ export async function montar(canvas) {
     flip.position.set(-cx * S, cy * S, 0);
   }
   enquadrar();
+  // na página o tamanho muda (janela, celular girando): reenquadra
+  new ResizeObserver(() => { enquadrar(); renderer.render(scene, camera); }).observe(canvas);
 
   const tFixo = new URLSearchParams(location.search).has('t') ? Number(new URLSearchParams(location.search).get('t')) : null;
   const inicio = performance.now();
