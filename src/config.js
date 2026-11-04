@@ -12,6 +12,10 @@ const PADRAO = {
   diasRetencao: 30,
   // se o disco ficar com menos que isso livre, apaga primeiro o mais antigo
   espacoMinimoGB: 10,
+  // detecção de movimento: ligada, sensibilidade de 1 a 10 e aviso do Windows a cada movimento novo
+  deteccao: true,
+  sensibilidade: 5,
+  notificar: true,
 };
 
 const arquivo = () => join(app.getPath('userData'), 'config.json');
@@ -32,6 +36,9 @@ function salvar(dados) {
     minutosPorBloco: Math.min(1440, Math.max(1, Number(dados.minutosPorBloco ?? atual.minutosPorBloco) || PADRAO.minutosPorBloco)),
     diasRetencao: Math.min(3650, Math.max(1, Number(dados.diasRetencao ?? atual.diasRetencao) || PADRAO.diasRetencao)),
     espacoMinimoGB: Math.min(10000, Math.max(1, Number(dados.espacoMinimoGB ?? atual.espacoMinimoGB) || PADRAO.espacoMinimoGB)),
+    deteccao: dados.deteccao === undefined ? atual.deteccao : dados.deteccao === true || dados.deteccao === 'on',
+    sensibilidade: Math.min(10, Math.max(1, Number(dados.sensibilidade ?? atual.sensibilidade) || PADRAO.sensibilidade)),
+    notificar: dados.notificar === undefined ? atual.notificar : dados.notificar === true || dados.notificar === 'on',
   };
   writeFileSync(arquivo(), JSON.stringify(limpo, null, 2));
   return limpo;

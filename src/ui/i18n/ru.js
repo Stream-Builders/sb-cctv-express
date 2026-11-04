@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Влево",
   "ptz.direita": "Вправо",
   "ptz.aproximar": "Приблизить",
-  "ptz.afastar": "Отдалить"
+  "ptz.afastar": "Отдалить",
+  "topo.reproducao": "Воспроизведение",
+  "config.deteccao": "Обнаружение движения",
+  "config.deteccaoLigada": "Обнаруживать движение на камерах",
+  "config.sensibilidade": "Чувствительность",
+  "config.notificar": "Уведомлять в Windows о каждом движении",
+  "reproducao.titulo": "Воспроизведение",
+  "reproducao.marcarInicio": "Отметить начало",
+  "reproducao.marcarFim": "Отметить конец",
+  "reproducao.exportar": "Экспортировать фрагмент",
+  "reproducao.semGravacao": "В этот день записей нет.",
+  "reproducao.exportado": "Фрагмент экспортирован.",
+  "deteccao.movimento": "Движение"
 };

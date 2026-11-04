@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "बाएँ",
   "ptz.direita": "दाएँ",
   "ptz.aproximar": "ज़ूम इन",
-  "ptz.afastar": "ज़ूम आउट"
+  "ptz.afastar": "ज़ूम आउट",
+  "topo.reproducao": "प्लेबैक",
+  "config.deteccao": "गति पहचान",
+  "config.deteccaoLigada": "कैमरों में गति पहचानें",
+  "config.sensibilidade": "संवेदनशीलता",
+  "config.notificar": "हर गति पर Windows में सूचना दें",
+  "reproducao.titulo": "प्लेबैक",
+  "reproducao.marcarInicio": "शुरुआत चिह्नित करें",
+  "reproducao.marcarFim": "अंत चिह्नित करें",
+  "reproducao.exportar": "क्लिप निर्यात करें",
+  "reproducao.semGravacao": "इस दिन कोई रिकॉर्डिंग नहीं।",
+  "reproducao.exportado": "क्लिप निर्यात हुई।",
+  "deteccao.movimento": "गति"
 };

@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Kiri",
   "ptz.direita": "Kanan",
   "ptz.aproximar": "Perbesar",
-  "ptz.afastar": "Perkecil"
+  "ptz.afastar": "Perkecil",
+  "topo.reproducao": "Pemutaran",
+  "config.deteccao": "Deteksi gerakan",
+  "config.deteccaoLigada": "Deteksi gerakan di kamera",
+  "config.sensibilidade": "Sensitivitas",
+  "config.notificar": "Beri tahu di Windows setiap ada gerakan",
+  "reproducao.titulo": "Pemutaran",
+  "reproducao.marcarInicio": "Tandai awal",
+  "reproducao.marcarFim": "Tandai akhir",
+  "reproducao.exportar": "Ekspor klip",
+  "reproducao.semGravacao": "Tidak ada rekaman pada hari ini.",
+  "reproducao.exportado": "Klip diekspor.",
+  "deteccao.movimento": "Gerakan"
 };

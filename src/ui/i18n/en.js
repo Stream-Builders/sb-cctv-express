@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Left",
   "ptz.direita": "Right",
   "ptz.aproximar": "Zoom in",
-  "ptz.afastar": "Zoom out"
+  "ptz.afastar": "Zoom out",
+  "topo.reproducao": "Playback",
+  "config.deteccao": "Motion detection",
+  "config.deteccaoLigada": "Detect motion on cameras",
+  "config.sensibilidade": "Sensitivity",
+  "config.notificar": "Notify in Windows on each motion",
+  "reproducao.titulo": "Playback",
+  "reproducao.marcarInicio": "Mark start",
+  "reproducao.marcarFim": "Mark end",
+  "reproducao.exportar": "Export clip",
+  "reproducao.semGravacao": "No recordings on this day.",
+  "reproducao.exportado": "Clip exported.",
+  "deteccao.movimento": "Motion"
 };

@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Sinistra",
   "ptz.direita": "Destra",
   "ptz.aproximar": "Avvicina",
-  "ptz.afastar": "Allontana"
+  "ptz.afastar": "Allontana",
+  "topo.reproducao": "Riproduzione",
+  "config.deteccao": "Rilevamento movimento",
+  "config.deteccaoLigada": "Rileva movimento sulle telecamere",
+  "config.sensibilidade": "Sensibilità",
+  "config.notificar": "Avvisa in Windows a ogni movimento",
+  "reproducao.titulo": "Riproduzione",
+  "reproducao.marcarInicio": "Segna inizio",
+  "reproducao.marcarFim": "Segna fine",
+  "reproducao.exportar": "Esporta clip",
+  "reproducao.semGravacao": "Nessuna registrazione in questo giorno.",
+  "reproducao.exportado": "Clip esportata.",
+  "deteccao.movimento": "Movimento"
 };

@@ -20,7 +20,8 @@ let mosaico = Number(localStorage.getItem('mosaico')) || 4;
 let selecionado = 0;
 let telaCheia = null;
 const estados = new Map(); // id -> 'conectando' | 'vivo' | 'semSinal'
-let gravacao = {}; // id -> 'gravando' | 'iniciando' | 'desligada' | 'parada'
+let gravacao = {};
+let movimento = new Set(); // id -> 'gravando' | 'iniciando' | 'desligada' | 'parada'
 
 // ---------- peças ----------
 const ICONES = {
@@ -203,7 +204,9 @@ function quadroDaCamera(cam) {
   estado.dataset.papel = 'estado';
   const grav = selo(...seloGravacao(cam.id));
   grav.dataset.papel = 'gravacao';
-  topo.append(estado, grav, nome);
+  const mov = selo('movimento', t('deteccao.movimento'));
+  mov.dataset.papel = 'movimento';
+  topo.append(estado, grav, mov, nome);
   q.append(topo, barraDoQuadro(cam));
   vigiar(cam.id, q, video);
   return q;
@@ -320,6 +323,8 @@ function desenharResumo() {
 /** O estado de gravação vem do disco (o arquivo do bloco crescendo), conferido a cada 3 s. */
 async function atualizarGravacao() {
   gravacao = await window.cctv.estadosGravacao();
+  movimento = new Set(await window.cctv.movimentoAgora());
+  for (const q of document.querySelectorAll('.quadro[data-id]')) q.classList.toggle('quadro--movimento', movimento.has(q.dataset.id));
   for (const q of document.querySelectorAll('.quadro[data-id]')) {
     const s = q.querySelector('[data-papel="gravacao"]');
     if (s) trocarSelo(s, ...seloGravacao(q.dataset.id));
@@ -392,7 +397,9 @@ for (const [codigo, nome] of Object.entries(IDIOMAS)) {
 
 $('abrir-config').addEventListener('click', async () => {
   const c = await window.cctv.lerConfig();
-  for (const k of ['pastaGravacoes', 'minutosPorBloco', 'diasRetencao', 'espacoMinimoGB']) formConfig[k].value = c[k];
+  for (const k of ['pastaGravacoes', 'minutosPorBloco', 'diasRetencao', 'espacoMinimoGB', 'sensibilidade']) formConfig[k].value = c[k];
+  formConfig.deteccao.checked = c.deteccao;
+  formConfig.notificar.checked = c.notificar;
   seletorIdioma.value = idioma;
   dialogoConfig.showModal();
 });
@@ -404,6 +411,8 @@ $('abrir-pasta').addEventListener('click', () => window.cctv.abrirPastaGravacoes
 formConfig.addEventListener('submit', async (e) => {
   e.preventDefault();
   const dados = Object.fromEntries(new FormData(formConfig));
+  dados.deteccao = formConfig.deteccao.checked;
+  dados.notificar = formConfig.notificar.checked;
   const novoIdioma = dados.idioma;
   delete dados.idioma;
   await window.cctv.salvarConfig(dados);
@@ -453,6 +462,154 @@ $('detectar-de-novo').addEventListener('click', detectar);
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && telaCheia && !document.querySelector('dialog[open]')) { telaCheia = null; desenharMosaico(); }
+});
+
+// ---------- reprodução ----------
+// A linha do tempo do dia: faixas das gravações e marcas de movimento; clicar toca daquele ponto. Marcar início e fim
+// seleciona o trecho para exportar (MP4 sem recomprimir).
+const dialogoRep = $('dialogo-reproducao');
+const repVideo = $('rep-video');
+const repFaixa = $('rep-faixa');
+let rep = { arquivos: [], eventos: [], dia0: 0, atual: null, de: null, ate: null };
+const hoje = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const hora = (ms) => new Date(ms).toLocaleTimeString(idioma, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+const pos = (ms) => `${((ms - rep.dia0) / 864000).toFixed(4)}%`;
+
+function desenharHoras() {
+  const h = $('rep-horas');
+  h.replaceChildren();
+  for (let i = 0; i <= 24; i += 3) {
+    const s = document.createElement('span');
+    s.style.insetInlineStart = `${(i / 24) * 100}%`;
+    s.textContent = `${String(i).padStart(2, '0')}h`;
+    h.append(s);
+  }
+}
+
+function desenharLinha() {
+  repFaixa.replaceChildren();
+  for (const a of rep.arquivos) {
+    const b = document.createElement('span');
+    b.className = 'linha-tempo__gravacao';
+    b.style.insetInlineStart = pos(Math.max(a.inicio, rep.dia0));
+    b.style.width = `${((Math.min(a.fim, rep.dia0 + 86400000) - Math.max(a.inicio, rep.dia0)) / 864000).toFixed(4)}%`;
+    repFaixa.append(b);
+  }
+  for (const e of rep.eventos) {
+    const m = document.createElement('span');
+    m.className = 'linha-tempo__evento';
+    m.style.insetInlineStart = pos(e.inicio);
+    m.style.width = `max(2px, ${((e.fim - e.inicio) / 864000).toFixed(4)}%)`;
+    m.title = `${t('deteccao.movimento')} ${hora(e.inicio)}`;
+    repFaixa.append(m);
+  }
+  if (rep.de !== null && rep.ate !== null) {
+    const s = document.createElement('span');
+    s.className = 'linha-tempo__trecho';
+    s.style.insetInlineStart = pos(Math.min(rep.de, rep.ate));
+    s.style.width = `${(Math.abs(rep.ate - rep.de) / 864000).toFixed(4)}%`;
+    repFaixa.append(s);
+  }
+  const cursor = document.createElement('span');
+  cursor.className = 'linha-tempo__cursor';
+  cursor.id = 'rep-cursor';
+  repFaixa.append(cursor);
+  atualizarTrecho();
+}
+
+function atualizarTrecho() {
+  const ok = rep.de !== null && rep.ate !== null && rep.ate > rep.de;
+  $('rep-trecho').textContent = rep.de !== null || rep.ate !== null
+    ? `${rep.de !== null ? hora(rep.de) : '--:--:--'} → ${rep.ate !== null ? hora(rep.ate) : '--:--:--'}` : '';
+  $('rep-exportar').disabled = !ok;
+}
+
+/** Toca o instante pedido (ms), abrindo o arquivo que o contém. */
+function tocar(ms) {
+  const a = rep.arquivos.find((x) => ms >= x.inicio && ms < x.fim) || rep.arquivos.find((x) => x.inicio > ms);
+  if (!a) return;
+  const alvo = Math.max(0, (Math.max(ms, a.inicio) - a.inicio) / 1000);
+  if (rep.atual !== a) {
+    rep.atual = a;
+    repVideo.src = a.url;
+    repVideo.addEventListener('loadedmetadata', () => { repVideo.currentTime = alvo; repVideo.play().catch(() => {}); }, { once: true });
+  } else {
+    repVideo.currentTime = alvo;
+    repVideo.play().catch(() => {});
+  }
+}
+
+const instanteAtual = () => (rep.atual ? rep.atual.inicio + repVideo.currentTime * 1000 : null);
+
+repVideo.addEventListener('timeupdate', () => {
+  const ms = instanteAtual();
+  if (ms === null) return;
+  $('rep-hora').textContent = hora(ms);
+  const c = $('rep-cursor');
+  if (c) c.style.insetInlineStart = pos(ms);
+});
+// ao acabar um arquivo, segue para o próximo
+repVideo.addEventListener('ended', () => {
+  const i = rep.arquivos.indexOf(rep.atual);
+  if (rep.arquivos[i + 1]) tocar(rep.arquivos[i + 1].inicio);
+});
+
+repFaixa.addEventListener('click', (e) => {
+  const r = repFaixa.getBoundingClientRect();
+  const frac = (document.documentElement.dir === 'rtl' ? r.right - e.clientX : e.clientX - r.left) / r.width;
+  tocar(rep.dia0 + Math.min(1, Math.max(0, frac)) * 86400000);
+});
+
+async function carregarReproducao() {
+  const id = $('rep-camera').value;
+  const dia = $('rep-dia').value || hoje();
+  const [a, m, d] = dia.split('-').map(Number);
+  rep = { ...(await window.cctv.listarGravacoes(id, dia)), dia0: new Date(a, m - 1, d).getTime(), atual: null, de: null, ate: null };
+  repVideo.removeAttribute('src');
+  repVideo.load();
+  $('rep-vazio').textContent = rep.arquivos.length ? '' : t('reproducao.semGravacao');
+  $('rep-hora').textContent = '--:--:--';
+  desenharLinha();
+  // abre no movimento mais recente, ou no começo da última gravação
+  // (o bloco em gravação agora ainda está crescendo: abre no anterior a ele, se houver)
+  const emGravacao = rep.arquivos.at(-1) && Date.now() - rep.arquivos.at(-1).fim < 30000;
+  const base = rep.arquivos.at(emGravacao && rep.arquivos.length > 1 ? -2 : -1);
+  const ultimo = rep.eventos.at(-1)?.inicio ?? base?.inicio;
+  if (ultimo) tocar(ultimo);
+}
+
+$('abrir-reproducao').addEventListener('click', () => {
+  const sel = $('rep-camera');
+  sel.replaceChildren(...cameras.map((c) => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.nome; return o; }));
+  const visivel = document.querySelector('.quadro--selecionado[data-id]')?.dataset.id;
+  if (visivel) sel.value = visivel;
+  $('rep-dia').value = hoje();
+  $('rep-dia').max = hoje();
+  desenharHoras();
+  dialogoRep.showModal();
+  if (cameras.length) carregarReproducao();
+});
+$('rep-camera').addEventListener('change', carregarReproducao);
+$('rep-dia').addEventListener('change', carregarReproducao);
+dialogoRep.addEventListener('close', () => { repVideo.pause(); repVideo.removeAttribute('src'); repVideo.load(); });
+$('rep-marcar-inicio').addEventListener('click', () => { rep.de = instanteAtual(); desenharLinha(); });
+$('rep-marcar-fim').addEventListener('click', () => { rep.ate = instanteAtual(); desenharLinha(); });
+$('rep-exportar').addEventListener('click', async () => {
+  const b = $('rep-exportar');
+  b.disabled = true;
+  try {
+    const destino = await window.cctv.exportarTrecho($('rep-camera').value, rep.de, rep.ate);
+    if (destino) $('rep-trecho').textContent = t('reproducao.exportado');
+  } catch (err) {
+    $('rep-trecho').textContent = String(err.message || err);
+  }
+  b.disabled = false;
+});
+
+// movimento ao vivo: o selo acende na hora, sem esperar a próxima conferência
+window.cctv.aoMovimento((ev) => {
+  movimento.add(ev.id);
+  document.querySelector(`.quadro[data-id="${ev.id}"]`)?.classList.add('quadro--movimento');
 });
 
 // ---------- idioma ----------

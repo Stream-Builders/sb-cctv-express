@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Links",
   "ptz.direita": "Rechts",
   "ptz.aproximar": "Heranzoomen",
-  "ptz.afastar": "Herauszoomen"
+  "ptz.afastar": "Herauszoomen",
+  "topo.reproducao": "Wiedergabe",
+  "config.deteccao": "Bewegungserkennung",
+  "config.deteccaoLigada": "Bewegung auf den Kameras erkennen",
+  "config.sensibilidade": "Empfindlichkeit",
+  "config.notificar": "Bei jeder Bewegung in Windows benachrichtigen",
+  "reproducao.titulo": "Wiedergabe",
+  "reproducao.marcarInicio": "Start markieren",
+  "reproducao.marcarFim": "Ende markieren",
+  "reproducao.exportar": "Ausschnitt exportieren",
+  "reproducao.semGravacao": "Keine Aufnahmen an diesem Tag.",
+  "reproducao.exportado": "Ausschnitt exportiert.",
+  "deteccao.movimento": "Bewegung"
 };

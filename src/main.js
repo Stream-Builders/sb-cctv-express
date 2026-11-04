@@ -8,6 +8,10 @@ const gravador = require('./gravador');
 const config = require('./config');
 const descoberta = require('./descoberta');
 const controle = require('./controle');
+const gravacoes = require('./gravacoes');
+const deteccao = require('./deteccao');
+
+gravacoes.registrarEsquema();
 
 // uma janela só: abrir de novo traz a que já está aberta
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -57,6 +61,12 @@ function criarJanela() {
   // conferência visual: com CCTV_PRINT=<arquivo.png>, salva uma imagem da janela 6 s depois de abrir
   if (process.env.CCTV_PRINT) {
     janela.webContents.once('did-finish-load', () => setTimeout(async () => {
+      // CCTV_ABRIR=<id do botão>: abre uma tela antes da captura (ex.: abrir-reproducao)
+      if (process.env.CCTV_ABRIR) {
+        await janela.webContents.executeJavaScript(`document.getElementById(${JSON.stringify(process.env.CCTV_ABRIR)})?.click()`);
+        await new Promise((r) => setTimeout(r, 4000));
+        if (process.env.CCTV_DEPURAR) console.log('DEPURAR', await janela.webContents.executeJavaScript(process.env.CCTV_DEPURAR));
+      }
       const img = await janela.webContents.capturePage();
       require('node:fs').writeFileSync(process.env.CCTV_PRINT, img.toPNG());
     }, 6000));
@@ -75,7 +85,10 @@ function reiniciar() {
   controle.fecharTodas();
   go2rtc.iniciar();
   // o gravador lê do go2rtc: espera ele subir
-  setTimeout(() => gravador.iniciar(), 1500);
+  setTimeout(() => {
+    gravador.iniciar();
+    deteccao.iniciar((evento) => { if (janela && !janela.isDestroyed()) janela.webContents.send('deteccao:evento', evento); });
+  }, 1500);
 }
 
 ipcMain.handle('cameras:listar', () => cameras.listar());
@@ -95,6 +108,19 @@ ipcMain.handle('cameras:gravacao', (_e, id, ligar) => {
 ipcMain.handle('controle:capacidades', (_e, id) => controle.capacidades(id));
 ipcMain.handle('controle:ptz', (_e, id, direcao, parar) => controle.ptz(id, direcao, parar));
 ipcMain.handle('controle:luz', (_e, id, modo) => controle.luz(id, modo));
+ipcMain.handle('gravacoes:listar', (_e, id, dia) => ({ arquivos: gravacoes.listar(id, dia), eventos: deteccao.eventosDoDia(id, dia) }));
+ipcMain.handle('gravacoes:dias', (_e, id) => gravacoes.dias(id));
+ipcMain.handle('gravacoes:exportar', async (_e, id, de, ate) => {
+  const c = cameras.ler().find((x) => x.id === id);
+  const d = new Date(de);
+  const nome = `${(c?.nome || 'camera').replace(/[^w.-]+/g, '_')}_${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}-${String(d.getMinutes()).padStart(2, '0')}.mp4`;
+  const r = await dialog.showSaveDialog(janela, { defaultPath: join(app.getPath('videos'), nome), filters: [{ name: 'MP4', extensions: ['mp4'] }] });
+  if (r.canceled || !r.filePath) return null;
+  await gravacoes.exportar(id, de, ate, r.filePath);
+  shell.showItemInFolder(r.filePath);
+  return r.filePath;
+});
+ipcMain.handle('deteccao:agora', () => deteccao.emMovimento());
 ipcMain.handle('cameras:detectar', () => descoberta.detectar());
 ipcMain.handle('motor:porta', () => go2rtc.PORTA_API);
 ipcMain.handle('gravacao:estados', () => gravador.estados());
@@ -102,6 +128,7 @@ ipcMain.handle('config:ler', () => config.ler());
 ipcMain.handle('config:salvar', (_e, dados) => {
   const c = config.salvar(dados);
   gravador.iniciar();
+  deteccao.iniciar();
   return c;
 });
 ipcMain.handle('config:escolher-pasta', async () => {
@@ -116,6 +143,7 @@ ipcMain.handle('config:abrir-pasta', () => {
 ipcMain.handle('sistema:idioma', () => app.getPreferredSystemLanguages()[0] || app.getLocale());
 
 app.whenReady().then(() => {
+  gravacoes.servir();
   reiniciar();
   criarJanela();
 });

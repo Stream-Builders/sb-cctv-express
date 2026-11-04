@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Izquierda",
   "ptz.direita": "Derecha",
   "ptz.aproximar": "Acercar",
-  "ptz.afastar": "Alejar"
+  "ptz.afastar": "Alejar",
+  "topo.reproducao": "Reproducción",
+  "config.deteccao": "Detección de movimiento",
+  "config.deteccaoLigada": "Detectar movimiento en las cámaras",
+  "config.sensibilidade": "Sensibilidad",
+  "config.notificar": "Avisar en Windows con cada movimiento",
+  "reproducao.titulo": "Reproducción",
+  "reproducao.marcarInicio": "Marcar inicio",
+  "reproducao.marcarFim": "Marcar fin",
+  "reproducao.exportar": "Exportar fragmento",
+  "reproducao.semGravacao": "No hay grabaciones este día.",
+  "reproducao.exportado": "Fragmento exportado.",
+  "deteccao.movimento": "Movimiento"
 };

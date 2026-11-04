@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Vänster",
   "ptz.direita": "Höger",
   "ptz.aproximar": "Zooma in",
-  "ptz.afastar": "Zooma ut"
+  "ptz.afastar": "Zooma ut",
+  "topo.reproducao": "Uppspelning",
+  "config.deteccao": "Rörelsedetektering",
+  "config.deteccaoLigada": "Upptäck rörelse i kamerorna",
+  "config.sensibilidade": "Känslighet",
+  "config.notificar": "Meddela i Windows vid varje rörelse",
+  "reproducao.titulo": "Uppspelning",
+  "reproducao.marcarInicio": "Markera start",
+  "reproducao.marcarFim": "Markera slut",
+  "reproducao.exportar": "Exportera klipp",
+  "reproducao.semGravacao": "Inga inspelningar denna dag.",
+  "reproducao.exportado": "Klipp exporterat.",
+  "deteccao.movimento": "Rörelse"
 };

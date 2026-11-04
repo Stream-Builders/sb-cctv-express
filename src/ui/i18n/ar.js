@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "يسار",
   "ptz.direita": "يمين",
   "ptz.aproximar": "تكبير",
-  "ptz.afastar": "تصغير"
+  "ptz.afastar": "تصغير",
+  "topo.reproducao": "التشغيل",
+  "config.deteccao": "كشف الحركة",
+  "config.deteccaoLigada": "كشف الحركة في الكاميرات",
+  "config.sensibilidade": "الحساسية",
+  "config.notificar": "التنبيه في Windows عند كل حركة",
+  "reproducao.titulo": "التشغيل",
+  "reproducao.marcarInicio": "تحديد البداية",
+  "reproducao.marcarFim": "تحديد النهاية",
+  "reproducao.exportar": "تصدير المقطع",
+  "reproducao.semGravacao": "لا توجد تسجيلات في هذا اليوم.",
+  "reproducao.exportado": "تم تصدير المقطع.",
+  "deteccao.movimento": "حركة"
 };

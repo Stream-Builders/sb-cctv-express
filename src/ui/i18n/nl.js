@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Links",
   "ptz.direita": "Rechts",
   "ptz.aproximar": "Inzoomen",
-  "ptz.afastar": "Uitzoomen"
+  "ptz.afastar": "Uitzoomen",
+  "topo.reproducao": "Afspelen",
+  "config.deteccao": "Bewegingsdetectie",
+  "config.deteccaoLigada": "Beweging op camera's detecteren",
+  "config.sensibilidade": "Gevoeligheid",
+  "config.notificar": "Melden in Windows bij elke beweging",
+  "reproducao.titulo": "Afspelen",
+  "reproducao.marcarInicio": "Begin markeren",
+  "reproducao.marcarFim": "Einde markeren",
+  "reproducao.exportar": "Fragment exporteren",
+  "reproducao.semGravacao": "Geen opnamen op deze dag.",
+  "reproducao.exportado": "Fragment geëxporteerd.",
+  "deteccao.movimento": "Beweging"
 };

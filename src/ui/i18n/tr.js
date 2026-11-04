@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Sola",
   "ptz.direita": "Sağa",
   "ptz.aproximar": "Yakınlaştır",
-  "ptz.afastar": "Uzaklaştır"
+  "ptz.afastar": "Uzaklaştır",
+  "topo.reproducao": "Oynatma",
+  "config.deteccao": "Hareket algılama",
+  "config.deteccaoLigada": "Kameralarda hareketi algıla",
+  "config.sensibilidade": "Hassasiyet",
+  "config.notificar": "Her harekette Windows'ta bildir",
+  "reproducao.titulo": "Oynatma",
+  "reproducao.marcarInicio": "Başlangıcı işaretle",
+  "reproducao.marcarFim": "Bitişi işaretle",
+  "reproducao.exportar": "Klibi dışa aktar",
+  "reproducao.semGravacao": "Bu günde kayıt yok.",
+  "reproducao.exportado": "Klip dışa aktarıldı.",
+  "deteccao.movimento": "Hareket"
 };

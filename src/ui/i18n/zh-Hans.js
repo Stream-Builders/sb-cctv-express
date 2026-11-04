@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "左",
   "ptz.direita": "右",
   "ptz.aproximar": "放大",
-  "ptz.afastar": "缩小"
+  "ptz.afastar": "缩小",
+  "topo.reproducao": "回放",
+  "config.deteccao": "移动侦测",
+  "config.deteccaoLigada": "侦测摄像机画面中的移动",
+  "config.sensibilidade": "灵敏度",
+  "config.notificar": "每次移动时在 Windows 中提醒",
+  "reproducao.titulo": "回放",
+  "reproducao.marcarInicio": "标记开始",
+  "reproducao.marcarFim": "标记结束",
+  "reproducao.exportar": "导出片段",
+  "reproducao.semGravacao": "这一天没有录像。",
+  "reproducao.exportado": "片段已导出。",
+  "deteccao.movimento": "移动"
 };

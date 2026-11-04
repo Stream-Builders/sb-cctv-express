@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "左",
   "ptz.direita": "右",
   "ptz.aproximar": "ズームイン",
-  "ptz.afastar": "ズームアウト"
+  "ptz.afastar": "ズームアウト",
+  "topo.reproducao": "再生",
+  "config.deteccao": "動体検知",
+  "config.deteccaoLigada": "カメラの動きを検知する",
+  "config.sensibilidade": "感度",
+  "config.notificar": "動きのたびに Windows で通知",
+  "reproducao.titulo": "再生",
+  "reproducao.marcarInicio": "開始をマーク",
+  "reproducao.marcarFim": "終了をマーク",
+  "reproducao.exportar": "クリップを書き出す",
+  "reproducao.semGravacao": "この日の録画はありません。",
+  "reproducao.exportado": "クリップを書き出しました。",
+  "deteccao.movimento": "動き"
 };

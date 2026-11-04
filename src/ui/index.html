@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme-format="skew" data-modo="escuro">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws://127.0.0.1:18984 http://127.0.0.1:18984; media-src 'self' blob: mediastream:; img-src 'self' data: blob:; style-src 'self'; script-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws://127.0.0.1:18984 http://127.0.0.1:18984; media-src 'self' blob: mediastream: gravacao:; img-src 'self' data: blob:; style-src 'self'; script-src 'self'">
   <title>CCTV Express</title>
   <!-- as cores e a peça .sb-btn são as do tenant ebooks.express (Stream.Builders), da @ebx/temas -->
   <!-- a peça vem antes: o padrão neutro dela (cinzas) é sobrescrito pelas variáveis do tema -->
@@ -15,6 +15,7 @@
     <div class="marca"><img src="marca/emblema.svg" alt="" width="36" height="35"><span><b>cctv</b>.express</span></div>
     <nav class="mosaicos" id="mosaicos" aria-label="Mosaico"></nav>
     <div class="resumo" id="resumo" aria-live="polite"></div>
+    <button class="sb-btn sb-btn--sm" id="abrir-reproducao"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.reproducao"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
     <button class="sb-btn sb-btn--sm" id="abrir-config"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.configuracoes"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
   </header>
 
@@ -83,6 +84,10 @@
         <label><span data-t="config.espaco"></span> <input name="espacoMinimoGB" type="number" min="1" max="10000" required></label>
       </div>
       <p class="ajuda" data-t="config.retencaoAjuda"></p>
+      <h3 data-t="config.deteccao"></h3>
+      <label class="marcar"><input type="checkbox" name="deteccao"> <span data-t="config.deteccaoLigada"></span></label>
+      <label><span data-t="config.sensibilidade"></span> <input name="sensibilidade" type="range" min="1" max="10" step="1"></label>
+      <label class="marcar"><input type="checkbox" name="notificar"> <span data-t="config.notificar"></span></label>
       <menu>
         <span class="espaco"></span>
         <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="form.cancelar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
@@ -101,6 +106,28 @@
         <span class="espaco"></span>
         <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="config.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
       </menu>
+    </div>
+  </dialog>
+
+  <dialog id="dialogo-reproducao" class="dialogo-grande">
+    <div class="painel reproducao">
+      <div class="reproducao__topo">
+        <h2 data-t="reproducao.titulo"></h2>
+        <select id="rep-camera"></select>
+        <input type="date" id="rep-dia">
+        <span class="espaco"></span>
+        <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="config.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
+      <div class="reproducao__video"><video id="rep-video" controls></video><p class="ajuda" id="rep-vazio"></p></div>
+      <div class="linha-tempo" id="rep-linha"><div class="linha-tempo__horas" id="rep-horas"></div><div class="linha-tempo__faixa" id="rep-faixa"></div></div>
+      <div class="reproducao__acoes">
+        <span class="hora" id="rep-hora">--:--:--</span>
+        <button type="button" class="sb-btn sb-btn--sm" id="rep-marcar-inicio"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4v16M10 12h10"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="reproducao.marcarInicio"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <button type="button" class="sb-btn sb-btn--sm" id="rep-marcar-fim"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 4v16M4 12h10"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="reproducao.marcarFim"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <span class="ajuda" id="rep-trecho"></span>
+        <span class="espaco"></span>
+        <button type="button" class="sb-btn sb-btn--sm sb-btn--ativo" id="rep-exportar" disabled><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="reproducao.exportar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
     </div>
   </dialog>
 

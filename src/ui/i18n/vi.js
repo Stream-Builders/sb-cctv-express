@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Trái",
   "ptz.direita": "Phải",
   "ptz.aproximar": "Phóng to",
-  "ptz.afastar": "Thu nhỏ"
+  "ptz.afastar": "Thu nhỏ",
+  "topo.reproducao": "Phát lại",
+  "config.deteccao": "Phát hiện chuyển động",
+  "config.deteccaoLigada": "Phát hiện chuyển động trên camera",
+  "config.sensibilidade": "Độ nhạy",
+  "config.notificar": "Thông báo trên Windows mỗi khi có chuyển động",
+  "reproducao.titulo": "Phát lại",
+  "reproducao.marcarInicio": "Đánh dấu bắt đầu",
+  "reproducao.marcarFim": "Đánh dấu kết thúc",
+  "reproducao.exportar": "Xuất đoạn",
+  "reproducao.semGravacao": "Không có bản ghi trong ngày này.",
+  "reproducao.exportado": "Đã xuất đoạn.",
+  "deteccao.movimento": "Chuyển động"
 };

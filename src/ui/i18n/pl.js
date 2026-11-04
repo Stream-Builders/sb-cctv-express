@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "W lewo",
   "ptz.direita": "W prawo",
   "ptz.aproximar": "Przybliż",
-  "ptz.afastar": "Oddal"
+  "ptz.afastar": "Oddal",
+  "topo.reproducao": "Odtwarzanie",
+  "config.deteccao": "Wykrywanie ruchu",
+  "config.deteccaoLigada": "Wykrywaj ruch na kamerach",
+  "config.sensibilidade": "Czułość",
+  "config.notificar": "Powiadamiaj w Windows o każdym ruchu",
+  "reproducao.titulo": "Odtwarzanie",
+  "reproducao.marcarInicio": "Zaznacz początek",
+  "reproducao.marcarFim": "Zaznacz koniec",
+  "reproducao.exportar": "Eksportuj fragment",
+  "reproducao.semGravacao": "Brak nagrań tego dnia.",
+  "reproducao.exportado": "Fragment wyeksportowany.",
+  "deteccao.movimento": "Ruch"
 };

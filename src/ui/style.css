@@ -148,3 +148,35 @@ form h3 { margin: 6px 0 0; font-size: 14px; text-transform: uppercase; letter-sp
 .painel-ptz .sb-btn { touch-action: none; user-select: none; }
 .painel-luz { grid-template-columns: 1fr; min-width: 190px; }
 .quadro:has(.painel-quadro) .quadro__barra { opacity: 1; }
+
+/* movimento: selo âmbar que só aparece enquanto há movimento, e a borda do quadro acende junto */
+.selo--movimento { background: #2d1f05; color: var(--alerta); border: 1px solid #b45309; display: none; }
+.quadro--movimento .selo--movimento { display: inline-flex; }
+.quadro--movimento { border-color: var(--alerta); }
+
+/* reprodução */
+.dialogo-grande { width: min(1280px, 96vw); }
+.reproducao { gap: 14px; }
+.reproducao__topo { display: flex; align-items: center; gap: 10px; }
+.reproducao__topo h2 { margin: 0 8px 0 0; }
+.reproducao__topo select, .reproducao__topo input { width: auto; }
+.reproducao__video { position: relative; background: #000; border-radius: 6px; aspect-ratio: 16 / 9; max-height: 62vh; display: grid; place-items: center; }
+.reproducao__video video { width: 100%; height: 100%; object-fit: contain; }
+.reproducao__video .ajuda { position: absolute; }
+.linha-tempo { display: grid; gap: 4px; user-select: none; }
+.linha-tempo__horas { position: relative; height: 16px; font-size: 11px; color: var(--texto-suave); }
+.linha-tempo__horas span { position: absolute; translate: -50% 0; }
+.linha-tempo__faixa { position: relative; height: 40px; background: var(--fundo); border: 1px solid var(--borda); border-radius: 4px; cursor: pointer; overflow: hidden; }
+.linha-tempo__gravacao { position: absolute; top: 8px; bottom: 8px; background: #3b4250; border-radius: 2px; }
+.linha-tempo__evento { position: absolute; top: 4px; bottom: 4px; background: var(--alerta); opacity: 0.85; }
+.linha-tempo__trecho { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--destaque) 30%, transparent); border-inline: 2px solid var(--destaque); }
+.linha-tempo__cursor { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--texto); translate: -1px 0; pointer-events: none; }
+.reproducao__acoes { display: flex; align-items: center; gap: 10px; }
+.reproducao__acoes .hora { font: 600 16px/1 ui-monospace, Consolas, monospace; min-width: 90px; }
+input[type="range"] { height: auto; padding: 0; accent-color: var(--destaque); }
+
+/* o topo cabe na janela: nos botões de mosaico o número já diz tudo (sem o ícone), e nada empurra a janela */
+.mosaicos .sb-btn__ico { display: none; }
+.topo { min-width: 0; gap: 16px; }
+.topo > .sb-btn { flex: none; }
+body { grid-template-columns: minmax(0, 1fr); }

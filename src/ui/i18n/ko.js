@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "왼쪽",
   "ptz.direita": "오른쪽",
   "ptz.aproximar": "확대",
-  "ptz.afastar": "축소"
+  "ptz.afastar": "축소",
+  "topo.reproducao": "재생",
+  "config.deteccao": "움직임 감지",
+  "config.deteccaoLigada": "카메라에서 움직임 감지",
+  "config.sensibilidade": "감도",
+  "config.notificar": "움직임마다 Windows 알림",
+  "reproducao.titulo": "재생",
+  "reproducao.marcarInicio": "시작 표시",
+  "reproducao.marcarFim": "끝 표시",
+  "reproducao.exportar": "구간 내보내기",
+  "reproducao.semGravacao": "이 날은 녹화가 없습니다.",
+  "reproducao.exportado": "구간을 내보냈습니다.",
+  "deteccao.movimento": "움직임"
 };

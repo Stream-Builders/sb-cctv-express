@@ -74,5 +74,17 @@ export default {
   "ptz.esquerda": "Gauche",
   "ptz.direita": "Droite",
   "ptz.aproximar": "Zoom avant",
-  "ptz.afastar": "Zoom arrière"
+  "ptz.afastar": "Zoom arrière",
+  "topo.reproducao": "Lecture",
+  "config.deteccao": "Détection de mouvement",
+  "config.deteccaoLigada": "Détecter le mouvement sur les caméras",
+  "config.sensibilidade": "Sensibilité",
+  "config.notificar": "Notifier dans Windows à chaque mouvement",
+  "reproducao.titulo": "Lecture",
+  "reproducao.marcarInicio": "Marquer le début",
+  "reproducao.marcarFim": "Marquer la fin",
+  "reproducao.exportar": "Exporter l’extrait",
+  "reproducao.semGravacao": "Aucun enregistrement ce jour-là.",
+  "reproducao.exportado": "Extrait exporté.",
+  "deteccao.movimento": "Mouvement"
 };
