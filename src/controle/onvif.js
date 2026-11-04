@@ -55,6 +55,13 @@ class Onvif {
     return soap(this.urlPtz, `<tptz:ContinuousMove><tptz:ProfileToken>${esc(this.perfil)}</tptz:ProfileToken><tptz:Velocity>${pt}${zm}</tptz:Velocity></tptz:ContinuousMove>`, this.usuario, this.senha);
   }
 
+  /** O endereço RTSP do perfil principal, como a câmera informa (GetStreamUri). */
+  async enderecoRtsp() {
+    if (!this.urlMidia) await this.preparar();
+    const xml = await soap(this.urlMidia, `<trt:GetStreamUri><trt:StreamSetup><tt:Stream>RTP-Unicast</tt:Stream><tt:Transport><tt:Protocol>RTSP</tt:Protocol></tt:Transport></trt:StreamSetup><trt:ProfileToken>${esc(this.perfil)}</trt:ProfileToken></trt:GetStreamUri>`, this.usuario, this.senha);
+    return tag(xml, 'Uri')?.trim().replace(/&amp;/g, '&');
+  }
+
   parar() {
     return soap(this.urlPtz, `<tptz:Stop><tptz:ProfileToken>${esc(this.perfil)}</tptz:ProfileToken><tptz:PanTilt>true</tptz:PanTilt><tptz:Zoom>true</tptz:Zoom></tptz:Stop>`, this.usuario, this.senha);
   }

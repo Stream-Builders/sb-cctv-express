@@ -17,6 +17,7 @@ gravacoes.registrarEsquema();
 if (!app.requestSingleInstanceLock()) app.quit();
 
 let janela = null;
+let motorPronto = Promise.resolve();
 
 /** Splash: letreiro 3D numa janela sem borda, enquanto a principal carrega por trás. */
 function criarSplash() {
@@ -52,7 +53,9 @@ function criarJanela() {
     webPreferences: { preload: join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false },
   });
   Menu.setApplicationMenu(null);
-  janela.loadFile(join(__dirname, 'ui', 'index.html'));
+  // a tela só carrega com o motor no ar (ele espera as câmeras ONVIF informarem o endereço do vídeo): o splash cobre
+  const motorNoAr = motorPronto.catch(() => {}).then(() => new Promise((ok) => setTimeout(ok, 800)));
+  motorNoAr.then(() => janela.loadFile(join(__dirname, 'ui', 'index.html')));
   const pronta = new Promise((ok) => janela.once('ready-to-show', ok));
   Promise.all([pronta, minimo]).then(() => {
     janela.show();
@@ -69,7 +72,7 @@ function criarJanela() {
       }
       const img = await janela.webContents.capturePage();
       require('node:fs').writeFileSync(process.env.CCTV_PRINT, img.toPNG());
-    }, 6000));
+    }, Number(process.env.CCTV_PRINT_MS) || 6000));
   }
 }
 
@@ -81,8 +84,9 @@ app.on('second-instance', () => {
 });
 
 /** Motor e gravador recomeçam juntos sempre que a lista de câmeras muda. */
-function reiniciar() {
+async function reiniciar() {
   controle.fecharTodas();
+  await go2rtc.resolverOnvif();
   go2rtc.iniciar();
   // o gravador lê do go2rtc: espera ele subir
   setTimeout(() => {
@@ -92,14 +96,14 @@ function reiniciar() {
 }
 
 ipcMain.handle('cameras:listar', () => cameras.listar());
-ipcMain.handle('cameras:salvar', (_e, dados) => {
+ipcMain.handle('cameras:salvar', async (_e, dados) => {
   const id = cameras.salvar(dados);
-  reiniciar();
+  await reiniciar();
   return id;
 });
-ipcMain.handle('cameras:remover', (_e, id) => {
+ipcMain.handle('cameras:remover', async (_e, id) => {
   cameras.remover(id);
-  reiniciar();
+  await reiniciar();
 });
 ipcMain.handle('cameras:gravacao', (_e, id, ligar) => {
   cameras.definirGravacao(id, ligar);
@@ -144,7 +148,7 @@ ipcMain.handle('sistema:idioma', () => app.getPreferredSystemLanguages()[0] || a
 
 app.whenReady().then(() => {
   gravacoes.servir();
-  reiniciar();
+  motorPronto = reiniciar();
   criarJanela();
 });
 

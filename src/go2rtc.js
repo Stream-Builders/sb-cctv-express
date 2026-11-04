@@ -9,6 +9,8 @@ const cameras = require('./cameras');
 
 const PORTA_API = 18984;
 const PORTA_RTSP = 18554;
+// endereços RTSP que as câmeras ONVIF informam (preenchido por resolverOnvif antes de subir o motor)
+const rtspOnvif = new Map();
 let processo = null;
 
 function binario() {
@@ -18,6 +20,10 @@ function binario() {
 }
 
 const enc = (s) => encodeURIComponent(s);
+
+// só o vídeo das câmeras RTSP: o app não usa áudio (a gravação descarta), e alguns áudios (PCMU a 16 kHz, por exemplo)
+// derrubam o player do navegador
+const SO_VIDEO = '#media=video';
 
 /** O endereço que o go2rtc usa para buscar o vídeo de cada câmera. */
 function fonte(c, i, env) {
@@ -31,13 +37,16 @@ function fonte(c, i, env) {
       // protocolo próprio da Xiongmai (porta 34567): canal começa em 0 no protocolo
       return `dvrip://${cred}@${c.ip}:${c.porta || 34567}?channel=${(c.canal || 1) - 1}&subtype=0`;
     case 'onvif':
+      // com o endereço que a própria câmera informou, o motor lê o RTSP direto (a descoberta ONVIF do go2rtc falha
+      // em algumas câmeras); sem ele, fica a descoberta do go2rtc
+      if (rtspOnvif.has(c.id)) return `${rtspOnvif.get(c.id).replace(/^rtsp:\/\//, `rtsp://${cred}@`)}${SO_VIDEO}`;
       return `onvif://${cred}@${c.ip}:${c.porta || 80}`;
     default:
       if (c.url) {
         // RTSP com usuário e senha colocados pelo app (o endereço salvo não guarda a senha)
-        return c.url.replace(/^rtsp:\/\//, `rtsp://${cred}@`);
+        return `${c.url.replace(/^rtsp:\/\//, `rtsp://${cred}@`)}${SO_VIDEO}`;
       }
-      return `rtsp://${cred}@${c.ip}:${c.porta || 554}/`;
+      return `rtsp://${cred}@${c.ip}:${c.porta || 554}/${SO_VIDEO}`;
   }
 }
 
@@ -61,10 +70,25 @@ function configurar() {
   ];
   cameras.ler().forEach((c, i) => {
     linhas.push(`  "${c.id}":`, `    - ${JSON.stringify(fonte(c, i, env))}`);
+    // compatibilidade: o mesmo vídeo reconvertido em H264 comum (com a placa de vídeo, se houver), para câmeras cujo
+    // perfil H264 o navegador recusa. O ffmpeg só roda enquanto alguém assiste a este stream.
+    linhas.push(`  "${c.id}_compat":`, `    - ${JSON.stringify(`ffmpeg:${c.id}#video=h264#width=1920#hardware`)}`);
   });
   const arq = join(app.getPath('userData'), 'go2rtc.yaml');
   writeFileSync(arq, `${linhas.join('\n')}\n`);
   return { arq, env };
+}
+
+/** Pergunta às câmeras ONVIF o endereço RTSP do vídeo (GetStreamUri). */
+async function resolverOnvif() {
+  const { Onvif } = require('./controle/onvif');
+  await Promise.all(cameras.ler().filter((c) => c.tipo === 'onvif').map(async (c) => {
+    try {
+      const o = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha: cameras.abrir(c.senhaCifrada) });
+      const uri = await o.enderecoRtsp();
+      if (uri && uri.startsWith('rtsp://')) rtspOnvif.set(c.id, uri.replace(/^rtsp:\/\/[^@/]*@/, 'rtsp://'));
+    } catch { /* câmera fora do ar agora: fica a descoberta do go2rtc */ }
+  }));
 }
 
 function iniciar() {
@@ -83,4 +107,4 @@ function parar() {
   if (p && !p.killed) p.kill();
 }
 
-module.exports = { iniciar, parar, PORTA_API, PORTA_RTSP };
+module.exports = { resolverOnvif, iniciar, parar, PORTA_API, PORTA_RTSP };

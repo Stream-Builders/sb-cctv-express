@@ -222,6 +222,12 @@ function vigiar(id, quadro, componente) {
     const v = componente.querySelector('video');
     // câmera ao vivo não tem play, tempo nem barra de progresso: o player do go2rtc liga os controles por padrão
     if (v && v.controls) v.controls = false;
+    // o navegador recusou o vídeo (perfil H264 que ele não decodifica): passa para o stream reconvertido, uma vez só
+    if (v && v.error && !quadro.dataset.compat) {
+      quadro.dataset.compat = '1';
+      componente.src = `ws://${motor}/api/ws?src=${encodeURIComponent(`${id}_compat`)}`;
+      paradoDesde = Date.now();
+    }
     const agora = v ? v.currentTime : 0;
     let novo;
     if (v && agora !== ultimoTempo && !v.paused) {

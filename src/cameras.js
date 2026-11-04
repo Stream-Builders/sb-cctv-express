@@ -48,7 +48,8 @@ function salvar(dados) {
     porta: Number(dados.porta) || null,
     canal: Number(dados.canal) || 1,
     usuario: String(dados.usuario || '').trim(),
-    url: String(dados.url || '').trim(),
+    // rstp:// (letras trocadas) e rtsp sem barras viram rtsp://
+    url: String(dados.url || '').trim().replace(/^(rstp|rtps|rtsp):\/*/i, 'rtsp://'),
     // grava por padrão; desligar é escolha explícita da pessoa
     gravar: dados.gravar === undefined ? atual.gravar !== false : dados.gravar === true || dados.gravar === 'on',
   };
