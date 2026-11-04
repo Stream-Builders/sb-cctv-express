@@ -189,3 +189,9 @@ body { grid-template-columns: minmax(0, 1fr); }
 /* botão de gravar ligado: o círculo preenchido em vermelho, pulsando como o REC */
 .botao-gravando .sb-btn__ico svg circle { fill: var(--gravando); stroke: var(--gravando); animation: piscar 1.4s infinite; }
 @media (prefers-reduced-motion: reduce) { .botao-gravando .sb-btn__ico svg circle { animation: none; } }
+
+/* arrastar e soltar no mosaico */
+.quadro[draggable="true"] { cursor: grab; }
+.quadro--arrastando { opacity: 0.45; }
+.quadro--alvo { border-color: var(--destaque); box-shadow: inset 0 0 0 2px var(--destaque), 0 0 18px rgb(255 51 51 / 0.35); }
+.lista li[draggable="true"] { cursor: grab; }

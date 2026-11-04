@@ -315,6 +315,64 @@ function vigiar(id, quadro, componente) {
   }, 1000);
 }
 
+// ---------- posições no mosaico (arrastar e soltar) ----------
+// Cada posição do mosaico guarda uma câmera (ou fica vazia). Guardado neste computador: é a arrumação desta tela.
+const POSICOES = 36;
+function ordemDoMosaico() {
+  let ordem = [];
+  try { ordem = JSON.parse(localStorage.getItem('ordem-mosaico') || '[]'); } catch { ordem = []; }
+  const ids = new Set(cameras.map((c) => c.id));
+  ordem = Array.from({ length: POSICOES }, (_, i) => (ids.has(ordem[i]) ? ordem[i] : null));
+  // câmera nova (ou removida e readicionada) entra na primeira posição livre
+  for (const c of cameras) if (!ordem.includes(c.id)) ordem[ordem.indexOf(null)] = c.id;
+  return ordem;
+}
+function guardarOrdem(ordem) {
+  try { localStorage.setItem('ordem-mosaico', JSON.stringify(ordem)); } catch { /* sem armazenamento: vale até fechar */ }
+}
+
+/** Põe a câmera na posição de destino; se ela já estava em outra, as duas trocam de lugar. */
+function posicionar(idCamera, destino) {
+  const ordem = ordemDoMosaico();
+  const origem = ordem.indexOf(idCamera);
+  if (origem === destino) return;
+  const ocupante = ordem[destino];
+  ordem[destino] = idCamera;
+  if (origem >= 0) ordem[origem] = ocupante;
+  guardarOrdem(ordem);
+  desenharMosaico();
+}
+
+const TIPO_ARRASTE = 'application/x-cctv-camera';
+/** O quadro aceita câmera solta em cima (da lista ou de outro quadro) e, se tem câmera, pode ser arrastado. */
+function arrastavel(q, posicao, cam) {
+  q.addEventListener('dragover', (e) => {
+    if (!e.dataTransfer.types.includes(TIPO_ARRASTE)) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    q.classList.add('quadro--alvo');
+  });
+  q.addEventListener('dragleave', () => q.classList.remove('quadro--alvo'));
+  q.addEventListener('drop', (e) => {
+    q.classList.remove('quadro--alvo');
+    const id = e.dataTransfer.getData(TIPO_ARRASTE);
+    if (!id) return;
+    e.preventDefault();
+    selecionado = posicao;
+    posicionar(id, posicao);
+  });
+  if (!cam) return;
+  q.draggable = true;
+  q.addEventListener('dragstart', (e) => {
+    // os botões e painéis do quadro não começam arraste
+    if (e.target.closest && e.target.closest('.quadro__barra, .painel-quadro')) { e.preventDefault(); return; }
+    e.dataTransfer.setData(TIPO_ARRASTE, cam.id);
+    e.dataTransfer.effectAllowed = 'move';
+    q.classList.add('quadro--arrastando');
+  });
+  q.addEventListener('dragend', () => q.classList.remove('quadro--arrastando'));
+}
+
 function desenharMosaico() {
   mosaicoEl.replaceChildren();
   const lado = Math.sqrt(mosaico);
@@ -322,7 +380,9 @@ function desenharMosaico() {
   const colunas = telaCheia ? 1 : lado;
   mosaicoEl.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
   mosaicoEl.style.gridTemplateRows = `repeat(${colunas}, 1fr)`;
-  const visiveis = telaCheia ? cameras.filter((c) => c.id === telaCheia) : cameras.slice(0, n);
+  const ordem = ordemDoMosaico();
+  const porId = new Map(cameras.map((c) => [c.id, c]));
+  const visiveis = telaCheia ? cameras.filter((c) => c.id === telaCheia) : ordem.slice(0, n).map((id) => porId.get(id) || null);
   for (let i = 0; i < n; i++) {
     const cam = visiveis[i];
     let q;
@@ -346,6 +406,7 @@ function desenharMosaico() {
       telaCheia = telaCheia ? null : cam.id;
       desenharMosaico();
     });
+    if (!telaCheia) arrastavel(q, i, cam);
     mosaicoEl.append(q);
   }
   document.querySelectorAll('[data-mosaico]').forEach((b) => {
@@ -381,6 +442,12 @@ function desenharLista() {
     editar.addEventListener('click', (e) => { e.stopPropagation(); abrirFormulario(cam); });
     li.append(ponto, texto, editar);
     li.addEventListener('dblclick', () => { telaCheia = cam.id; desenharMosaico(); });
+    // arrastar da lista para um quadro do mosaico
+    li.draggable = true;
+    li.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData(TIPO_ARRASTE, cam.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
     listaEl.append(li);
   }
 }
