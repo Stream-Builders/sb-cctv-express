@@ -97,7 +97,7 @@ class Dvrip {
   }
 
   /** Comando de PTZ. comando: DirectionUp/Down/Left/Right, ZoomTile (aproximar), ZoomWide (afastar). parar=true solta. */
-  async ptz(comando, { canal = 0, velocidade = 5, parar = false } = {}) {
+  async ptz(comando, { canal = 0, velocidade = 5, parar = false, preset = null, tour = 0 } = {}) {
     const { json } = await this.enviar(MSG.PTZ, {
       Name: 'OPPTZControl',
       OPPTZControl: {
@@ -105,7 +105,7 @@ class Dvrip {
         Parameter: {
           AUX: { Number: 0, Status: 'On' }, Channel: canal, MenuOpts: 'Enter',
           POINT: { bottom: 0, left: 0, right: 0, top: 0 }, Pattern: 'SetBegin',
-          Preset: parar ? -1 : 65535, Step: parar ? 0 : velocidade, Tour: 0,
+          Preset: preset ?? (parar ? -1 : 65535), Step: parar ? 0 : velocidade, Tour: tour,
         },
       },
       SessionID: this.idSessao,

@@ -42,7 +42,9 @@ without passing through anyone's server.
 - **Live grid:** 1, 4, 9, 16, 25 or 36 cameras, automatic reconnection, double-click full screen, no re-encoding.
 - **Continuous recording:** to `C:\cctv_express\records`, in 120-minute segments (adjustable), with retention by days and by free space.
 - **Playback:** a daily timeline with motion markers; set a start and end and export the clip as MP4.
-- **PTZ and light:** pan, tilt and zoom by holding the button; smart, color, infrared or always-on light.
+- **PTZ and light:** pan, tilt and zoom by holding the button; saved positions and tour; smart, color, infrared or always-on light.
+- **Dual-lens cameras:** the second lens is added on its own; click the fixed lens to aim the PTZ lens.
+- **Camera settings:** image mode (auto, color, black and white), people-only detection, person tracking, light duration and brightness, siren.
 - **Motion detection:** adjustable sensitivity, on-screen badge, timeline marker and Windows notification.
 - **Camera discovery:** ONVIF (WS-Discovery), RTSP and Xiongmai/iCSee/XMeye on your network.
 - **Automatic compatibility:** cameras with an H.264 profile the browser rejects are transcoded on the fly (on the GPU, when available).

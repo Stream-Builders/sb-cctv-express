@@ -25,6 +25,12 @@ let movimento = new Set(); // id -> 'gravando' | 'iniciando' | 'desligada' | 'pa
 
 // ---------- peças ----------
 const ICONES = {
+  ajustes: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  imagem: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4"/>',
+  liga: '<rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="2"/>',
+  mira: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
+  sirene: '<path d="M7 18v-6a5 5 0 0 1 10 0v6M5 18h14v3H5zM12 3v2M4.2 6.2l1.4 1.4M19.8 6.2l-1.4 1.4"/>',
+  ronda: '<path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/>',
   gravar: '<circle cx="12" cy="12" r="6"/>',
   luz: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
   ptz: '<circle cx="12" cy="12" r="3"/><path d="M12 2l3 3H9zM12 22l-3-3h6zM2 12l3-3v6zM22 12l-3 3V9z"/>',
@@ -113,8 +119,13 @@ function barraDoQuadro(cam) {
     } else luz.title = t('quadro.semRecurso', { nome: t('quadro.luz') });
     if (caps.ptz) {
       ptz.disabled = false;
-      ptz.addEventListener('click', (e) => { e.stopPropagation(); alternarPainel(barra, 'ptz', () => painelPtz(cam)); });
+      ptz.addEventListener('click', (e) => { e.stopPropagation(); alternarPainel(barra, 'ptz', () => painelPtz(cam, caps)); });
     } else ptz.title = t('quadro.semRecurso', { nome: t('quadro.ptz') });
+    if (caps.ajustes && (Object.keys(caps.ajustes).length || caps.mirar)) {
+      const aj = botao({ icone: ICONES.ajustes, quadrado: true, titulo: t('ajustes.titulo') });
+      aj.addEventListener('click', (e) => { e.stopPropagation(); alternarPainel(barra, 'ajustes', () => painelAjustes(cam, caps)); });
+      barra.insertBefore(aj, cheia);
+    }
   });
   const cheia = botao({ icone: ICONES.telaCheia, quadrado: true, titulo: t('quadro.telaCheia') });
   cheia.addEventListener('click', (e) => {
@@ -203,8 +214,114 @@ const SETA = {
   afastar: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8 11h6"/>',
 };
 
-/** PTZ: segurar o botão move a câmera; soltar (ou sair do botão) para. */
-function painelPtz(cam) {
+/** Uma linha do painel de ajustes: rótulo e controles. */
+function linhaAjuste(rotulo, ...controles) {
+  const l = document.createElement('div');
+  l.className = 'ajuste';
+  const r = document.createElement('span');
+  r.className = 'ajuste__rotulo';
+  r.textContent = rotulo;
+  const c = document.createElement('div');
+  c.className = 'ajuste__controles';
+  c.append(...controles);
+  l.append(r, c);
+  return l;
+}
+
+/** Botões de escolha única (um ativo por vez), que gravam na câmera ao clicar. */
+function escolhas(cam, caps, chave, opcoes, icone) {
+  return opcoes.map((op) => {
+    const b = botao({ icone, rotulo: t(`ajustes.${chave}.${op}`), classes: caps.ajustes[chave] === op ? 'sb-btn--ativo' : '' });
+    b.addEventListener('click', async () => {
+      try {
+        await window.cctv.ajustar(cam.id, chave, op);
+        caps.ajustes[chave] = op;
+        for (const x of b.parentElement.children) x.classList.toggle('sb-btn--ativo', x === b);
+      } catch { /* a câmera recusou: fica o anterior */ }
+    });
+    return b;
+  });
+}
+
+/** Liga/desliga que grava na câmera. */
+function chaveLiga(cam, caps, chave) {
+  const b = botao({ icone: ICONES.liga, rotulo: t(caps.ajustes[chave] ? 'ajustes.ligado' : 'ajustes.desligado'), classes: caps.ajustes[chave] ? 'sb-btn--ativo' : '' });
+  b.addEventListener('click', async () => {
+    const novo = !caps.ajustes[chave];
+    try {
+      await window.cctv.ajustar(cam.id, chave, novo);
+      caps.ajustes[chave] = novo;
+      b.classList.toggle('sb-btn--ativo', novo);
+      b.querySelector('.sb-btn__label').textContent = t(novo ? 'ajustes.ligado' : 'ajustes.desligado');
+    } catch { /* recusado */ }
+  });
+  return b;
+}
+
+/** Faixa numérica que grava na câmera ao soltar. */
+function faixaAjuste(cam, caps, chave, min, max, passo, sufixo) {
+  const f = document.createElement('input');
+  Object.assign(f, { type: 'range', min: String(min), max: String(max), step: String(passo), value: String(caps.ajustes[chave]) });
+  const v = document.createElement('span');
+  v.className = 'ajuste__valor';
+  v.textContent = `${f.value}${sufixo}`;
+  f.addEventListener('input', () => { v.textContent = `${f.value}${sufixo}`; });
+  f.addEventListener('change', async () => {
+    try { await window.cctv.ajustar(cam.id, chave, Number(f.value)); caps.ajustes[chave] = Number(f.value); } catch { f.value = String(caps.ajustes[chave]); v.textContent = `${f.value}${sufixo}`; }
+  });
+  const caixa = document.createElement('div');
+  caixa.className = 'ajuste__faixa';
+  caixa.append(f, v);
+  return caixa;
+}
+
+/** Ajustes da câmera: só o que ela informou ter. */
+function painelAjustes(cam, caps) {
+  const p = document.createElement('div');
+  p.className = 'painel-quadro painel-ajustes';
+  const a = caps.ajustes || {};
+  if ('imagem' in a) p.append(linhaAjuste(t('ajustes.imagem'), ...escolhas(cam, caps, 'imagem', ['automatica', 'colorida', 'pretoBranco'], ICONES.imagem)));
+  if ('pessoas' in a) p.append(linhaAjuste(t('ajustes.pessoas'), chaveLiga(cam, caps, 'pessoas')));
+  if ('seguir' in a) p.append(linhaAjuste(t('ajustes.seguir'), chaveLiga(cam, caps, 'seguir')));
+  if ('luzDuracao' in a) p.append(linhaAjuste(t('ajustes.luzDuracao'), faixaAjuste(cam, caps, 'luzDuracao', 5, 600, 5, ' s')));
+  if ('luzBrilho' in a) p.append(linhaAjuste(t('ajustes.luzBrilho'), faixaAjuste(cam, caps, 'luzBrilho', 1, 100, 1, '%')));
+  if (caps.mirar) {
+    const b = botao({ icone: ICONES.mira, rotulo: t('ajustes.mirarBotao') });
+    b.addEventListener('click', () => {
+      const quadro = p.closest('.quadro');
+      p.remove();
+      quadro.classList.add('quadro--mirando');
+      const alvo = (e) => {
+        e.stopPropagation();
+        const r = quadro.getBoundingClientRect();
+        quadro.classList.remove('quadro--mirando');
+        window.cctv.mirar(cam.id, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height).catch(() => {});
+      };
+      quadro.addEventListener('click', alvo, { once: true, capture: true });
+    });
+    p.append(linhaAjuste(t('ajustes.mirar'), b));
+  }
+  if ('sirene' in a) {
+    const b = botao({ icone: ICONES.sirene, rotulo: t(a.sirene ? 'ajustes.sireneParar' : 'ajustes.sireneTocar'), classes: a.sirene ? 'sb-btn--danger' : '' });
+    b.addEventListener('click', async () => {
+      const novo = !caps.ajustes.sirene;
+      // tocar faz barulho na rua: sempre pergunta antes
+      if (novo && !window.confirm(t('ajustes.sireneConfirmar'))) return;
+      try {
+        await window.cctv.ajustar(cam.id, 'sirene', novo);
+        caps.ajustes.sirene = novo;
+        b.classList.toggle('sb-btn--danger', novo);
+        b.querySelector('.sb-btn__label').textContent = t(novo ? 'ajustes.sireneParar' : 'ajustes.sireneTocar');
+        if (novo) setTimeout(() => { caps.ajustes.sirene = false; b.classList.remove('sb-btn--danger'); b.querySelector('.sb-btn__label').textContent = t('ajustes.sireneTocar'); }, 30000);
+      } catch { /* recusado */ }
+    });
+    p.append(linhaAjuste(t('ajustes.sirene'), b));
+  }
+  return p;
+}
+
+/** PTZ: segurar o botão move a câmera; soltar (ou sair do botão) para. Posições salvas: clique vai, segurar 1 s salva. */
+function painelPtz(cam, caps = {}) {
   const p = document.createElement('div');
   p.className = 'painel-quadro painel-ptz';
   for (const dir of ['cima', 'esquerda', 'direita', 'baixo', 'aproximar', 'afastar']) {
@@ -224,6 +341,34 @@ function painelPtz(cam) {
     b.addEventListener('lostpointercapture', parar);
     p.append(b);
   }
+  const pos = document.createElement('div');
+  pos.className = 'ptz-posicoes';
+  pos.title = t('ptz.posicoesDica');
+  for (let n = 1; n <= 4; n++) {
+    const b = botao({ icone: `<text x="12" y="16.5" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" stroke="none">${n}</text>`, quadrado: true, titulo: t('ptz.posicao', { n }) });
+    let timer = null, salvou = false;
+    b.addEventListener('pointerdown', () => {
+      salvou = false;
+      timer = setTimeout(() => {
+        salvou = true;
+        window.cctv.posicao(cam.id, 'salvar', n).then(() => { b.classList.add('sb-btn--ativo'); setTimeout(() => b.classList.remove('sb-btn--ativo'), 800); }).catch(() => {});
+      }, 1000);
+    });
+    b.addEventListener('pointerup', () => { clearTimeout(timer); if (!salvou) window.cctv.posicao(cam.id, 'ir', n).catch(() => {}); });
+    b.addEventListener('pointerleave', () => clearTimeout(timer));
+    pos.append(b);
+  }
+  if (caps.ronda) {
+    let andando = false;
+    const r = botao({ icone: ICONES.ronda, quadrado: true, titulo: t('ptz.ronda') });
+    r.addEventListener('click', () => {
+      andando = !andando;
+      r.classList.toggle('sb-btn--ativo', andando);
+      window.cctv.posicao(cam.id, andando ? 'rondaIniciar' : 'rondaParar', 1).catch(() => {});
+    });
+    pos.append(r);
+  }
+  p.append(pos);
   return p;
 }
 
