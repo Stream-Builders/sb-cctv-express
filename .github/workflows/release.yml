@@ -1,0 +1,68 @@
+# Monta o instalador no GitHub Actions a partir do repositório público e, quando a SignPath Foundation aprovar o
+# projeto, assina pela SignPath antes de publicar. Dispara com uma tag v* (ex.: v0.2.3) ou manualmente.
+# Para ligar a assinatura: secret SIGNPATH_API_TOKEN e variáveis SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG e
+# SIGNPATH_POLICY_SLUG (release-signing). Sem elas, o workflow só monta e publica sem assinatura.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  instalador:
+    # a SignPath exige build em runner hospedado pelo GitHub para verificar a origem
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run dist
+
+      - name: Localiza o instalador
+        id: exe
+        shell: bash
+        run: echo "arquivo=$(ls dist/*.exe | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Guarda o instalador sem assinatura
+        id: sem-assinatura
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-sem-assinatura
+          path: ${{ steps.exe.outputs.arquivo }}
+
+      - name: Assina pela SignPath
+        if: vars.SIGNPATH_PROJECT_SLUG != ''
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.sem-assinatura.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: assinado
+
+      - name: Publica a release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          versao="${GITHUB_REF_NAME#v}"
+          origem="${{ steps.exe.outputs.arquivo }}"
+          [ -d assinado ] && origem="$(ls assinado/*.exe | head -1)"
+          cp "$origem" "CCTV-Express-Setup-$versao.exe"
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
+            && gh release upload "$GITHUB_REF_NAME" "CCTV-Express-Setup-$versao.exe" --clobber \
+            || gh release create "$GITHUB_REF_NAME" "CCTV-Express-Setup-$versao.exe" --title "$GITHUB_REF_NAME" --generate-notes
