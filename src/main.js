@@ -183,6 +183,18 @@ ipcMain.handle('config:abrir-pasta', () => {
   mkdirSync(pasta, { recursive: true });
   return shell.openPath(pasta);
 });
+// idioma escolhido no instalador (código de idioma do Windows gravado pelo NSIS) -> código do app
+const LCID = { 1033: 'en', 1046: 'pt-BR', 1034: 'es', 3082: 'es', 1036: 'fr', 1031: 'de', 1040: 'it', 1043: 'nl', 1045: 'pl', 1049: 'ru',
+  1053: 'sv', 1055: 'tr', 1066: 'vi', 2052: 'zh-Hans', 1042: 'ko', 1041: 'ja', 1057: 'id', 1081: 'hi', 1025: 'ar' };
+ipcMain.handle('sistema:idioma-instalador', () => {
+  try {
+    const saida = require('node:child_process').execFileSync('reg', ['query', 'HKCU\\Software\\CCTV Express', '/v', 'IdiomaInstalador'], { encoding: 'utf8', windowsHide: true });
+    const n = Number((saida.match(/REG_SZ\s+(\d+)/) || [])[1]);
+    return LCID[n] || null;
+  } catch {
+    return null;
+  }
+});
 ipcMain.handle('sistema:idioma', () => app.getPreferredSystemLanguages()[0] || app.getLocale());
 
 app.whenReady().then(() => {

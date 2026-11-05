@@ -1,7 +1,7 @@
 {
   "name": "cctv-express",
   "productName": "CCTV Express",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Monitoramento de câmeras IP (CCTV) para Windows: ao vivo, gravação, reprodução, PTZ e luz.",
   "main": "src/main.js",
   "private": true,
@@ -12,7 +12,7 @@
     "dist": "electron-builder --win"
   },
   "devDependencies": {
-    "electron": "45.2.2",
+    "electron": "45.2.3",
     "electron-builder": "26.18.0"
   },
   "build": {
@@ -45,7 +45,28 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "displayLanguageSelector": true,
+      "multiLanguageInstaller": true,
+      "installerLanguages": [
+        "en_US",
+        "pt_BR",
+        "es_ES",
+        "fr_FR",
+        "de_DE",
+        "it_IT",
+        "nl_NL",
+        "pl_PL",
+        "ru_RU",
+        "sv_SE",
+        "tr_TR",
+        "vi_VN",
+        "zh_CN",
+        "ko_KR",
+        "ja_JP",
+        "id_ID",
+        "ar_SA"
+      ]
     }
   },
   "allowScripts": {

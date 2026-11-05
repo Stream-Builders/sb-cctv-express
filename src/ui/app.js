@@ -912,6 +912,15 @@ async function aplicarIdioma(codigo) {
 
 let escolhido = null;
 try { escolhido = localStorage.getItem('idioma'); } catch { /* sem armazenamento: segue o Windows */ }
+// o idioma escolhido no instalador vale na primeira abertura depois de cada instalação (e sobrepõe a escolha antiga)
+const doInstalador = await window.cctv.idiomaDoInstalador();
+try {
+  if (doInstalador && localStorage.getItem('idioma-instalador') !== doInstalador) {
+    localStorage.setItem('idioma-instalador', doInstalador);
+    localStorage.setItem('idioma', doInstalador);
+    escolhido = doInstalador;
+  }
+} catch { if (!escolhido) escolhido = doInstalador; }
 await aplicarIdioma(escolhido || maisProximo(await window.cctv.idiomaDoSistema()));
 traduzirPagina();
 await carregar();
