@@ -36,7 +36,7 @@ jobs:
 
       - name: Guarda o instalador sem assinatura
         id: sem-assinatura
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: instalador-sem-assinatura
           path: ${{ steps.exe.outputs.arquivo }}
