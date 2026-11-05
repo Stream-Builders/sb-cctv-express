@@ -18,16 +18,16 @@ jobs:
     # a SignPath exige build em runner hospedado pelo GitHub para verificar a origem
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
 
-      - run: npm run dist
+      - run: npx electron-builder --win --publish never
 
       - name: Localiza o instalador
         id: exe
@@ -36,7 +36,7 @@ jobs:
 
       - name: Guarda o instalador sem assinatura
         id: sem-assinatura
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: instalador-sem-assinatura
           path: ${{ steps.exe.outputs.arquivo }}
