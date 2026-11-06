@@ -518,7 +518,24 @@ function arrastavel(q, posicao, cam) {
   q.addEventListener('dragend', () => q.classList.remove('quadro--arrastando'));
 }
 
+/**
+ * Encerra os players de um trecho da tela antes de ele sair. Com background ligado, o player do go2rtc não se desliga
+ * sozinho ao sair da página: ficava recebendo vídeo e reconectando invisível, e cada redesenho do mosaico (trocar 1/4/9,
+ * tela cheia, idioma, editar câmera) somava uma cópia de cada câmera na memória até o app travar.
+ */
+function encerrarPlayers(raiz) {
+  for (const p of raiz.querySelectorAll('video-stream')) {
+    p.background = false;
+    if (p.reconnectTID) { clearTimeout(p.reconnectTID); p.reconnectTID = 0; }
+    if (p.disconnectTID) { clearTimeout(p.disconnectTID); p.disconnectTID = 0; }
+    try { if (p.video) p.ondisconnect(); } catch { /* player ainda sem vídeo: nada a fechar */ }
+    const v = p.querySelector('video');
+    if (v) { v.pause(); v.removeAttribute('src'); v.load(); }
+  }
+}
+
 function desenharMosaico() {
+  encerrarPlayers(mosaicoEl);
   mosaicoEl.replaceChildren();
   const lado = Math.sqrt(mosaico);
   const n = telaCheia ? 1 : mosaico;
