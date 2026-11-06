@@ -209,3 +209,25 @@ body { grid-template-columns: minmax(0, 1fr); }
 .ajuste__valor { font-variant-numeric: tabular-nums; min-width: 4ch; text-align: end; }
 /* mirando: cursor de mira e contorno até o clique */
 .quadro--mirando { cursor: crosshair; outline: 2px dashed var(--destaque); outline-offset: -2px; }
+
+/* os selos e os atalhos cabem na tarja preta do quadro (o vídeo 16:9 em object-fit: contain deixa uma faixa em cima e
+   outra embaixo). A altura deles acompanha o tamanho do quadro no mosaico: --tarja é a altura de cada faixa, --faixa a
+   altura das peças, entre 10px (mosaicos grandes) e 44px (uma câmera só). */
+.quadro { container-type: size; }
+.quadro__topo, .quadro__barra, .painel-quadro {
+  --tarja: max(0px, calc((100cqh - 56.25cqw) / 2));
+  --faixa: clamp(10px, calc(var(--tarja) * 0.8), 44px);
+}
+.quadro__topo {
+  block-size: max(var(--tarja), calc(var(--faixa) + 8px)); padding-block: 0; padding-inline: max(6px, calc(var(--faixa) * 0.3));
+  gap: max(4px, calc(var(--faixa) * 0.22)); font-size: calc(var(--faixa) * 0.42); background: none;
+}
+.quadro__topo .selo { font-size: calc(var(--faixa) * 0.36); padding: 0 0.85em; block-size: calc(var(--faixa) * 0.82); }
+.quadro__topo .selo__texto { gap: 0.45em; }
+.quadro__topo .selo__texto::before { width: 0.65em; height: 0.65em; }
+.quadro__barra {
+  bottom: max(4px, calc((var(--tarja) - var(--faixa)) / 2)); inset-inline-end: max(6px, calc(var(--faixa) * 0.3));
+  gap: max(3px, calc(var(--faixa) * 0.15));
+}
+.quadro__barra .sb-btn { --sb-h: var(--faixa); font-size: calc(var(--faixa) * 0.5); }
+.painel-quadro { bottom: calc(max(4px, calc((var(--tarja) - var(--faixa)) / 2)) + var(--faixa) + 8px); }
