@@ -214,8 +214,9 @@ body { grid-template-columns: minmax(0, 1fr); }
    outra embaixo). A altura deles acompanha o tamanho do quadro no mosaico: --tarja é a altura de cada faixa, --faixa a
    altura das peças, entre 10px (mosaicos grandes) e 44px (uma câmera só). */
 .quadro { container-type: size; }
-.quadro__topo, .quadro__barra, .painel-quadro {
-  --tarja: max(0px, calc((100cqh - 56.25cqw) / 2));
+.quadro__topo, .quadro__barra, .painel-quadro, .quadro video-stream, .quadro video {
+  --respiro: clamp(16px, 7cqh, 52px);
+  --tarja: max(var(--respiro), calc((100cqh - 56.25cqw) / 2));
   --faixa: clamp(10px, calc(var(--tarja) * 0.8), 44px);
 }
 .quadro__topo {
@@ -231,3 +232,6 @@ body { grid-template-columns: minmax(0, 1fr); }
 }
 .quadro__barra .sb-btn { --sb-h: var(--faixa); font-size: calc(var(--faixa) * 0.5); }
 .painel-quadro { bottom: calc(max(4px, calc((var(--tarja) - var(--faixa)) / 2)) + var(--faixa) + 8px); }
+/* a margem de respiro dos selos e atalhos: o vídeo nunca ocupa a faixa de cima nem a de baixo, mesmo num quadro mais
+   largo que 16:9 (aí ele encolhe e ganha tarjas laterais) */
+.quadro video-stream, .quadro video { block-size: calc(100cqh - 2 * var(--respiro)); }
