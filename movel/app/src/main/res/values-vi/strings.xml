@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Camera</string>
+  <string name="ao_vivo">Trực tiếp</string>
+  <string name="parado">Đã dừng</string>
+  <string name="iniciar">Bắt đầu</string>
+  <string name="parar">Dừng</string>
+  <string name="trocar">Đổi camera</string>
+  <string name="endereco">Thêm địa chỉ này vào CCTV Express như camera RTSP:</string>
+  <string name="parado_ajuda">Camera đã dừng. Chạm Bắt đầu để phát trong mạng của bạn.</string>
+  <string name="sem_rede">Kết nối điện thoại với cùng mạng Wi-Fi với máy tính.</string>
+  <string name="permissao">Cho phép camera và micro để phát.</string>
+  <string name="falha">Điện thoại này không khởi động được bộ mã hóa camera.</string>
+  <string name="credenciais">Người dùng: %1$s · Mật khẩu: %2$s</string>
+</resources>

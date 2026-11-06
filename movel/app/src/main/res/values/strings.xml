@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Camera</string>
+  <string name="ao_vivo">Live</string>
+  <string name="parado">Stopped</string>
+  <string name="iniciar">Start</string>
+  <string name="parar">Stop</string>
+  <string name="trocar">Switch camera</string>
+  <string name="endereco">Add this address to CCTV Express as an RTSP camera:</string>
+  <string name="parado_ajuda">The camera is stopped. Tap Start to stream on your network.</string>
+  <string name="sem_rede">Connect the phone to the same Wi-Fi network as the computer.</string>
+  <string name="permissao">Allow camera and microphone access to stream.</string>
+  <string name="falha">This phone could not start the camera encoder.</string>
+  <string name="credenciais">User: %1$s · Password: %2$s</string>
+</resources>

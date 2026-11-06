@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Kamera</string>
+  <string name="ao_vivo">Na żywo</string>
+  <string name="parado">Zatrzymana</string>
+  <string name="iniciar">Start</string>
+  <string name="parar">Stop</string>
+  <string name="trocar">Zmień kamerę</string>
+  <string name="endereco">Dodaj ten adres w CCTV Express jako kamerę RTSP:</string>
+  <string name="parado_ajuda">Kamera jest zatrzymana. Dotknij Start, aby nadawać w sieci.</string>
+  <string name="sem_rede">Połącz telefon z tą samą siecią Wi-Fi co komputer.</string>
+  <string name="permissao">Zezwól na kamerę i mikrofon, aby nadawać.</string>
+  <string name="falha">Ten telefon nie mógł uruchomić kodera kamery.</string>
+  <string name="credenciais">Użytkownik: %1$s · Hasło: %2$s</string>
+</resources>

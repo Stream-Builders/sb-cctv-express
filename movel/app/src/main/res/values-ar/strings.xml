@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">كاميرا CCTV Express</string>
+  <string name="ao_vivo">مباشر</string>
+  <string name="parado">متوقفة</string>
+  <string name="iniciar">بدء</string>
+  <string name="parar">إيقاف</string>
+  <string name="trocar">تبديل الكاميرا</string>
+  <string name="endereco">أضف هذا العنوان في CCTV Express ككاميرا RTSP:</string>
+  <string name="parado_ajuda">الكاميرا متوقفة. اضغط بدء للبث على شبكتك.</string>
+  <string name="sem_rede">صِل الهاتف بنفس شبكة Wi-Fi المتصل بها الكمبيوتر.</string>
+  <string name="permissao">اسمح بالكاميرا والميكروفون للبث.</string>
+  <string name="falha">تعذّر على هذا الهاتف تشغيل مشفّر الكاميرا.</string>
+  <string name="credenciais">المستخدم: %1$s · كلمة المرور: %2$s</string>
+</resources>

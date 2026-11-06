@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Kamera</string>
+  <string name="ao_vivo">Canlı</string>
+  <string name="parado">Durduruldu</string>
+  <string name="iniciar">Başlat</string>
+  <string name="parar">Durdur</string>
+  <string name="trocar">Kamerayı değiştir</string>
+  <string name="endereco">Bu adresi CCTV Express’e RTSP kamera olarak ekleyin:</string>
+  <string name="parado_ajuda">Kamera durduruldu. Ağınızda yayın için Başlat’a dokunun.</string>
+  <string name="sem_rede">Telefonu bilgisayarla aynı Wi-Fi ağına bağlayın.</string>
+  <string name="permissao">Yayın için kamera ve mikrofona izin verin.</string>
+  <string name="falha">Bu telefon kamera kodlayıcısını başlatamadı.</string>
+  <string name="credenciais">Kullanıcı: %1$s · Parola: %2$s</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Камера</string>
+  <string name="ao_vivo">В эфире</string>
+  <string name="parado">Остановлена</string>
+  <string name="iniciar">Старт</string>
+  <string name="parar">Стоп</string>
+  <string name="trocar">Сменить камеру</string>
+  <string name="endereco">Добавьте этот адрес в CCTV Express как RTSP-камеру:</string>
+  <string name="parado_ajuda">Камера остановлена. Нажмите «Старт», чтобы вещать в сети.</string>
+  <string name="sem_rede">Подключите телефон к той же сети Wi-Fi, что и компьютер.</string>
+  <string name="permissao">Разрешите доступ к камере и микрофону для трансляции.</string>
+  <string name="falha">Телефону не удалось запустить кодировщик камеры.</string>
+  <string name="credenciais">Пользователь: %1$s · Пароль: %2$s</string>
+</resources>

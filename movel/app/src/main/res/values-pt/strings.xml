@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Câmera</string>
+  <string name="ao_vivo">Ao vivo</string>
+  <string name="parado">Parada</string>
+  <string name="iniciar">Iniciar</string>
+  <string name="parar">Parar</string>
+  <string name="trocar">Trocar câmera</string>
+  <string name="endereco">Adicione este endereço no CCTV Express como câmera RTSP:</string>
+  <string name="parado_ajuda">A câmera está parada. Toque em Iniciar para transmitir na sua rede.</string>
+  <string name="sem_rede">Conecte o celular na mesma rede Wi-Fi do computador.</string>
+  <string name="permissao">Permita o uso da câmera e do microfone para transmitir.</string>
+  <string name="falha">Este celular não conseguiu iniciar o codificador da câmera.</string>
+  <string name="credenciais">Usuário: %1$s · Senha: %2$s</string>
+</resources>

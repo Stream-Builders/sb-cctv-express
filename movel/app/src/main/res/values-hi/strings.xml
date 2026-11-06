@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express कैमरा</string>
+  <string name="ao_vivo">लाइव</string>
+  <string name="parado">रुका हुआ</string>
+  <string name="iniciar">शुरू करें</string>
+  <string name="parar">रोकें</string>
+  <string name="trocar">कैमरा बदलें</string>
+  <string name="endereco">इस पते को CCTV Express में RTSP कैमरे के रूप में जोड़ें:</string>
+  <string name="parado_ajuda">कैमरा रुका है। अपने नेटवर्क पर प्रसारण के लिए शुरू करें दबाएं।</string>
+  <string name="sem_rede">फ़ोन को कंप्यूटर वाले ही Wi-Fi नेटवर्क से जोड़ें।</string>
+  <string name="permissao">प्रसारण के लिए कैमरा और माइक्रोफ़ोन की अनुमति दें।</string>
+  <string name="falha">यह फ़ोन कैमरा एनकोडर शुरू नहीं कर सका।</string>
+  <string name="credenciais">उपयोगकर्ता: %1$s · पासवर्ड: %2$s</string>
+</resources>

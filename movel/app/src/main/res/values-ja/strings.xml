@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express カメラ</string>
+  <string name="ao_vivo">ライブ</string>
+  <string name="parado">停止中</string>
+  <string name="iniciar">開始</string>
+  <string name="parar">停止</string>
+  <string name="trocar">カメラ切替</string>
+  <string name="endereco">このアドレスを CCTV Express に RTSP カメラとして追加してください:</string>
+  <string name="parado_ajuda">カメラは停止中です。ネットワークで配信するには「開始」をタップします。</string>
+  <string name="sem_rede">スマートフォンをパソコンと同じ Wi-Fi に接続してください。</string>
+  <string name="permissao">配信するにはカメラとマイクを許可してください。</string>
+  <string name="falha">このスマートフォンではカメラのエンコーダーを開始できませんでした。</string>
+  <string name="credenciais">ユーザー: %1$s · パスワード: %2$s</string>
+</resources>

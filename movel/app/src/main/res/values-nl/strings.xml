@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Camera</string>
+  <string name="ao_vivo">Live</string>
+  <string name="parado">Gestopt</string>
+  <string name="iniciar">Starten</string>
+  <string name="parar">Stoppen</string>
+  <string name="trocar">Camera wisselen</string>
+  <string name="endereco">Voeg dit adres in CCTV Express toe als RTSP-camera:</string>
+  <string name="parado_ajuda">De camera is gestopt. Tik op Starten om op je netwerk uit te zenden.</string>
+  <string name="sem_rede">Verbind de telefoon met hetzelfde wifi-netwerk als de computer.</string>
+  <string name="permissao">Sta camera en microfoon toe om uit te zenden.</string>
+  <string name="falha">Deze telefoon kon de camera-encoder niet starten.</string>
+  <string name="credenciais">Gebruiker: %1$s · Wachtwoord: %2$s</string>
+</resources>

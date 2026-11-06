@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express 카메라</string>
+  <string name="ao_vivo">라이브</string>
+  <string name="parado">중지됨</string>
+  <string name="iniciar">시작</string>
+  <string name="parar">중지</string>
+  <string name="trocar">카메라 전환</string>
+  <string name="endereco">이 주소를 CCTV Express에 RTSP 카메라로 추가하세요:</string>
+  <string name="parado_ajuda">카메라가 중지되었습니다. 네트워크로 송출하려면 시작을 누르세요.</string>
+  <string name="sem_rede">휴대폰을 컴퓨터와 같은 Wi-Fi에 연결하세요.</string>
+  <string name="permissao">송출하려면 카메라와 마이크를 허용하세요.</string>
+  <string name="falha">이 휴대폰에서 카메라 인코더를 시작하지 못했습니다.</string>
+  <string name="credenciais">사용자: %1$s · 비밀번호: %2$s</string>
+</resources>

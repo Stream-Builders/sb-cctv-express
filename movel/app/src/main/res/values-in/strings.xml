@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Kamera</string>
+  <string name="ao_vivo">Langsung</string>
+  <string name="parado">Berhenti</string>
+  <string name="iniciar">Mulai</string>
+  <string name="parar">Berhenti</string>
+  <string name="trocar">Ganti kamera</string>
+  <string name="endereco">Tambahkan alamat ini di CCTV Express sebagai kamera RTSP:</string>
+  <string name="parado_ajuda">Kamera berhenti. Ketuk Mulai untuk menyiarkan di jaringan Anda.</string>
+  <string name="sem_rede">Hubungkan ponsel ke jaringan Wi-Fi yang sama dengan komputer.</string>
+  <string name="permissao">Izinkan kamera dan mikrofon untuk menyiarkan.</string>
+  <string name="falha">Ponsel ini tidak dapat memulai encoder kamera.</string>
+  <string name="credenciais">Pengguna: %1$s · Kata sandi: %2$s</string>
+</resources>

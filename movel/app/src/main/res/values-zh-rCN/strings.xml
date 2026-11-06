@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express 摄像头</string>
+  <string name="ao_vivo">直播</string>
+  <string name="parado">已停止</string>
+  <string name="iniciar">开始</string>
+  <string name="parar">停止</string>
+  <string name="trocar">切换摄像头</string>
+  <string name="endereco">请在 CCTV Express 中将此地址添加为 RTSP 摄像头：</string>
+  <string name="parado_ajuda">摄像头已停止。点按“开始”在网络中推流。</string>
+  <string name="sem_rede">请将手机连接到与电脑相同的 Wi-Fi。</string>
+  <string name="permissao">请允许使用摄像头和麦克风以推流。</string>
+  <string name="falha">此手机无法启动摄像头编码器。</string>
+  <string name="credenciais">用户：%1$s · 密码：%2$s</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_nome">CCTV Express Kamera</string>
+  <string name="ao_vivo">Live</string>
+  <string name="parado">Stoppad</string>
+  <string name="iniciar">Starta</string>
+  <string name="parar">Stoppa</string>
+  <string name="trocar">Byt kamera</string>
+  <string name="endereco">Lägg till den här adressen i CCTV Express som RTSP-kamera:</string>
+  <string name="parado_ajuda">Kameran är stoppad. Tryck på Starta för att sända i nätverket.</string>
+  <string name="sem_rede">Anslut telefonen till samma Wi-Fi som datorn.</string>
+  <string name="permissao">Tillåt kamera och mikrofon för att sända.</string>
+  <string name="falha">Telefonen kunde inte starta kamerans kodare.</string>
+  <string name="credenciais">Användare: %1$s · Lösenord: %2$s</string>
+</resources>

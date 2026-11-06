@@ -1,0 +1,28 @@
+// O CCTV Express Câmera: transforma o celular numa câmera IP. O vídeo da câmera do celular sai por RTSP na rede local
+// (servidor RTSP do RootEncoder, Apache 2.0), e o CCTV Express no computador o adiciona como qualquer câmera RTSP.
+plugins { id 'com.android.application' }
+
+android {
+  namespace 'builders.stream.cctvexpress.camera'
+  compileSdk 37
+  defaultConfig {
+    applicationId 'builders.stream.cctvexpress.camera'
+    minSdk 24
+    targetSdk 37
+    versionCode 1
+    versionName '0.1.0'
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      // assinatura de teste até a chave de publicação ir para o cofre
+      signingConfig signingConfigs.debug
+    }
+  }
+  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+
+dependencies {
+  implementation 'com.github.pedroSG94:RTSP-Server:1.4.3'
+  implementation 'com.github.pedroSG94.RootEncoder:library:2.8.1'
+}
