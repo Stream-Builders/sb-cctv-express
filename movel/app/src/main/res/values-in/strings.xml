@@ -12,4 +12,7 @@
   <string name="permissao">Izinkan kamera dan mikrofon untuk menyiarkan.</string>
   <string name="falha">Ponsel ini tidak dapat memulai encoder kamera.</string>
   <string name="credenciais">Pengguna: %1$s · Kata sandi: %2$s</string>
+  <string name="luz">Lampu</string>
+  <string name="escurecer">Redupkan layar</string>
+  <string name="escuro_aviso">Sedang menyiarkan. Ketuk untuk menyalakan layar.</string>
 </resources>

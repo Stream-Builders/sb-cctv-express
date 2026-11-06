@@ -12,4 +12,7 @@
   <string name="permissao">Tillåt kamera och mikrofon för att sända.</string>
   <string name="falha">Telefonen kunde inte starta kamerans kodare.</string>
   <string name="credenciais">Användare: %1$s · Lösenord: %2$s</string>
+  <string name="luz">Ljus</string>
+  <string name="escurecer">Släck skärmen</string>
+  <string name="escuro_aviso">Sänder. Tryck för att väcka skärmen.</string>
 </resources>

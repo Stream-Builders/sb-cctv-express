@@ -12,4 +12,7 @@
   <string name="permissao">Cho phép camera và micro để phát.</string>
   <string name="falha">Điện thoại này không khởi động được bộ mã hóa camera.</string>
   <string name="credenciais">Người dùng: %1$s · Mật khẩu: %2$s</string>
+  <string name="luz">Đèn</string>
+  <string name="escurecer">Làm tối màn hình</string>
+  <string name="escuro_aviso">Đang phát. Chạm để bật lại màn hình.</string>
 </resources>

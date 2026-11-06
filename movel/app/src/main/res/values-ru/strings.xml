@@ -12,4 +12,7 @@
   <string name="permissao">Разрешите доступ к камере и микрофону для трансляции.</string>
   <string name="falha">Телефону не удалось запустить кодировщик камеры.</string>
   <string name="credenciais">Пользователь: %1$s · Пароль: %2$s</string>
+  <string name="luz">Свет</string>
+  <string name="escurecer">Затемнить экран</string>
+  <string name="escuro_aviso">Идёт трансляция. Коснитесь, чтобы включить экран.</string>
 </resources>

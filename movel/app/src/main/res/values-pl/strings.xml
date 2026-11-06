@@ -12,4 +12,7 @@
   <string name="permissao">Zezwól na kamerę i mikrofon, aby nadawać.</string>
   <string name="falha">Ten telefon nie mógł uruchomić kodera kamery.</string>
   <string name="credenciais">Użytkownik: %1$s · Hasło: %2$s</string>
+  <string name="luz">Światło</string>
+  <string name="escurecer">Przyciemnij ekran</string>
+  <string name="escuro_aviso">Nadawanie. Dotknij, aby wybudzić ekran.</string>
 </resources>

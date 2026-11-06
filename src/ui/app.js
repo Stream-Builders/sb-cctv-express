@@ -143,8 +143,26 @@ function barraDoQuadro(cam) {
     const p = somDaCamera(cam.id);
     guardarSom(cam.id, { ...p, mudo: !p.mudo });
     desenharBotaoSom(som, cam.id);
-    alternarPainel(barra, 'som', () => painelSom(cam, som));
   });
+  // o volume abre ao passar o mouse no botão de som (o clique só liga e desliga o som) e fecha ao sair dele e do painel
+  let fecharSom = 0;
+  const abrirSom = () => {
+    clearTimeout(fecharSom);
+    const quadro = barra.closest('.quadro');
+    if (quadro?.querySelector('.painel-quadro[data-tipo="som"]')) return;
+    alternarPainel(barra, 'som', () => {
+      const p = painelSom(cam, som);
+      p.addEventListener('mouseenter', () => clearTimeout(fecharSom));
+      p.addEventListener('mouseleave', agendarFechar);
+      return p;
+    });
+  };
+  const agendarFechar = () => {
+    clearTimeout(fecharSom);
+    fecharSom = setTimeout(() => barra.closest('.quadro')?.querySelector('.painel-quadro[data-tipo="som"]')?.remove(), 350);
+  };
+  som.addEventListener('mouseenter', abrirSom);
+  som.addEventListener('mouseleave', agendarFechar);
   barra.append(som, gravar, luz, ptz, cheia);
   return barra;
 }
@@ -204,6 +222,14 @@ function alternarPainel(barra, tipo, criar) {
   p.dataset.tipo = tipo;
   p.addEventListener('click', (e) => e.stopPropagation());
   p.addEventListener('dblclick', (e) => e.stopPropagation());
+  // mexer num controle do painel (o volume, por exemplo) não pode arrastar a câmera para outra posição do mosaico:
+  // enquanto o botão do mouse está apertado dentro do painel, o quadro deixa de ser arrastável
+  p.addEventListener('pointerdown', () => { quadro.draggable = false; });
+  const voltar = () => { quadro.draggable = true; };
+  p.addEventListener('pointerup', voltar);
+  p.addEventListener('pointercancel', voltar);
+  p.addEventListener('lostpointercapture', voltar);
+  document.addEventListener('pointerup', voltar, { once: true, capture: true });
   quadro.append(p);
 }
 

@@ -12,4 +12,7 @@
   <string name="permissao">Autorisez la caméra et le micro pour diffuser.</string>
   <string name="falha">Ce téléphone n’a pas pu démarrer l’encodeur de la caméra.</string>
   <string name="credenciais">Utilisateur : %1$s · Mot de passe : %2$s</string>
+  <string name="luz">Lumière</string>
+  <string name="escurecer">Assombrir l’écran</string>
+  <string name="escuro_aviso">Diffusion en cours. Touchez pour rallumer l’écran.</string>
 </resources>

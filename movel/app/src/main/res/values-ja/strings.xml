@@ -12,4 +12,7 @@
   <string name="permissao">配信するにはカメラとマイクを許可してください。</string>
   <string name="falha">このスマートフォンではカメラのエンコーダーを開始できませんでした。</string>
   <string name="credenciais">ユーザー: %1$s · パスワード: %2$s</string>
+  <string name="luz">ライト</string>
+  <string name="escurecer">画面を暗くする</string>
+  <string name="escuro_aviso">配信中です。タップすると画面が点きます。</string>
 </resources>

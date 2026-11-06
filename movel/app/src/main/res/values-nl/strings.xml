@@ -12,4 +12,7 @@
   <string name="permissao">Sta camera en microfoon toe om uit te zenden.</string>
   <string name="falha">Deze telefoon kon de camera-encoder niet starten.</string>
   <string name="credenciais">Gebruiker: %1$s · Wachtwoord: %2$s</string>
+  <string name="luz">Licht</string>
+  <string name="escurecer">Scherm dimmen</string>
+  <string name="escuro_aviso">Bezig met uitzenden. Tik om het scherm te wekken.</string>
 </resources>

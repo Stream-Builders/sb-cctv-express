@@ -12,4 +12,7 @@
   <string name="permissao">Yayın için kamera ve mikrofona izin verin.</string>
   <string name="falha">Bu telefon kamera kodlayıcısını başlatamadı.</string>
   <string name="credenciais">Kullanıcı: %1$s · Parola: %2$s</string>
+  <string name="luz">Işık</string>
+  <string name="escurecer">Ekranı karart</string>
+  <string name="escuro_aviso">Yayın sürüyor. Ekranı açmak için dokunun.</string>
 </resources>

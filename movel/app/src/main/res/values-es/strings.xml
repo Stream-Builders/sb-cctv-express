@@ -12,4 +12,7 @@
   <string name="permissao">Permite el acceso a la cámara y al micrófono para transmitir.</string>
   <string name="falha">Este teléfono no pudo iniciar el codificador de la cámara.</string>
   <string name="credenciais">Usuario: %1$s · Contraseña: %2$s</string>
+  <string name="luz">Luz</string>
+  <string name="escurecer">Oscurecer pantalla</string>
+  <string name="escuro_aviso">Transmitiendo. Toca para encender la pantalla.</string>
 </resources>

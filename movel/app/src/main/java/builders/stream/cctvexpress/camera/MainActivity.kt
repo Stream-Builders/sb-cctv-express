@@ -8,7 +8,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.SurfaceHolder
@@ -44,6 +43,14 @@ class MainActivity : Activity(), ConnectChecker {
   private lateinit var endereco: TextView
   private lateinit var ajuda: TextView
   private lateinit var credenciais: TextView
+  private lateinit var cortina: TextView
+
+  private fun escurecerTela(escuro: Boolean) {
+    cortina.visibility = if (escuro) View.VISIBLE else View.GONE
+    window.attributes = window.attributes.apply {
+      screenBrightness = if (escuro) 0.01f else WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+    }
+  }
   private lateinit var botao: Button
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,9 +73,14 @@ class MainActivity : Activity(), ConnectChecker {
 
   private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
-  private fun caixa(cor: Int, borda: Int) = GradientDrawable().apply {
-    setColor(cor); cornerRadius = dp(3).toFloat(); setStroke(dp(1), borda)
-  }
+  /** o paralelogramo da .sb-btn: a cor de cima clareada, a de baixo escurecida (o metal), e o fio da borda */
+  private fun caixa(cor: Int, borda: Int) = Paralelogramo(misturar(cor, Color.WHITE, 0.18f), misturar(cor, Color.BLACK, 0.25f), borda, espessuraBorda = dp(1).toFloat())
+
+  private fun misturar(a: Int, b: Int, t: Float): Int = Color.rgb(
+    (Color.red(a) + (Color.red(b) - Color.red(a)) * t).toInt(),
+    (Color.green(a) + (Color.green(b) - Color.green(a)) * t).toInt(),
+    (Color.blue(a) + (Color.blue(b) - Color.blue(a)) * t).toInt(),
+  )
 
   private fun montarTela() {
     val raiz = FrameLayout(this).apply { setBackgroundColor(Color.BLACK) }
@@ -85,7 +97,7 @@ class MainActivity : Activity(), ConnectChecker {
     }
     selo = TextView(this).apply {
       textSize = 12f; typeface = Typeface.DEFAULT_BOLD; letterSpacing = 0.08f; isAllCaps = true
-      setPadding(dp(10), dp(3), dp(10), dp(3))
+      setPadding(dp(16), dp(4), dp(16), dp(4))
     }
     topo.addView(marca, LinearLayout.LayoutParams(0, -2, 1f))
     topo.addView(selo)
@@ -105,16 +117,43 @@ class MainActivity : Activity(), ConnectChecker {
     val linha = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER }
     botao = Button(this).apply {
       setTextColor(Color.WHITE); typeface = Typeface.DEFAULT_BOLD; isAllCaps = true
-      background = caixa(ACENTO, ACENTO); setPadding(dp(22), 0, dp(22), 0)
+      background = caixa(ACENTO, 0xFFFF7A7A.toInt()); setPadding(dp(34), 0, dp(34), 0); letterSpacing = 0.08f
       setOnClickListener { alternar() }
     }
     val trocar = Button(this).apply {
       text = getString(R.string.trocar); setTextColor(Color.WHITE); isAllCaps = true
-      background = caixa(0xFF1F2329.toInt(), 0xFF4B5563.toInt()); setPadding(dp(18), 0, dp(18), 0)
+      background = caixa(0xFF2A2E35.toInt(), 0xFF4B5563.toInt()); setPadding(dp(30), 0, dp(30), 0); letterSpacing = 0.08f; typeface = Typeface.DEFAULT_BOLD
       setOnClickListener { (stream?.videoSource as? Camera2Source)?.switchCamera() }
     }
-    linha.addView(botao, LinearLayout.LayoutParams(-2, dp(44)).apply { marginEnd = dp(10) })
-    linha.addView(trocar, LinearLayout.LayoutParams(-2, dp(44)))
+    // a lanterna do celular: acende e apaga a luz junto da câmera traseira
+    val luz = Button(this).apply {
+      text = getString(R.string.luz); setTextColor(Color.WHITE); isAllCaps = true
+      background = caixa(0xFF2A2E35.toInt(), 0xFF4B5563.toInt()); setPadding(dp(30), 0, dp(30), 0); letterSpacing = 0.08f; typeface = Typeface.DEFAULT_BOLD
+    }
+    luz.setOnClickListener {
+      val fonte = stream?.videoSource as? Camera2Source ?: return@setOnClickListener
+      try {
+        if (fonte.isLanternEnabled()) fonte.disableLantern() else fonte.enableLantern()
+      } catch (_: Exception) { /* câmera sem lanterna (a frontal, por exemplo) */ }
+      val acesa = try { fonte.isLanternEnabled() } catch (_: Exception) { false }
+      luz.background = if (acesa) caixa(0xFFE8C46A.toInt(), 0xFFFFE6A8.toInt()) else caixa(0xFF2A2E35.toInt(), 0xFF4B5563.toInt())
+      luz.setTextColor(if (acesa) Color.BLACK else Color.WHITE)
+    }
+    val escurecer = Button(this).apply {
+      text = getString(R.string.escurecer); setTextColor(Color.WHITE); isAllCaps = true
+      background = caixa(0xFF2A2E35.toInt(), 0xFF4B5563.toInt()); setPadding(dp(30), 0, dp(30), 0); letterSpacing = 0.08f; typeface = Typeface.DEFAULT_BOLD
+      setOnClickListener { escurecerTela(true) }
+    }
+    linha.addView(botao, LinearLayout.LayoutParams(-2, dp(46)).apply { marginEnd = dp(4) })
+    linha.addView(trocar, LinearLayout.LayoutParams(-2, dp(46)).apply { marginEnd = dp(4) })
+    linha.addView(luz, LinearLayout.LayoutParams(-2, dp(46)).apply { marginEnd = dp(4) })
+    linha.addView(escurecer, LinearLayout.LayoutParams(-2, dp(46)))
+    // a tela escura: cobre tudo de preto e baixa o brilho ao mínimo; a câmera continua transmitindo. Um toque acende.
+    cortina = TextView(this).apply {
+      setBackgroundColor(Color.BLACK); setTextColor(0xFF2A2A2A.toInt()); textSize = 12f; gravity = Gravity.CENTER
+      text = getString(R.string.escuro_aviso); visibility = View.GONE
+      setOnClickListener { escurecerTela(false) }
+    }
     credenciais = TextView(this).apply {
       setTextColor(Color.WHITE); textSize = 14f; typeface = Typeface.MONOSPACE; gravity = Gravity.CENTER
       setTextIsSelectable(true)
@@ -124,6 +163,7 @@ class MainActivity : Activity(), ConnectChecker {
     base.addView(credenciais)
     base.addView(linha, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(8) })
     raiz.addView(base, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM))
+    raiz.addView(cortina, FrameLayout.LayoutParams(-1, -1))
     setContentView(raiz)
     mostrarEstado()
   }

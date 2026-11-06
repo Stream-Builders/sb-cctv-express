@@ -12,4 +12,7 @@
   <string name="permissao">Permita o uso da câmera e do microfone para transmitir.</string>
   <string name="falha">Este celular não conseguiu iniciar o codificador da câmera.</string>
   <string name="credenciais">Usuário: %1$s · Senha: %2$s</string>
+  <string name="luz">Luz</string>
+  <string name="escurecer">Escurecer tela</string>
+  <string name="escuro_aviso">Transmitindo. Toque para acender a tela.</string>
 </resources>

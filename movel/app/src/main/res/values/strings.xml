@@ -12,4 +12,7 @@
   <string name="permissao">Allow camera and microphone access to stream.</string>
   <string name="falha">This phone could not start the camera encoder.</string>
   <string name="credenciais">User: %1$s · Password: %2$s</string>
+  <string name="luz">Light</string>
+  <string name="escurecer">Dim screen</string>
+  <string name="escuro_aviso">Streaming. Tap to wake the screen.</string>
 </resources>

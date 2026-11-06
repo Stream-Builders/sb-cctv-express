@@ -12,4 +12,7 @@
   <string name="permissao">Erlaube Kamera und Mikrofon, um zu senden.</string>
   <string name="falha">Dieses Telefon konnte den Kamera-Encoder nicht starten.</string>
   <string name="credenciais">Benutzer: %1$s · Passwort: %2$s</string>
+  <string name="luz">Licht</string>
+  <string name="escurecer">Bildschirm abdunkeln</string>
+  <string name="escuro_aviso">Übertragung läuft. Tippen, um den Bildschirm zu wecken.</string>
 </resources>

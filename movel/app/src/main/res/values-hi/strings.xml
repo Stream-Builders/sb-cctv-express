@@ -12,4 +12,7 @@
   <string name="permissao">प्रसारण के लिए कैमरा और माइक्रोफ़ोन की अनुमति दें।</string>
   <string name="falha">यह फ़ोन कैमरा एनकोडर शुरू नहीं कर सका।</string>
   <string name="credenciais">उपयोगकर्ता: %1$s · पासवर्ड: %2$s</string>
+  <string name="luz">लाइट</string>
+  <string name="escurecer">स्क्रीन मंद करें</string>
+  <string name="escuro_aviso">प्रसारण जारी है। स्क्रीन जगाने के लिए छुएँ।</string>
 </resources>

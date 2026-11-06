@@ -35,6 +35,29 @@ const C = {
   'values-ja': 'ユーザー: %1$s · パスワード: %2$s', 'values-ko': '사용자: %1$s · 비밀번호: %2$s', 'values-zh-rCN': '用户：%1$s · 密码：%2$s',
 };
 for (const d of Object.keys(T)) T[d].push(C[d]);
+// luz (a lanterna do celular), escurecer a tela e o aviso de tocar para acender
+const L = {
+  values: ['Light', 'Dim screen', 'Streaming. Tap to wake the screen.'],
+  'values-pt': ['Luz', 'Escurecer tela', 'Transmitindo. Toque para acender a tela.'],
+  'values-es': ['Luz', 'Oscurecer pantalla', 'Transmitiendo. Toca para encender la pantalla.'],
+  'values-fr': ['Lumière', 'Assombrir l’écran', 'Diffusion en cours. Touchez pour rallumer l’écran.'],
+  'values-de': ['Licht', 'Bildschirm abdunkeln', 'Übertragung läuft. Tippen, um den Bildschirm zu wecken.'],
+  'values-it': ['Luce', 'Oscura schermo', 'In trasmissione. Tocca per riaccendere lo schermo.'],
+  'values-nl': ['Licht', 'Scherm dimmen', 'Bezig met uitzenden. Tik om het scherm te wekken.'],
+  'values-pl': ['Światło', 'Przyciemnij ekran', 'Nadawanie. Dotknij, aby wybudzić ekran.'],
+  'values-sv': ['Ljus', 'Släck skärmen', 'Sänder. Tryck för att väcka skärmen.'],
+  'values-tr': ['Işık', 'Ekranı karart', 'Yayın sürüyor. Ekranı açmak için dokunun.'],
+  'values-ru': ['Свет', 'Затемнить экран', 'Идёт трансляция. Коснитесь, чтобы включить экран.'],
+  'values-ar': ['الضوء', 'تعتيم الشاشة', 'البث جارٍ. المس لإضاءة الشاشة.'],
+  'values-hi': ['लाइट', 'स्क्रीन मंद करें', 'प्रसारण जारी है। स्क्रीन जगाने के लिए छुएँ।'],
+  'values-in': ['Lampu', 'Redupkan layar', 'Sedang menyiarkan. Ketuk untuk menyalakan layar.'],
+  'values-vi': ['Đèn', 'Làm tối màn hình', 'Đang phát. Chạm để bật lại màn hình.'],
+  'values-ja': ['ライト', '画面を暗くする', '配信中です。タップすると画面が点きます。'],
+  'values-ko': ['조명', '화면 어둡게', '송출 중입니다. 탭하면 화면이 켜집니다.'],
+  'values-zh-rCN': ['灯光', '调暗屏幕', '正在推流。点按即可点亮屏幕。'],
+};
+K.push('luz', 'escurecer', 'escuro_aviso');
+for (const d of Object.keys(T)) T[d].push(...L[d]);
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, "\\'").replace(/"/g, '\\"');
 for (const [d, v] of Object.entries(T)) {
   fs.mkdirSync(path.join(base, d), { recursive: true });

@@ -12,4 +12,7 @@
   <string name="permissao">请允许使用摄像头和麦克风以推流。</string>
   <string name="falha">此手机无法启动摄像头编码器。</string>
   <string name="credenciais">用户：%1$s · 密码：%2$s</string>
+  <string name="luz">灯光</string>
+  <string name="escurecer">调暗屏幕</string>
+  <string name="escuro_aviso">正在推流。点按即可点亮屏幕。</string>
 </resources>
