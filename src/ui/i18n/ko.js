@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "그리드에서 빼기",
   "mosaico.titulo": "카메라 {n}대",
   "mosaico.um": "카메라 1대",
   "estado.vivo": "라이브",

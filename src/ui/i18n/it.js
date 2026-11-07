@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Togli dal mosaico",
   "mosaico.titulo": "{n} telecamere",
   "mosaico.um": "1 telecamera",
   "estado.vivo": "In diretta",

@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Keluarkan dari grid",
   "mosaico.titulo": "{n} kamera",
   "mosaico.um": "1 kamera",
   "estado.vivo": "Langsung",

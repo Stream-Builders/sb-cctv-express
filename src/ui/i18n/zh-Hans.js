@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "从画面网格移除",
   "mosaico.titulo": "{n} 路",
   "mosaico.um": "1 路",
   "estado.vivo": "直播",

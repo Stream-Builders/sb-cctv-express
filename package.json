@@ -1,7 +1,7 @@
 {
   "name": "cctv-express",
   "productName": "CCTV Express",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Monitoramento de câmeras IP (CCTV) para Windows: ao vivo, gravação, reprodução, PTZ e luz.",
   "main": "src/main.js",
   "private": true,

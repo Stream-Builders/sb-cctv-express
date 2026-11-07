@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "ग्रिड से हटाएँ",
   "mosaico.titulo": "{n} कैमरे",
   "mosaico.um": "1 कैमरा",
   "estado.vivo": "लाइव",

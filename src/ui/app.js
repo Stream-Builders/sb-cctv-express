@@ -25,6 +25,7 @@ let movimento = new Set(); // id -> 'gravando' | 'iniciando' | 'desligada' | 'pa
 
 // ---------- peças ----------
 const ICONES = {
+  fechar: '<path d="M6 6l12 12M18 6L6 18"/>',
   ajustes: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
   imagem: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4"/>',
   liga: '<rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="2"/>',
@@ -576,6 +577,19 @@ function desenharMosaico() {
     let q;
     if (cam) {
       q = quadroDaCamera(cam);
+      // o X tira a câmera só desta posição do mosaico: ela continua cadastrada, gravando e na lista, e pode voltar arrastada
+      if (!telaCheia) {
+        const posicao = i;
+        const tirar = botao({ icone: ICONES.fechar, quadrado: true, titulo: t('quadro.tirar') });
+        tirar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const ordem = ordemDoMosaico();
+          ordem[posicao] = null;
+          guardarOrdem(ordem);
+          desenharMosaico();
+        });
+        q.querySelector('.quadro__barra')?.append(tirar);
+      }
     } else {
       q = document.createElement('div');
       q.className = 'quadro';

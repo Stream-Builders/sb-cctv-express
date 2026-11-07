@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Quitar del mosaico",
   "mosaico.titulo": "{n} cámaras",
   "mosaico.um": "1 cámara",
   "estado.vivo": "En vivo",

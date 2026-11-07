@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Izgaradan çıkar",
   "mosaico.titulo": "{n} kamera",
   "mosaico.um": "1 kamera",
   "estado.vivo": "Canlı",

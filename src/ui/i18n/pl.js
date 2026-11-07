@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Usuń z siatki",
   "mosaico.titulo": "Kamery: {n}",
   "mosaico.um": "1 kamera",
   "estado.vivo": "Na żywo",

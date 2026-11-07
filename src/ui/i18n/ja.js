@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "グリッドから外す",
   "mosaico.titulo": "{n} 台",
   "mosaico.um": "1 台",
   "estado.vivo": "ライブ",

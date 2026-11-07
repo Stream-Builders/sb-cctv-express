@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Bỏ khỏi lưới",
   "mosaico.titulo": "{n} camera",
   "mosaico.um": "1 camera",
   "estado.vivo": "Trực tiếp",

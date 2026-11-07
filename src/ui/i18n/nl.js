@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Uit het raster halen",
   "mosaico.titulo": "{n} camera's",
   "mosaico.um": "1 camera",
   "estado.vivo": "Live",

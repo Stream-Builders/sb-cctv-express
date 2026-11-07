@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "إزالة من الشبكة",
   "mosaico.titulo": "{n} كاميرات",
   "mosaico.um": "كاميرا واحدة",
   "estado.vivo": "مباشر",

@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Убрать из сетки",
   "mosaico.titulo": "Камер: {n}",
   "mosaico.um": "1 камера",
   "estado.vivo": "В эфире",

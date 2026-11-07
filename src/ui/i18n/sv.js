@@ -1,4 +1,5 @@
 export default {
+  "quadro.tirar": "Ta bort från rutnätet",
   "mosaico.titulo": "{n} kameror",
   "mosaico.um": "1 kamera",
   "estado.vivo": "Live",
