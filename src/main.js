@@ -85,6 +85,17 @@ app.on('second-instance', () => {
 });
 
 /** Motor e gravador recomeçam juntos sempre que a lista de câmeras muda. */
+/** Depois de salvar ou remover uma câmera: troca só o que mudou no motor, sem fazer as outras câmeras piscarem. */
+async function aplicarCadastro() {
+  controle.fecharTodas();
+  await go2rtc.resolverOnvif();
+  await go2rtc.atualizar();
+  setTimeout(() => {
+    gravador.iniciar();
+    deteccao.iniciar((evento) => { if (janela && !janela.isDestroyed()) janela.webContents.send('deteccao:evento', evento); });
+  }, 1500);
+}
+
 async function reiniciar() {
   controle.fecharTodas();
   await go2rtc.resolverOnvif();
@@ -134,12 +145,12 @@ ipcMain.handle('cameras:salvar', async (_e, dados) => {
   }
   const id = cameras.salvar(dados);
   await completarLentes();
-  await reiniciar();
+  await aplicarCadastro();
   return id;
 });
 ipcMain.handle('cameras:remover', async (_e, id) => {
   cameras.remover(id);
-  await reiniciar();
+  await aplicarCadastro();
 });
 ipcMain.handle('cameras:gravacao', (_e, id, ligar) => {
   cameras.definirGravacao(id, ligar);

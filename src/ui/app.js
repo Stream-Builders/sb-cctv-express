@@ -417,15 +417,21 @@ function painelLuz(cam, caps) {
   return p;
 }
 
-function quadroDaCamera(cam) {
+function quadroDaCamera(cam, reuso) {
   const q = document.createElement('div');
   q.className = 'quadro';
   q.dataset.id = cam.id;
-  const video = document.createElement('video-stream');
-  video.background = true;
-  video.mode = 'mse,hls,mjpeg';
-  video.media = 'video,audio';
-  video.src = `ws://${motor}/api/ws?src=${encodeURIComponent(cam.id)}`;
+  // o player que já estava tocando esta câmera muda de quadro sem reconectar (as outras câmeras não piscam)
+  let video = reuso?.player;
+  if (video) {
+    if (reuso.compat) q.dataset.compat = reuso.compat;
+  } else {
+    video = document.createElement('video-stream');
+    video.background = true;
+    video.mode = 'mse,hls,mjpeg';
+    video.media = 'video,audio';
+    video.src = `ws://${motor}/api/ws?src=${encodeURIComponent(cam.id)}`;
+  }
   q.append(video);
   const topo = document.createElement('div');
   topo.className = 'quadro__topo';
@@ -558,8 +564,9 @@ function arrastavel(q, posicao, cam) {
  * sozinho ao sair da página: ficava recebendo vídeo e reconectando invisível, e cada redesenho do mosaico (trocar 1/4/9,
  * tela cheia, idioma, editar câmera) somava uma cópia de cada câmera na memória até o app travar.
  */
-function encerrarPlayers(raiz) {
+function encerrarPlayers(raiz, manter = new Set()) {
   for (const p of raiz.querySelectorAll('video-stream')) {
+    if (manter.has(p)) continue;
     p.background = false;
     if (p.reconnectTID) { clearTimeout(p.reconnectTID); p.reconnectTID = 0; }
     if (p.disconnectTID) { clearTimeout(p.disconnectTID); p.disconnectTID = 0; }
@@ -570,8 +577,12 @@ function encerrarPlayers(raiz) {
 }
 
 function desenharMosaico() {
-  encerrarPlayers(mosaicoEl);
-  mosaicoEl.replaceChildren();
+  // os players das câmeras que continuam na tela são reaproveitados; só os das que saíram são encerrados
+  const anteriores = new Map();
+  for (const q of mosaicoEl.querySelectorAll('.quadro[data-id]')) {
+    const player = q.querySelector('video-stream');
+    if (player && !anteriores.has(q.dataset.id)) anteriores.set(q.dataset.id, { player, compat: q.dataset.compat });
+  }
   const lado = Math.sqrt(mosaico);
   const n = telaCheia ? 1 : mosaico;
   const colunas = telaCheia ? 1 : lado;
@@ -580,11 +591,15 @@ function desenharMosaico() {
   const ordem = ordemDoMosaico();
   const porId = new Map(cameras.map((c) => [c.id, c]));
   const visiveis = telaCheia ? cameras.filter((c) => c.id === telaCheia) : ordem.slice(0, n).map((id) => porId.get(id) || null);
+  const ficam = new Set(visiveis.filter(Boolean).map((c) => c.id));
+  for (const id of [...anteriores.keys()]) if (!ficam.has(id)) anteriores.delete(id);
+  encerrarPlayers(mosaicoEl, new Set([...anteriores.values()].map((a) => a.player)));
+  mosaicoEl.replaceChildren();
   for (let i = 0; i < n; i++) {
     const cam = visiveis[i];
     let q;
     if (cam) {
-      q = quadroDaCamera(cam);
+      q = quadroDaCamera(cam, anteriores.get(cam.id));
       // o X tira a câmera só desta posição do mosaico: ela continua cadastrada, gravando e na lista, e pode voltar arrastada
       if (!telaCheia) {
         const posicao = i;

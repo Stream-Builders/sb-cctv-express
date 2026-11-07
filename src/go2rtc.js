@@ -110,6 +110,7 @@ function iniciar() {
   parar();
   const { arq, env } = configurar();
   processo = spawn(binario(), ['-config', arq], { env, windowsHide: true, stdio: 'ignore' });
+  fontesEmUso = fontesAtuais();
   // se o motor cair, volta sozinho em 2 s
   processo.on('exit', (codigo) => {
     if (processo && codigo !== null) setTimeout(() => { if (processo) iniciar(); }, 2000);
@@ -122,4 +123,41 @@ function parar() {
   if (p && !p.killed) p.kill();
 }
 
-module.exports = { resolverOnvif, iniciar, parar, PORTA_API, PORTA_RTSP };
+/** As fontes de cada stream, com a senha já posta (só para a API local do motor, em 127.0.0.1). */
+function fontesAtuais() {
+  const env = {};
+  const mapa = new Map();
+  cameras.ler().forEach((c, i) => {
+    const f = fonte(c, i, env).replace(/${(CCTV_SENHA_d+)}/g, (_, v) => env[v] ?? '');
+    mapa.set(c.id, f);
+    mapa.set(`${c.id}_compat`, `ffmpeg:${c.id}#video=h264#audio=aac#width=1920#hardware`);
+  });
+  return mapa;
+}
+let fontesEmUso = null;
+
+async function api(metodo, caminho) {
+  const r = await fetch(`http://127.0.0.1:${PORTA_API}${caminho}`, { method: metodo });
+  if (!r.ok) throw new Error(`motor ${r.status}`);
+}
+
+/**
+ * Aplica o cadastro novo sem derrubar o motor: só os streams que mudaram, entraram ou saíram são trocados; as outras
+ * câmeras seguem tocando. Se o motor não estiver no ar (ou a API falhar), reinicia como antes.
+ */
+async function atualizar() {
+  const novas = fontesAtuais();
+  configurar(); // o arquivo do motor fica em dia para a próxima abertura
+  if (!processo || !fontesEmUso) { iniciar(); return false; }
+  try {
+    for (const [nome, src] of fontesEmUso) if (!novas.has(nome) || novas.get(nome) !== src) await api('DELETE', `/api/streams?src=${enc(nome)}`);
+    for (const [nome, src] of novas) if (fontesEmUso.get(nome) !== src) await api('PUT', `/api/streams?name=${enc(nome)}&src=${enc(src)}`);
+    fontesEmUso = novas;
+    return true;
+  } catch {
+    iniciar();
+    return false;
+  }
+}
+
+module.exports = { resolverOnvif, iniciar, atualizar, parar, PORTA_API, PORTA_RTSP };
