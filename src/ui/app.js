@@ -496,8 +496,15 @@ function ordemDoMosaico() {
   try { ordem = JSON.parse(localStorage.getItem('ordem-mosaico') || '[]'); } catch { ordem = []; }
   const ids = new Set(cameras.map((c) => c.id));
   ordem = Array.from({ length: POSICOES }, (_, i) => (ids.has(ordem[i]) ? ordem[i] : null));
-  // câmera nova (ou removida e readicionada) entra na primeira posição livre
-  for (const c of cameras) if (!ordem.includes(c.id)) ordem[ordem.indexOf(null)] = c.id;
+  // só a câmera nova entra sozinha na primeira posição livre; a que saiu pelo X fica fora até ser arrastada de volta
+  let vistas = [];
+  try { vistas = JSON.parse(localStorage.getItem('cameras-vistas-mosaico') || '[]'); } catch { vistas = []; }
+  const conhecidas = new Set(vistas);
+  for (const c of cameras) {
+    if (!conhecidas.has(c.id) && !ordem.includes(c.id) && ordem.includes(null)) ordem[ordem.indexOf(null)] = c.id;
+    conhecidas.add(c.id);
+  }
+  try { localStorage.setItem('cameras-vistas-mosaico', JSON.stringify([...conhecidas].filter((id) => ids.has(id)))); } catch { /* sem armazenamento */ }
   return ordem;
 }
 function guardarOrdem(ordem) {
