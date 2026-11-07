@@ -36,6 +36,8 @@ function iniciarCamera(c, cfg) {
     // cabe em MP4); o volume da tela não mexe aqui: a gravação sempre leva o áudio inteiro
     '-map', '0:v:0', '-map', '0:a:0?', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '64k',
     '-f', 'segment', '-segment_time', String(segundos), '-segment_atclocktime', '1', '-reset_timestamps', '1',
+    // grava no disco a cada fragmento (sem esperar o buffer de 256 KB): câmera leve, como a do celular, não parece parada
+    '-flush_packets', '1',
     '-strftime', '1', '-segment_format', 'mp4',
     '-segment_format_options', 'movflags=+frag_keyframe+empty_moov+default_base_moof',
     join(pasta, '%Y-%m-%d_%H-%M-%S.mp4'),
@@ -133,7 +135,7 @@ function estados() {
         cresceu = !!antes;
       }
       const ultimo = crescimento.get(c.id);
-      cresceu = cresceu || agora - ultimo.quando < 20000;
+      cresceu = cresceu || agora - ultimo.quando < 60000;
     }
     r[c.id] = cresceu ? 'gravando' : 'iniciando';
   }
