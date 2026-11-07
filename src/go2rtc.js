@@ -133,7 +133,7 @@ function fontesAtuais() {
   const env = {};
   const mapa = new Map();
   cameras.ler().forEach((c, i) => {
-    const f = fonte(c, i, env).replace(/${(CCTV_SENHA_d+)}/g, (_, v) => env[v] ?? '');
+    const f = fonte(c, i, env).replace(/\$\{(CCTV_SENHA_\d+)\}/g, (_, v) => env[v] ?? '');
     mapa.set(c.id, f);
     mapa.set(`${c.id}_compat`, `ffmpeg:${c.id}#video=h264#audio=aac#width=1920#hardware`);
   });
