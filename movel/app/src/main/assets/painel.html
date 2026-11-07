@@ -153,13 +153,15 @@
   import { montar } from './splash/letreiro.js';
   const ab = document.getElementById('abertura');
   const canvas = document.getElementById('letreiro');
-  montar(canvas, 'ui/marca/logo.svg').catch(() => {
+  // a abertura só sai depois da montagem inteira: o relógio conta a partir do primeiro quadro do letreiro (no
+  // celular o 3D demora a carregar), com a câmera e o nome já acesos por um tempo antes de sumir
+  const sair = (ms) => setTimeout(() => { ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); }, ms);
+  montar(canvas, 'ui/marca/logo.svg').then(() => sair(5800)).catch(() => {
     const img = document.createElement('img');
     img.src = 'ui/marca/logo.svg'; img.alt = 'cctv.express';
     canvas.replaceWith(img);
+    sair(2000);
   });
-  // o mesmo tempo do computador: 3,8 s de letreiro e depois some
-  setTimeout(() => { ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); }, 3800);
 </script>
 </body>
 </html>
