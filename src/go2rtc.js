@@ -158,6 +158,9 @@ async function atualizar() {
     for (const [nome, src] of fontesEmUso) if (!novas.has(nome) || novas.get(nome) !== src) await api('DELETE', `/api/streams?src=${enc(nome)}`);
     for (const [nome, src] of novas) if (fontesEmUso.get(nome) !== src) await api('PUT', `/api/streams?name=${enc(nome)}&src=${enc(src)}`);
     fontesEmUso = novas;
+    // a API do motor regrava o arquivo de configuração com a senha por extenso: volta a versão com a senha só na
+    // variável de ambiente do processo
+    configurar();
     return true;
   } catch {
     iniciar();
