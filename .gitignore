@@ -11,3 +11,5 @@ site/tema/
 site/.vercel/
 site/.env.local
 movel/app/src/main/assets/tema/
+movel/app/src/main/assets/splash/
+movel/app/src/main/assets/ui/

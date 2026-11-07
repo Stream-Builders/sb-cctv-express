@@ -21,9 +21,15 @@
   .acoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
   .sb-btn { --sb-h: 2.6rem; }
   [hidden] { display: none !important; }
+  /* a abertura: o letreiro 3D do CCTV Express sobre o palco escuro, como no computador */
+  .abertura { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 42%, #16191f 0%, #07080a 75%); transition: opacity .6s ease; }
+  .abertura canvas { width: 100%; height: 100%; display: block; }
+  .abertura img { width: 70%; }
+  .abertura.saindo { opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
+<div class="abertura" id="abertura"><canvas id="letreiro" aria-label="cctv.express"></canvas></div>
 <div class="topo"><span class="marca">cctv<b>.express</b></span><span class="selo" id="selo"></span></div>
 <div class="base">
   <div class="ajuda" id="ajuda"></div>
@@ -67,6 +73,18 @@
     );
   }
   atualizar(JSON.parse(Camera.estado()));
+</script>
+<script type="module">
+  import { montar } from './splash/letreiro.js';
+  const ab = document.getElementById('abertura');
+  const canvas = document.getElementById('letreiro');
+  montar(canvas, 'ui/marca/logo.svg').catch(() => {
+    const img = document.createElement('img');
+    img.src = 'ui/marca/logo.svg'; img.alt = 'cctv.express';
+    canvas.replaceWith(img);
+  });
+  // o mesmo tempo do computador: 3,8 s de letreiro e depois some
+  setTimeout(() => { ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); }, 3800);
 </script>
 </body>
 </html>

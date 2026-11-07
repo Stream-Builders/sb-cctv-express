@@ -7,6 +7,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import androidx.webkit.WebViewAssetLoader
 import android.widget.Toast
 import org.json.JSONObject
 import android.app.Activity
@@ -129,7 +133,12 @@ class MainActivity : Activity(), ConnectChecker {
       settings.allowFileAccess = false
       settings.allowContentAccess = false
       addJavascriptInterface(Ponte(), "Camera")
-      loadUrl("file:///android_asset/painel.html")
+      val carregador = WebViewAssetLoader.Builder().addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this@MainActivity)).build()
+      webViewClient = object : WebViewClient() {
+        override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
+          carregador.shouldInterceptRequest(request.url)
+      }
+      loadUrl("https://appassets.androidplatform.net/assets/painel.html")
     }
     raiz.addView(painel, FrameLayout.LayoutParams(-1, -1))
     // a tela escura: cobre tudo de preto e baixa o brilho ao mínimo; a câmera continua transmitindo. Um toque acende.
