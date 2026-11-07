@@ -99,7 +99,7 @@ async function resolverOnvif() {
   const { Onvif } = require('./controle/onvif');
   await Promise.all(cameras.ler().filter((c) => c.tipo === 'onvif').map(async (c) => {
     try {
-      const o = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha: cameras.abrir(c.senhaCifrada) });
+      const o = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha: cameras.abrir(c.senhaCifrada), canal: c.canal || 1 });
       const uri = await o.enderecoRtsp();
       if (uri && uri.startsWith('rtsp://')) rtspOnvif.set(c.id, uri.replace(/^rtsp:\/\/[^@/]*@/, 'rtsp://'));
     } catch { /* câmera fora do ar agora: fica a descoberta do go2rtc */ }

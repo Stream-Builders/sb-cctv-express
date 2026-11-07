@@ -31,8 +31,8 @@ function soap(url, corpo, usuario, senha, ms = 5000) {
 const tag = (xml, nome) => xml.match(new RegExp(`<(?:\\w+:)?${nome}[^>]*>([\\s\\S]*?)</(?:\\w+:)?${nome}>`))?.[1];
 
 class Onvif {
-  constructor({ ip, porta = 80, usuario = 'admin', senha = '' }) {
-    Object.assign(this, { ip, porta, usuario, senha });
+  constructor({ ip, porta = 80, usuario = 'admin', senha = '', canal = 1 }) {
+    Object.assign(this, { ip, porta, usuario, senha, canal: Math.max(1, Number(canal) || 1) });
     this.dispositivo = `http://${ip}:${porta}/onvif/device_service`;
   }
 
@@ -43,7 +43,14 @@ class Onvif {
     this.urlMidia = xaddr('Media');
     if (this.urlMidia) {
       const perfis = await soap(this.urlMidia, '<trt:GetProfiles/>', this.usuario, this.senha);
-      this.perfil = perfis.match(/Profiles[^>]*token="([^"]+)"/)?.[1];
+      // câmera de várias lentes: cada lente é uma fonte de vídeo (VideoSourceConfiguration/SourceToken) com os seus
+      // perfis; o canal N é o primeiro perfil (o principal) da N-ésima fonte, na ordem em que a câmera lista
+      const lista = [...perfis.matchAll(/<(?:\w+:)?Profiles\b[^>]*token="([^"]+)"[^>]*>([\s\S]*?)<\/(?:\w+:)?Profiles>/g)]
+        .map(([, token, corpo]) => ({ token, fonte: tag(corpo, 'SourceToken')?.trim() || token }));
+      const fontes = [...new Set(lista.map((p) => p.fonte))];
+      const alvo = fontes[this.canal - 1];
+      this.perfil = (alvo && lista.find((p) => p.fonte === alvo)?.token) || lista[0]?.token
+        || perfis.match(/Profiles[^>]*token="([^"]+)"/)?.[1];
     }
     return { ptz: !!(this.urlPtz && this.perfil) };
   }

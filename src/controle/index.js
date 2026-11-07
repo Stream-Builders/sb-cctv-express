@@ -77,7 +77,7 @@ async function abrir(c) {
     };
   }
   if (c.tipo === 'onvif') {
-    const cliente = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha });
+    const cliente = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha, canal: c.canal || 1 });
     const { ptz } = await cliente.preparar();
     return { tipo: 'onvif', cliente, caps: { ptz, luz: null, luzAtual: null } };
   }

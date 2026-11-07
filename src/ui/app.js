@@ -636,7 +636,7 @@ function desenharLista() {
     texto.textContent = cam.nome;
     const info = document.createElement('small');
     const est = ROTULO_ESTADO()[estados.get(cam.id)] || t('estado.foraDoMosaico');
-    info.textContent = `${cam.ip}${cam.tipo === 'xiongmai' ? ` · ${t('lateral.canal', { n: cam.canal })}` : ''} · ${est} · ${seloGravacao(cam.id)[1]}`;
+    info.textContent = `${cam.ip}${cam.tipo === 'xiongmai' || (cam.tipo === 'onvif' && cam.canal > 1) ? ` · ${t('lateral.canal', { n: cam.canal })}` : ''} · ${est} · ${seloGravacao(cam.id)[1]}`;
     texto.append(info);
     const editar = document.createElement('button');
     editar.className = 'editar';
