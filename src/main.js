@@ -198,6 +198,10 @@ ipcMain.handle('sistema:idioma-instalador', () => {
 ipcMain.handle('sistema:idioma', () => app.getPreferredSystemLanguages()[0] || app.getLocale());
 
 app.whenReady().then(() => {
+  // o app só recebe áudio das câmeras: microfone, webcam e tela do computador ficam sempre negados
+  const { session } = require('electron');
+  session.defaultSession.setPermissionRequestHandler((_w, p, ok) => ok(p !== 'media' && p !== 'display-capture' ? true : false));
+  session.defaultSession.setPermissionCheckHandler((_w, p) => p !== 'media');
   gravacoes.servir();
   motorPronto = completarLentes().then(() => reiniciar());
   criarJanela();

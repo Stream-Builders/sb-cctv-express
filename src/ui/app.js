@@ -424,6 +424,7 @@ function quadroDaCamera(cam) {
   const video = document.createElement('video-stream');
   video.background = true;
   video.mode = 'mse,hls,mjpeg';
+  video.media = 'video,audio';
   video.src = `ws://${motor}/api/ws?src=${encodeURIComponent(cam.id)}`;
   q.append(video);
   const topo = document.createElement('div');
