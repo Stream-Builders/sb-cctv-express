@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP 주소 (사용자와 비밀번호 제외)",
   "form.usuario": "사용자",
   "form.senha": "비밀번호",
+  "form.verSenha": "비밀번호 표시 또는 숨기기",
   "form.senhaCifrada": "암호화되어 저장됨",
   "form.senhaManter": "유지하려면 비워 두세요",
   "form.gravar": "이 카메라 녹화",

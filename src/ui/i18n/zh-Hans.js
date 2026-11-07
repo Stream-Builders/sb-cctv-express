@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP 地址（不含用户名和密码）",
   "form.usuario": "用户名",
   "form.senha": "密码",
+  "form.verSenha": "显示或隐藏密码",
   "form.senhaCifrada": "已加密保存",
   "form.senhaManter": "留空则保持不变",
   "form.gravar": "录制此摄像机",

@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP adresi (kullanıcı ve şifre olmadan)",
   "form.usuario": "Kullanıcı",
   "form.senha": "Şifre",
+  "form.verSenha": "Parolayı göster veya gizle",
   "form.senhaCifrada": "şifreli saklanır",
   "form.senhaManter": "korumak için boş bırakın",
   "form.gravar": "Bu kamerayı kaydet",

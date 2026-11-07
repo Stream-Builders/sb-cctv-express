@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP-adres (zonder gebruiker en wachtwoord)",
   "form.usuario": "Gebruiker",
   "form.senha": "Wachtwoord",
+  "form.verSenha": "Wachtwoord tonen of verbergen",
   "form.senhaCifrada": "versleuteld opgeslagen",
   "form.senhaManter": "leeg laten om te behouden",
   "form.gravar": "Deze camera opnemen",

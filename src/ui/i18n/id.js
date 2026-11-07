@@ -42,6 +42,7 @@ export default {
   "form.url": "Alamat RTSP (tanpa pengguna dan kata sandi)",
   "form.usuario": "Pengguna",
   "form.senha": "Kata sandi",
+  "form.verSenha": "Tampilkan atau sembunyikan kata sandi",
   "form.senhaCifrada": "disimpan terenkripsi",
   "form.senhaManter": "kosongkan untuk mempertahankan",
   "form.gravar": "Rekam kamera ini",

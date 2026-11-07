@@ -18,7 +18,7 @@ class Controle(private val porta: Int, usuario: String, senha: String, private v
   fun iniciar() {
     thread(isDaemon = true, name = "controle") {
       try {
-        val s = ServerSocket(porta).also { servidor = it }
+        val s = ServerSocket().apply { reuseAddress = true; bind(java.net.InetSocketAddress(porta)) }.also { servidor = it }
         while (!s.isClosed) {
           val c = try { s.accept() } catch (_: Exception) { break }
           thread(isDaemon = true) { atender(c) }

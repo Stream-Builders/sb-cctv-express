@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP アドレス（ユーザー名とパスワードなし）",
   "form.usuario": "ユーザー",
   "form.senha": "パスワード",
+  "form.verSenha": "パスワードの表示・非表示",
   "form.senhaCifrada": "暗号化して保存",
   "form.senhaManter": "空欄のままで変更なし",
   "form.gravar": "このカメラを録画",

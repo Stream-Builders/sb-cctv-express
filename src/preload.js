@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('cctv', {
   listarCameras: () => ipcRenderer.invoke('cameras:listar'),
   salvarCamera: (dados) => ipcRenderer.invoke('cameras:salvar', dados),
+  senhaDaCamera: (id) => ipcRenderer.invoke('cameras:senha', id),
   removerCamera: (id) => ipcRenderer.invoke('cameras:remover', id),
   definirGravacao: (id, ligar) => ipcRenderer.invoke('cameras:gravacao', id, ligar),
   detectarCameras: () => ipcRenderer.invoke('cameras:detectar'),

@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP पता (उपयोगकर्ता और पासवर्ड के बिना)",
   "form.usuario": "उपयोगकर्ता",
   "form.senha": "पासवर्ड",
+  "form.verSenha": "पासवर्ड दिखाएँ या छिपाएँ",
   "form.senhaCifrada": "एन्क्रिप्ट करके सहेजा",
   "form.senhaManter": "बनाए रखने के लिए खाली छोड़ें",
   "form.gravar": "इस कैमरे को रिकॉर्ड करें",

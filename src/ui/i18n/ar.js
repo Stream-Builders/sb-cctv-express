@@ -42,6 +42,7 @@ export default {
   "form.url": "عنوان RTSP (بدون اسم المستخدم وكلمة المرور)",
   "form.usuario": "المستخدم",
   "form.senha": "كلمة المرور",
+  "form.verSenha": "إظهار أو إخفاء كلمة المرور",
   "form.senhaCifrada": "محفوظة مشفّرة",
   "form.senhaManter": "اتركها فارغة للإبقاء عليها",
   "form.gravar": "تسجيل هذه الكاميرا",

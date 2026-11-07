@@ -707,6 +707,10 @@ function atualizarCamposTipo() {
 
 function abrirFormulario(cam, sugestao) {
   form.reset();
+  form.senha.type = 'password';
+  $('ver-senha').classList.remove('sb-btn--ativo');
+  $('ver-senha').title = t('form.verSenha');
+  $('ver-senha').setAttribute('aria-label', t('form.verSenha'));
   form.id.value = cam?.id || '';
   $('formulario-titulo').textContent = cam ? t('form.editar') : t('form.adicionar');
   $('remover').hidden = !cam;
@@ -733,6 +737,13 @@ async function carregar() {
 $('adicionar').addEventListener('click', () => abrirFormulario(null));
 for (const b of document.querySelectorAll('[data-fechar]')) b.addEventListener('click', () => b.closest('dialog').close());
 form.tipo.addEventListener('change', atualizarCamposTipo);
+// o olho mostra e esconde a senha; na edição, com o campo vazio, traz a senha salva desta câmera
+$('ver-senha').addEventListener('click', async () => {
+  const mostrar = form.senha.type === 'password';
+  if (mostrar && !form.senha.value && form.id.value) form.senha.value = await window.cctv.senhaDaCamera(form.id.value);
+  form.senha.type = mostrar ? 'text' : 'password';
+  $('ver-senha').classList.toggle('sb-btn--ativo', mostrar);
+});
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const dados = Object.fromEntries(new FormData(form));

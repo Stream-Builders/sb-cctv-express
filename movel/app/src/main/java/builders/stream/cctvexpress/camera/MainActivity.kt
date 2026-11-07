@@ -97,7 +97,7 @@ class MainActivity : Activity(), ConnectChecker {
     }
     return JSONObject()
       .put("aoVivo", aoVivo).put("luz", lanternaAcesa()).put("ajuda", ajudaTxt).put("endereco", url)
-      .put("credenciais", if (url.isEmpty()) "" else getString(R.string.credenciais, USUARIO, senha()))
+      .put("credenciais", if (url.isEmpty()) "" else getString(R.string.credenciais, usuario(), senha()))
       .toString()
   }
 
@@ -108,6 +108,8 @@ class MainActivity : Activity(), ConnectChecker {
       for ((k, id) in listOf("ao_vivo" to R.string.ao_vivo, "parado" to R.string.parado, "iniciar" to R.string.iniciar,
         "parar" to R.string.parar, "trocar" to R.string.trocar, "luz" to R.string.luz, "escurecer" to R.string.escurecer)) put(k, getString(id))
     }.toString()
+    @JavascriptInterface fun acesso(): String = JSONObject().put("usuario", usuario()).put("senha", senha()).toString()
+    @JavascriptInterface fun salvarAcesso(u: String, p: String): Boolean = this@MainActivity.salvarAcesso(u, p)
     @JavascriptInterface fun acao(qual: String) {
       runOnUiThread {
         when (qual) {
@@ -156,7 +158,7 @@ class MainActivity : Activity(), ConnectChecker {
     s.getGlInterface().autoHandleOrientation = true
     // só quem tem a senha vê a câmera: o usuário é "admin" (o padrão do CCTV Express) e a senha é sorteada na
     // primeira vez e guardada no celular
-    s.getStreamClient().setAuthorization(USUARIO, senha())
+    s.getStreamClient().setAuthorization(usuario(), senha())
     // o endereço da rede de casa (192.168.x.x), não o IPv6 que o Android sorteia
     s.getStreamClient().forceIpType(com.pedro.rtspserver.server.IpType.IPv4)
     val ok = try {
@@ -173,9 +175,23 @@ class MainActivity : Activity(), ConnectChecker {
     })
     if (tela.holder.surface?.isValid == true && !s.isOnPreview) s.startPreview(tela)
     // o computador controla a luz pela rede, com o mesmo usuário e senha do vídeo
-    controle = Controle(PORTA_CONTROLE, USUARIO, senha(), this).also { it.iniciar() }
+    controle = Controle(PORTA_CONTROLE, usuario(), senha(), this).also { it.iniciar() }
     // aberto o app, o celular já é uma câmera
     alternar()
+  }
+
+  private fun usuario(): String = getSharedPreferences("camera", MODE_PRIVATE).getString("usuario", null) ?: USUARIO
+
+  /** a pessoa escolhe o usuário e a senha: valem na hora para o vídeo (RTSP) e para o controle da luz */
+  fun salvarAcesso(u: String, p: String): Boolean {
+    val usuarioNovo = u.trim()
+    if (usuarioNovo.isEmpty() || p.length < 4 || usuarioNovo.contains(':')) return false
+    getSharedPreferences("camera", MODE_PRIVATE).edit().putString("usuario", usuarioNovo).putString("senha", p).apply()
+    stream?.getStreamClient()?.setAuthorization(usuarioNovo, p)
+    controle?.parar()
+    controle = Controle(PORTA_CONTROLE, usuarioNovo, p, this).also { it.iniciar() }
+    runOnUiThread { mostrarEstado() }
+    return true
   }
 
   private fun senha(): String {

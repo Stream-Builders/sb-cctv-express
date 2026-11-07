@@ -133,6 +133,11 @@ async function portaOnvif(ip, porta) {
   }
 }
 
+// a senha salva, só para mostrar na tela de edição quando a pessoa pede (botão do olho)
+ipcMain.handle('cameras:senha', (_e, id) => {
+  const c = cameras.ler().find((x) => x.id === id);
+  return c?.senhaCifrada ? cameras.abrir(c.senhaCifrada) : '';
+});
 ipcMain.handle('cameras:salvar', async (_e, dados) => {
   // RTSP numa porta que é ONVIF: vira ONVIF, e o endereço do vídeo vem da própria câmera
   if (dados.tipo === 'rtsp') {

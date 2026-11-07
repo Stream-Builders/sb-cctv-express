@@ -235,3 +235,7 @@ body { grid-template-columns: minmax(0, 1fr); }
 /* a margem de respiro dos selos e atalhos: o vídeo nunca ocupa a faixa de cima nem a de baixo, mesmo num quadro mais
    largo que 16:9 (aí ele encolhe e ganha tarjas laterais) */
 .quadro video-stream, .quadro video { block-size: calc(100cqh - 2 * var(--respiro)); }
+
+/* senha com o botão de mostrar e esconder ao lado */
+.campo-senha { display: flex; gap: 6px; align-items: center; }
+.campo-senha input { flex: 1; min-width: 0; }

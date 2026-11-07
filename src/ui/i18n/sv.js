@@ -42,6 +42,7 @@ export default {
   "form.url": "RTSP-adress (utan användare och lösenord)",
   "form.usuario": "Användare",
   "form.senha": "Lösenord",
+  "form.verSenha": "Visa eller dölj lösenordet",
   "form.senhaCifrada": "sparas krypterat",
   "form.senhaManter": "lämna tomt för att behålla",
   "form.gravar": "Spela in den här kameran",

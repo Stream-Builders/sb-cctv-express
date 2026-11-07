@@ -42,6 +42,7 @@ export default {
   "form.url": "Địa chỉ RTSP (không kèm người dùng và mật khẩu)",
   "form.usuario": "Người dùng",
   "form.senha": "Mật khẩu",
+  "form.verSenha": "Hiện hoặc ẩn mật khẩu",
   "form.senhaCifrada": "lưu đã mã hóa",
   "form.senhaManter": "để trống để giữ nguyên",
   "form.gravar": "Ghi camera này",

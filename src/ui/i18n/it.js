@@ -42,6 +42,7 @@ export default {
   "form.url": "Indirizzo RTSP (senza utente e password)",
   "form.usuario": "Utente",
   "form.senha": "Password",
+  "form.verSenha": "Mostra o nascondi la password",
   "form.senhaCifrada": "salvata cifrata",
   "form.senhaManter": "lascia vuoto per mantenerla",
   "form.gravar": "Registra questa telecamera",

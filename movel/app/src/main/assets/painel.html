@@ -21,6 +21,14 @@
   .acoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
   .sb-btn { --sb-h: 2.6rem; }
   [hidden] { display: none !important; }
+  .acesso { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: rgba(0,0,0,.82); }
+  .acesso form { display: grid; gap: 10px; width: min(92vw, 380px); padding: 18px; background: #101011; border: 1px solid #2a2f38; }
+  .acesso h2 { margin: 0 0 4px; font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .acesso label { display: grid; gap: 4px; font-size: 13px; color: #8d887c; }
+  .acesso input { font: 16px system-ui, sans-serif; padding: 10px; background: #060608; color: #EFE6D0; border: 1px solid #6d6960; border-radius: 4px; user-select: text; }
+  .acesso .campo { display: flex; gap: 6px; align-items: center; } .acesso .campo input { flex: 1; min-width: 0; }
+  .acesso .aviso { min-height: 1em; font-size: 12px; color: #ff6b6b; }
+  .acesso .botoes { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
   /* a abertura: o letreiro 3D do CCTV Express sobre o palco escuro, como no computador */
   .abertura { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 42%, #16191f 0%, #07080a 75%); transition: opacity .6s ease; }
   .abertura canvas { width: 100%; height: 100%; display: block; }
@@ -30,6 +38,15 @@
 </head>
 <body>
 <div class="abertura" id="abertura"><canvas id="letreiro" aria-label="cctv.express"></canvas></div>
+<div class="acesso" id="acesso" hidden>
+  <form id="form-acesso">
+    <h2 id="a-titulo"></h2>
+    <label><span id="a-usuario"></span><input name="usuario" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <label><span id="a-senha"></span><span class="campo" id="a-campo"><input name="senha" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"></span></label>
+    <div class="aviso" id="a-aviso"></div>
+    <div class="botoes" id="a-botoes"></div>
+  </form>
+</div>
 <div class="topo"><span class="marca">cctv<b>.express</b></span><span class="selo" id="selo"></span></div>
 <div class="base">
   <div class="ajuda" id="ajuda"></div>
@@ -44,17 +61,74 @@
     trocar: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
     luz: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
     escurecer: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+    acesso: '<rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    olho: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    salvar: '<path d="M5 12l5 5L20 7"/>',
+    cancelar: '<path d="M6 6l12 12M18 6L6 18"/>',
   };
   const T = JSON.parse(Camera.textos());
-  function botao(id, icone, rotulo, ativo) {
+  // os textos do acesso nos 18 idiomas do CCTV Express (pelo idioma do celular)
+  const A = {
+    pt: ['Acesso', 'Usuário', 'Senha', 'Salvar', 'Cancelar', 'Use um usuário sem dois-pontos e uma senha de 4 caracteres ou mais.'],
+    en: ['Access', 'User', 'Password', 'Save', 'Cancel', 'Use a user without a colon and a password of 4 or more characters.'],
+    es: ['Acceso', 'Usuario', 'Contraseña', 'Guardar', 'Cancelar', 'Usa un usuario sin dos puntos y una contraseña de 4 caracteres o más.'],
+    fr: ['Accès', 'Utilisateur', 'Mot de passe', 'Enregistrer', 'Annuler', 'Utilisez un utilisateur sans deux-points et un mot de passe de 4 caractères ou plus.'],
+    de: ['Zugang', 'Benutzer', 'Passwort', 'Speichern', 'Abbrechen', 'Benutzer ohne Doppelpunkt und ein Passwort mit mindestens 4 Zeichen.'],
+    it: ['Accesso', 'Utente', 'Password', 'Salva', 'Annulla', 'Usa un utente senza due punti e una password di almeno 4 caratteri.'],
+    nl: ['Toegang', 'Gebruiker', 'Wachtwoord', 'Opslaan', 'Annuleren', 'Gebruik een gebruiker zonder dubbele punt en een wachtwoord van minstens 4 tekens.'],
+    pl: ['Dostęp', 'Użytkownik', 'Hasło', 'Zapisz', 'Anuluj', 'Użytkownik bez dwukropka i hasło co najmniej 4 znaki.'],
+    sv: ['Åtkomst', 'Användare', 'Lösenord', 'Spara', 'Avbryt', 'Använd en användare utan kolon och ett lösenord på minst 4 tecken.'],
+    tr: ['Erişim', 'Kullanıcı', 'Parola', 'Kaydet', 'İptal', 'İki nokta içermeyen bir kullanıcı ve en az 4 karakterli parola kullanın.'],
+    ru: ['Доступ', 'Пользователь', 'Пароль', 'Сохранить', 'Отмена', 'Пользователь без двоеточия и пароль от 4 символов.'],
+    ar: ['الوصول', 'المستخدم', 'كلمة المرور', 'حفظ', 'إلغاء', 'استخدم اسم مستخدم بدون نقطتين وكلمة مرور من 4 أحرف أو أكثر.'],
+    hi: ['पहुँच', 'उपयोगकर्ता', 'पासवर्ड', 'सहेजें', 'रद्द करें', 'बिना कोलन वाला उपयोगकर्ता और कम से कम 4 अक्षरों का पासवर्ड रखें।'],
+    in: ['Akses', 'Pengguna', 'Kata sandi', 'Simpan', 'Batal', 'Gunakan pengguna tanpa titik dua dan kata sandi minimal 4 karakter.'],
+    id: ['Akses', 'Pengguna', 'Kata sandi', 'Simpan', 'Batal', 'Gunakan pengguna tanpa titik dua dan kata sandi minimal 4 karakter.'],
+    vi: ['Truy cập', 'Người dùng', 'Mật khẩu', 'Lưu', 'Hủy', 'Dùng tên người dùng không có dấu hai chấm và mật khẩu từ 4 ký tự.'],
+    ja: ['アクセス', 'ユーザー', 'パスワード', '保存', 'キャンセル', 'コロンを含まないユーザーと4文字以上のパスワードを使ってください。'],
+    ko: ['접근', '사용자', '비밀번호', '저장', '취소', '콜론 없는 사용자와 4자 이상 비밀번호를 사용하세요.'],
+    zh: ['访问', '用户', '密码', '保存', '取消', '请使用不含冒号的用户名和至少 4 位的密码。'],
+  };
+  const TA = A[(navigator.language || 'en').slice(0, 2)] || A.en;
+  function botao(id, icone, rotulo, ativo, aoClicar) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'sb-btn' + (ativo ? ' sb-btn--ativo' : '');
     b.innerHTML = '<span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + icone + '</svg></span><span class="sb-btn__body"><span class="sb-btn__label"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span>';
     b.querySelector('.sb-btn__label').textContent = rotulo;
-    b.addEventListener('click', () => Camera.acao(id));
+    b.addEventListener('click', aoClicar || (() => Camera.acao(id)));
     return b;
   }
+  // o acesso: o usuário e a senha que o computador usa para ver a câmera e controlar a luz
+  const fa = document.getElementById('form-acesso');
+  const caixaAcesso = document.getElementById('acesso');
+  function abrirAcesso() {
+    const a = JSON.parse(Camera.acesso());
+    fa.usuario.value = a.usuario; fa.senha.value = a.senha; fa.senha.type = 'password';
+    olho.classList.remove('sb-btn--ativo');
+    document.getElementById('a-aviso').textContent = '';
+    caixaAcesso.hidden = false;
+  }
+  function salvarAcesso() {
+    if (Camera.salvarAcesso(fa.usuario.value, fa.senha.value)) caixaAcesso.hidden = true;
+    else document.getElementById('a-aviso').textContent = TA[5];
+  }
+  document.getElementById('a-titulo').textContent = TA[0];
+  document.getElementById('a-usuario').textContent = TA[1];
+  document.getElementById('a-senha').textContent = TA[2];
+  const olho = botao('olho', ICONES.olho, '', false, () => {
+    const ver = fa.senha.type === 'password';
+    fa.senha.type = ver ? 'text' : 'password';
+    olho.classList.toggle('sb-btn--ativo', ver);
+  });
+  olho.classList.add('sb-btn--square');
+  olho.querySelector('.sb-btn__body').remove();
+  document.getElementById('a-campo').append(olho);
+  document.getElementById('a-botoes').append(
+    botao('cancelar', ICONES.cancelar, TA[4], false, () => { caixaAcesso.hidden = true; }),
+    botao('salvar', ICONES.salvar, TA[3], true, salvarAcesso),
+  );
+  fa.addEventListener('submit', (e) => { e.preventDefault(); salvarAcesso(); });
   // chamado pelo app (Kotlin) sempre que o estado muda
   function atualizar(e) {
     const selo = document.getElementById('selo');
@@ -70,6 +144,7 @@
       botao('trocar', ICONES.trocar, T.trocar, false),
       botao('luz', ICONES.luz, T.luz, e.luz),
       botao('escurecer', ICONES.escurecer, T.escurecer, false),
+      botao('acesso', ICONES.acesso, TA[0], false, abrirAcesso),
     );
   }
   atualizar(JSON.parse(Camera.estado()));

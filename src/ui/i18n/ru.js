@@ -42,6 +42,7 @@ export default {
   "form.url": "Адрес RTSP (без логина и пароля)",
   "form.usuario": "Пользователь",
   "form.senha": "Пароль",
+  "form.verSenha": "Показать или скрыть пароль",
   "form.senhaCifrada": "хранится в зашифрованном виде",
   "form.senhaManter": "оставьте пустым, чтобы сохранить",
   "form.gravar": "Записывать эту камеру",
