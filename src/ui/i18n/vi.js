@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Thông minh (hồng ngoại, bật đèn khi phát hiện)",
   "luz.colorida": "Có màu (đèn trắng ban đêm)",
   "luz.acesa": "Đèn luôn bật",
+  "luz.apagada": "Tắt đèn",
   "ptz.cima": "Lên",
   "ptz.baixo": "Xuống",
   "ptz.esquerda": "Trái",

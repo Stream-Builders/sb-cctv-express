@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Умный (ИК, свет при обнаружении)",
   "luz.colorida": "Цветной (белый свет ночью)",
   "luz.acesa": "Свет всегда включён",
+  "luz.apagada": "Свет выключен",
   "ptz.cima": "Вверх",
   "ptz.baixo": "Вниз",
   "ptz.esquerda": "Влево",

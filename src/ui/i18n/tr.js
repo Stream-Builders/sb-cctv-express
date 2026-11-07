@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Akıllı (kızılötesi, algılamada ışık)",
   "luz.colorida": "Renkli (gece beyaz ışık)",
   "luz.acesa": "Işık her zaman açık",
+  "luz.apagada": "Işık kapalı",
   "ptz.cima": "Yukarı",
   "ptz.baixo": "Aşağı",
   "ptz.esquerda": "Sola",

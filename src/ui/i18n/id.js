@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Pintar (inframerah, lampu saat deteksi)",
   "luz.colorida": "Berwarna (lampu putih malam hari)",
   "luz.acesa": "Lampu selalu menyala",
+  "luz.apagada": "Lampu mati",
   "ptz.cima": "Atas",
   "ptz.baixo": "Bawah",
   "ptz.esquerda": "Kiri",

@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Inteligentny (podczerwień, światło przy wykryciu)",
   "luz.colorida": "Kolor (białe światło nocą)",
   "luz.acesa": "Światło zawsze włączone",
+  "luz.apagada": "Światło wyłączone",
   "ptz.cima": "W górę",
   "ptz.baixo": "W dół",
   "ptz.esquerda": "W lewo",

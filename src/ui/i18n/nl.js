@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Slim (infrarood, licht bij detectie)",
   "luz.colorida": "Kleur (wit licht 's nachts)",
   "luz.acesa": "Licht altijd aan",
+  "luz.apagada": "Licht uit",
   "ptz.cima": "Omhoog",
   "ptz.baixo": "Omlaag",
   "ptz.esquerda": "Links",

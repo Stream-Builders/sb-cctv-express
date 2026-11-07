@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "스마트 (적외선, 감지 시 조명)",
   "luz.colorida": "컬러 (야간 백색광)",
   "luz.acesa": "조명 항상 켜기",
+  "luz.apagada": "조명 꺼짐",
   "ptz.cima": "위",
   "ptz.baixo": "아래",
   "ptz.esquerda": "왼쪽",

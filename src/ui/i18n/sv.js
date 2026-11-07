@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Smart (IR, ljus vid detektering)",
   "luz.colorida": "Färg (vitt ljus på natten)",
   "luz.acesa": "Ljus alltid på",
+  "luz.apagada": "Lampa av",
   "ptz.cima": "Upp",
   "ptz.baixo": "Ner",
   "ptz.esquerda": "Vänster",

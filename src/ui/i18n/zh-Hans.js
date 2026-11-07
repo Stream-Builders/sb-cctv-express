@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "智能（红外，检测到时开灯）",
   "luz.colorida": "全彩（夜间白光）",
   "luz.acesa": "灯常亮",
+  "luz.apagada": "灯光关闭",
   "ptz.cima": "上",
   "ptz.baixo": "下",
   "ptz.esquerda": "左",

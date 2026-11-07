@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "स्मार्ट (इन्फ्रारेड, पहचान पर रोशनी)",
   "luz.colorida": "रंगीन (रात में सफ़ेद रोशनी)",
   "luz.acesa": "रोशनी हमेशा चालू",
+  "luz.apagada": "लाइट बंद",
   "ptz.cima": "ऊपर",
   "ptz.baixo": "नीचे",
   "ptz.esquerda": "बाएँ",

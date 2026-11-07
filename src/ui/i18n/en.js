@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Smart (infrared, light on detection)",
   "luz.colorida": "Full color (white light at night)",
   "luz.acesa": "Light always on",
+  "luz.apagada": "Light off",
   "ptz.cima": "Up",
   "ptz.baixo": "Down",
   "ptz.esquerda": "Left",

@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Intelligent (infrarouge, lumière à la détection)",
   "luz.colorida": "Couleur (lumière blanche la nuit)",
   "luz.acesa": "Lumière toujours allumée",
+  "luz.apagada": "Lumière éteinte",
   "ptz.cima": "Haut",
   "ptz.baixo": "Bas",
   "ptz.esquerda": "Gauche",

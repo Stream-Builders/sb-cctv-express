@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Intelligent (Infrarot, Licht bei Erkennung)",
   "luz.colorida": "Farbe (Weißlicht nachts)",
   "luz.acesa": "Licht immer an",
+  "luz.apagada": "Licht aus",
   "ptz.cima": "Hoch",
   "ptz.baixo": "Runter",
   "ptz.esquerda": "Links",

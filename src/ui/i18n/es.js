@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "Inteligente (infrarrojo, luz al detectar)",
   "luz.colorida": "A color (luz blanca de noche)",
   "luz.acesa": "Luz siempre encendida",
+  "luz.apagada": "Luz apagada",
   "ptz.cima": "Arriba",
   "ptz.baixo": "Abajo",
   "ptz.esquerda": "Izquierda",

@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "スマート（赤外線、検知時に点灯）",
   "luz.colorida": "カラー（夜間は白色ライト）",
   "luz.acesa": "ライト常時点灯",
+  "luz.apagada": "ライト消灯",
   "ptz.cima": "上",
   "ptz.baixo": "下",
   "ptz.esquerda": "左",

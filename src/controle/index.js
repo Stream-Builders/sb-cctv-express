@@ -3,6 +3,7 @@
 const cameras = require('../cameras');
 const { Dvrip } = require('./dvrip');
 const { Onvif } = require('./onvif');
+const { Celular } = require('./celular');
 
 // os modos de luz da Xiongmai (Camera.WhiteLight.WorkMode), na ordem em que aparecem na tela
 const MODOS_LUZ = { inteligente: 'Intelligent', colorida: 'Auto', infravermelho: 'Close', acesa: 'KeepOpen' };
@@ -81,6 +82,11 @@ async function abrir(c) {
     const { ptz } = await cliente.preparar();
     return { tipo: 'onvif', cliente, caps: { ptz, luz: null, luzAtual: null } };
   }
+  // o celular com o CCTV Express Câmera: tem um canal de controle (porta 8555) com o mesmo usuário e senha do vídeo
+  const celular = await Celular.abrir({ ip: c.ip, usuario: c.usuario || 'admin', senha }).catch(() => null);
+  if (celular) {
+    return { tipo: 'celular', cliente: celular, caps: { ptz: false, luz: ['acesa', 'apagada'], luzAtual: celular.luz ? 'acesa' : 'apagada' } };
+  }
   return { tipo: 'rtsp', cliente: null, caps: { ptz: false, luz: null, luzAtual: null } };
 }
 
@@ -117,6 +123,11 @@ async function ptz(id, direcao, parar) {
 
 async function luz(id, modo) {
   const con = await conexao(id);
+  if (con.tipo === 'celular') {
+    const acesa = await con.cliente.definirLuz(modo === 'acesa');
+    con.caps.luzAtual = acesa ? 'acesa' : 'apagada';
+    return con.caps.luzAtual;
+  }
   if (con.tipo !== 'xiongmai' || !con.luz || !MODOS_LUZ[modo]) throw new Error('esta câmera não tem controle de luz');
   const novo = { ...con.luz, WorkMode: MODOS_LUZ[modo] };
   await con.cliente.gravar('Camera.WhiteLight', novo);

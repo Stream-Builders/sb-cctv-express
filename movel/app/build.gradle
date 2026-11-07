@@ -9,8 +9,8 @@ android {
     applicationId 'builders.stream.cctvexpress.camera'
     minSdk 24
     targetSdk 37
-    versionCode 2
-    versionName '0.2.0'
+    versionCode 3
+    versionName '0.3.0'
   }
   buildTypes {
     release {
@@ -26,3 +26,10 @@ dependencies {
   implementation 'com.github.pedroSG94:RTSP-Server:1.4.3'
   implementation 'com.github.pedroSG94.RootEncoder:library:2.8.1'
 }
+
+// a peça .sb-btn e o tema vêm do CCTV Express do computador (src/ui/tema): a mesma fonte, nunca uma cópia à mão
+tasks.register('copiarTema', Copy) {
+  from("$rootDir/../src/ui/tema") { include 'sb-btn.css', 'tema.css' }
+  into("$projectDir/src/main/assets/tema")
+}
+preBuild.dependsOn copiarTema

@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- A tela do CCTV Express Câmera por cima do vídeo: os botões são a peça .sb-btn do CCTV Express do computador (o
+     mesmo sb-btn.css e o mesmo tema.css, copiados no build), com a caixinha do ícone, as cores e o metal de lá. -->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="tema/sb-btn.css">
+<link rel="stylesheet" href="tema/tema.css">
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; color: #EFE6D0; font-family: system-ui, sans-serif; overflow: hidden; -webkit-tap-highlight-color: transparent; user-select: none; }
+  .topo { position: fixed; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: rgba(0,0,0,.7); }
+  .marca { font-weight: 800; font-size: 16px; letter-spacing: .02em; }
+  .marca b { color: var(--accent); }
+  .selo { display: inline-flex; align-items: center; padding: 4px 16px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); background: #1f2329; color: #d1d5db; }
+  .selo--vivo { background: #052e16; color: #22c55e; }
+  .base { position: fixed; inset: auto 0 0 0; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 16px calc(16px + env(safe-area-inset-bottom)); background: rgba(0,0,0,.7); text-align: center; }
+  .ajuda { font-size: 13px; color: #d1d5db; }
+  .endereco { font: 600 19px ui-monospace, monospace; color: var(--accent); user-select: text; }
+  .cred { font: 14px ui-monospace, monospace; user-select: text; }
+  .acoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+  .sb-btn { --sb-h: 2.6rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="topo"><span class="marca">cctv<b>.express</b></span><span class="selo" id="selo"></span></div>
+<div class="base">
+  <div class="ajuda" id="ajuda"></div>
+  <div class="endereco" id="endereco" hidden></div>
+  <div class="cred" id="cred" hidden></div>
+  <div class="acoes" id="acoes"></div>
+</div>
+<script>
+  const ICONES = {
+    iniciar: '<path d="M8 5l11 7-11 7z"/>',
+    parar: '<rect x="6" y="6" width="12" height="12"/>',
+    trocar: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+    luz: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
+    escurecer: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+  };
+  const T = JSON.parse(Camera.textos());
+  function botao(id, icone, rotulo, ativo) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'sb-btn' + (ativo ? ' sb-btn--ativo' : '');
+    b.innerHTML = '<span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + icone + '</svg></span><span class="sb-btn__body"><span class="sb-btn__label"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span>';
+    b.querySelector('.sb-btn__label').textContent = rotulo;
+    b.addEventListener('click', () => Camera.acao(id));
+    return b;
+  }
+  // chamado pelo app (Kotlin) sempre que o estado muda
+  function atualizar(e) {
+    const selo = document.getElementById('selo');
+    selo.textContent = e.aoVivo ? T.ao_vivo : T.parado;
+    selo.className = 'selo' + (e.aoVivo ? ' selo--vivo' : '');
+    document.getElementById('ajuda').textContent = e.ajuda;
+    const end = document.getElementById('endereco');
+    end.textContent = e.endereco || ''; end.hidden = !e.endereco;
+    const cred = document.getElementById('cred');
+    cred.textContent = e.credenciais || ''; cred.hidden = !e.endereco;
+    document.getElementById('acoes').replaceChildren(
+      botao('alternar', e.aoVivo ? ICONES.parar : ICONES.iniciar, e.aoVivo ? T.parar : T.iniciar, false),
+      botao('trocar', ICONES.trocar, T.trocar, false),
+      botao('luz', ICONES.luz, T.luz, e.luz),
+      botao('escurecer', ICONES.escurecer, T.escurecer, false),
+    );
+  }
+  atualizar(JSON.parse(Camera.estado()));
+</script>
+</body>
+</html>

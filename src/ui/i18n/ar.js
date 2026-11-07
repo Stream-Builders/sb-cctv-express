@@ -70,6 +70,7 @@ export default {
   "luz.inteligente": "ذكي (أشعة تحت حمراء، ضوء عند الاكتشاف)",
   "luz.colorida": "ملوّن (ضوء أبيض ليلًا)",
   "luz.acesa": "الضوء مضاء دائمًا",
+  "luz.apagada": "الضوء مطفأ",
   "ptz.cima": "أعلى",
   "ptz.baixo": "أسفل",
   "ptz.esquerda": "يسار",
