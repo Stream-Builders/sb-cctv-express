@@ -61,6 +61,11 @@ function fonte(c, i, env) {
         // RTSP com usuário e senha colocados pelo app (o endereço salvo não guarda a senha)
         return `${c.url.replace(/^rtsp:\/\//, `rtsp://${cred}@`)}${SO_VIDEO}`;
       }
+      // câmera de várias lentes sem endereço próprio: a partir do canal 2, o caminho RTSP das câmeras Xiongmai
+      // (o mais comum nas câmeras de duas lentes), que escolhe a lente pelo canal
+      if ((c.canal || 1) > 1) {
+        return `rtsp://${cred}@${c.ip}:${c.porta || 554}/user=${usuario}&password=\${${variavel}}&channel=${c.canal}&stream=0.sdp?`;
+      }
       return `rtsp://${cred}@${c.ip}:${c.porta || 554}/${SO_VIDEO}`;
   }
 }
