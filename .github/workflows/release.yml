@@ -66,3 +66,29 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
             && gh release upload "$GITHUB_REF_NAME" "CCTV-Express-Setup-$versao.exe" --clobber \
             || gh release create "$GITHUB_REF_NAME" "CCTV-Express-Setup-$versao.exe" --title "$GITHUB_REF_NAME" --generate-notes
+
+  apk:
+    # o app de câmera do celular sai em toda release, junto do instalador do computador
+    needs: instalador
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Monta o APK
+        working-directory: movel
+        run: chmod +x gradlew && ./gradlew --no-daemon -q assembleRelease
+
+      - name: Anexa o APK na release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          nome=$(grep -oP "versionName '\K[^']+" movel/app/build.gradle)
+          cp movel/app/build/outputs/apk/release/app-release.apk "CCTV-Express-Camera-Android-$nome.apk"
+          gh release upload "$GITHUB_REF_NAME" "CCTV-Express-Camera-Android-$nome.apk" --clobber
