@@ -38,6 +38,17 @@
 </head>
 <body>
 <div class="abertura" id="abertura"><canvas id="letreiro" aria-label="cctv.express"></canvas></div>
+<script>
+  // trava de segurança (script comum, roda mesmo se o módulo do letreiro falhar ou nunca terminar): a abertura sai no
+  // máximo em 12 s, e um toque pula na hora
+  (() => {
+    const ab = document.getElementById('abertura');
+    const fechar = () => { if (!ab.isConnected || ab.classList.contains('saindo')) return; ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); };
+    window.fecharAbertura = fechar;
+    setTimeout(fechar, 12000);
+    ab.addEventListener('click', fechar);
+  })();
+</script>
 <div class="acesso" id="acesso" hidden>
   <form id="form-acesso">
     <h2 id="a-titulo"></h2>
@@ -155,7 +166,7 @@
   const canvas = document.getElementById('letreiro');
   // a abertura só sai depois da montagem inteira: o relógio conta a partir do primeiro quadro do letreiro (no
   // celular o 3D demora a carregar), com a câmera e o nome já acesos por um tempo antes de sumir
-  const sair = (ms) => setTimeout(() => { ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); }, ms);
+  const sair = (ms) => setTimeout(() => window.fecharAbertura(), ms);
   montar(canvas, 'ui/marca/logo.svg').then(() => sair(5800)).catch(() => {
     const img = document.createElement('img');
     img.src = 'ui/marca/logo.svg'; img.alt = 'cctv.express';
