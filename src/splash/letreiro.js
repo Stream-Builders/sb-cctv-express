@@ -108,7 +108,8 @@ export async function montar(canvas, urlLogo = '../ui/marca/logo.svg', { ciclo =
   const svg = await (await fetch(urlLogo)).text();
   const logo = lerLogo(svg);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  // no celular a tela tem densidade 3 ou mais: 1,5 basta para o letreiro e alivia a GPU
+  renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
   renderer.toneMapping = THREE.NeutralToneMapping;
   const scene = new THREE.Scene();
   const acento = new THREE.Color(ACENTO);
@@ -250,6 +251,8 @@ export async function montar(canvas, urlLogo = '../ui/marca/logo.svg', { ciclo =
   const inicio = performance.now();
   let anterior = null;
   function laco(agora) {
+    // a abertura saiu da página: para de desenhar e devolve a GPU (no celular ela é da câmera)
+    if (!canvas.isConnected) { renderer.dispose(); renderer.forceContextLoss(); return; }
     const t = tFixo ?? (agora - inicio) / 1000;
     const dt = anterior === null ? 1 / 60 : Math.min(0.05, (agora - anterior) / 1000);
     anterior = agora;
