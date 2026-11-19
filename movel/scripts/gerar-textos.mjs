@@ -58,7 +58,8 @@ const L = {
 };
 K.push('luz', 'escurecer', 'escuro_aviso');
 for (const d of Object.keys(T)) T[d].push(...L[d]);
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, "\\'").replace(/"/g, '\\"');
+// a barra invertida primeiro, senão uma "\" do texto escaparia a aspa que vem depois no strings.xml
+const esc = (s) => s.replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, "\\'").replace(/"/g, '\\"');
 for (const [d, v] of Object.entries(T)) {
   fs.mkdirSync(path.join(base, d), { recursive: true });
   const linhas = K.map((k, i) => `  <string name="${k}">${esc(v[i])}</string>`).join('\n');

@@ -1,7 +1,7 @@
 // Baixa os dois motores do app para vendor/, nas versões fixadas (troca só aqui, de propósito). Roda no npm install.
 // - go2rtc (MIT, github.com/AlexxIT/go2rtc): conecta nas câmeras e entrega o vídeo ao vivo e para a gravação.
 // - ffmpeg (compilação "essentials" do Gyan, github.com/GyanD/codexffmpeg): grava em blocos sem recomprimir.
-import { existsSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,12 +35,14 @@ for (const m of MOTORES) {
   }
   const r = await fetch(m.url(m.versao));
   if (!r.ok) throw new Error(`não consegui baixar o ${m.nome} (${r.status})`);
-  const zip = join(tmpdir(), `${m.nome}-${m.versao}.zip`);
+  const temp = mkdtempSync(join(tmpdir(), `${m.nome}-`));
+  const zip = join(temp, `${m.nome}-${m.versao}.zip`);
   writeFileSync(zip, Buffer.from(await r.arrayBuffer()));
-  const pasta = join(tmpdir(), `${m.nome}-${m.versao}`);
+  const pasta = join(temp, 'extraido');
   rmSync(pasta, { recursive: true, force: true });
   const dentro = typeof m.dentro === 'function' ? m.dentro(m.versao) : m.dentro;
   // Expand-Archive do PowerShell: existe em todo Windows (o tar do Git Bash lê 'C:' como servidor remoto)
   execFileSync('powershell', ['-NoProfile', '-Command', `Expand-Archive -LiteralPath '${zip}' -DestinationPath '${pasta}' -Force; Copy-Item -LiteralPath '${join(pasta, dentro)}' -Destination '${destino}'`]);
+  rmSync(temp, { recursive: true, force: true });
   console.log(`${m.nome} ${m.versao} em ${destino}`);
 }
