@@ -27,7 +27,7 @@ import android.widget.TextView
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.sources.video.Camera2Source
 import com.pedro.rtspserver.RtspServerStream
-import com.pedro.encoder.input.gl.render.filters.`object`.TextObjectFilterRender
+import com.pedro.encoder.input.gl.render.filters.`object`.TextFilterRender
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.WifiManager
@@ -57,7 +57,7 @@ class MainActivity : Activity(), ConnectChecker {
   private var travaWifi: WifiManager.WifiLock? = null
   private var travaCpu: PowerManager.WakeLock? = null
   private val relogio = Handler(Looper.getMainLooper())
-  private var dataHora: TextObjectFilterRender? = null
+  private var dataHora: TextFilterRender? = null
   private val formatoDataHora by lazy { SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()) }
   private val tique = object : Runnable {
     override fun run() {
@@ -267,14 +267,14 @@ class MainActivity : Activity(), ConnectChecker {
     dataHora?.let { try { gl.removeFilter(it) } catch (_: Exception) {} }
     dataHora = null
     if (!ligar) return
-    val f = TextObjectFilterRender()
+    val f = TextFilterRender()
     escreverDataHora(f)
     gl.addFilter(f)
     dataHora = f
     relogio.post(tique)
   }
 
-  private fun escreverDataHora(f: TextObjectFilterRender) {
+  private fun escreverDataHora(f: TextFilterRender) {
     val texto = " " + formatoDataHora.format(Date()) + " "
     f.setText(texto, 40f, Color.WHITE, 0x73000000)
     // a escala é em % do quadro: a largura acompanha o tamanho do texto, com a altura na proporção da imagem

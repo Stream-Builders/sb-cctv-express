@@ -49,7 +49,6 @@ class InicioActivity : Activity() {
     prefs.edit().putString("modo", modo).apply()
     val destino = if (modo == "assistir") AssistirActivity::class.java else MainActivity::class.java
     startActivity(Intent(this, destino))
-    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     finish()
   }
 

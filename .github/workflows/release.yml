@@ -89,6 +89,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          nome=$(grep -oP "versionName '\K[^']+" movel/app/build.gradle)
+          nome=$(grep -oP "versionName\s*=?\s*'\K[^']+" movel/app/build.gradle)
           cp movel/app/build/outputs/apk/release/app-release.apk "CCTV-Express-Camera-Android-$nome.apk"
           gh release upload "$GITHUB_REF_NAME" "CCTV-Express-Camera-Android-$nome.apk" --clobber

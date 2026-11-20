@@ -3,23 +3,23 @@
 plugins { id 'com.android.application' }
 
 android {
-  namespace 'builders.stream.cctvexpress.camera'
-  compileSdk 37
+  namespace = 'builders.stream.cctvexpress.camera'
+  compileSdk = 37
   defaultConfig {
-    applicationId 'builders.stream.cctvexpress.camera'
-    minSdk 24
-    targetSdk 37
-    versionCode 9
-    versionName '0.4.0'
+    applicationId = 'builders.stream.cctvexpress.camera'
+    minSdk = 24
+    targetSdk = 37
+    versionCode = 9
+    versionName = '0.4.0'
   }
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled = false
       // assinatura de teste até a chave de publicação ir para o cofre
-      signingConfig signingConfigs.debug
+      signingConfig = signingConfigs.debug
     }
   }
-  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
 }
 
 dependencies {
