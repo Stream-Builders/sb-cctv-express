@@ -20,6 +20,12 @@ gravacoes.registrarEsquema();
 
 // uma janela só: abrir de novo traz a que já está aberta
 if (!app.requestSingleInstanceLock()) app.quit();
+// Mosaico ao vivo: no Windows, o Chromium mostra cada vídeo por DirectComposition, e com várias câmeras ao mesmo tempo o
+// Present da tela segurava a thread da GPU onde o decodificador de vídeo também roda. O decodificador ficava sem vez,
+// a câmera de 30 quadros (o celular) travava e o player pulava para o ao vivo a cada 2 a 5 s, cortando imagem e som.
+// Medido em 20/11 (RTX 3060, 4 câmeras): com DirectComposition, a tela a 30 fps e o celular a 3-10 fps com até 66% dos
+// quadros descartados; sem ela, a tela a 51 fps e o celular a 29 fps, sem pulos.
+if (process.platform === 'win32') app.commandLine.appendSwitch('disable-direct-composition');
 
 let janela = null;
 let motorPronto = Promise.resolve();
