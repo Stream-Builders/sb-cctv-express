@@ -15,4 +15,6 @@
   <string name="luz">लाइट</string>
   <string name="escurecer">स्क्रीन मंद करें</string>
   <string name="escuro_aviso">प्रसारण जारी है। स्क्रीन जगाने के लिए छुएँ।</string>
+  <string name="datahora">तारीख और समय</string>
+  <string name="inicio">शुरुआत</string>
 </resources>

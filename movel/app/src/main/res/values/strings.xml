@@ -15,4 +15,6 @@
   <string name="luz">Light</string>
   <string name="escurecer">Dim screen</string>
   <string name="escuro_aviso">Streaming. Tap to wake the screen.</string>
+  <string name="datahora">Date and time</string>
+  <string name="inicio">Home</string>
 </resources>

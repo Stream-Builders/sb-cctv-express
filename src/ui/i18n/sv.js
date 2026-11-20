@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Starta kamerans siren i upp till 30 sekunder? Den hörs utomhus.",
   "ptz.posicao": "Position {n}",
   "ptz.posicoesDica": "Klicka för att gå dit; håll 1 s för att spara nuvarande position",
-  "ptz.ronda": "Rundtur mellan positioner"
+  "ptz.ronda": "Rundtur mellan positioner",
+  "arquivo.titulo": "Snabbinställning",
+  "arquivo.exportar": "Exportera kameror",
+  "arquivo.importar": "Importera kameror",
+  "arquivo.senha": "Fillösenord (valfritt)",
+  "arquivo.senhaAjuda": "Med lösenord innehåller filen även kamerornas lösenord, krypterade. Utan lösenord följer de inte med. Fungerar på dator och telefon.",
+  "arquivo.pedirSenha": "Filen är skyddad. Ange dess lösenord.",
+  "arquivo.senhaErrada": "Fel fillösenord.",
+  "arquivo.invalido": "Det här är ingen kamerafil från CCTV Express.",
+  "arquivo.importadas": "{n} kameror importerade.",
+  "arquivo.exportado": "Filen sparad.",
+  "arquivo.continuar": "Fortsätt"
 };

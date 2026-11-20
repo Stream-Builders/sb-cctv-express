@@ -212,6 +212,35 @@ ipcMain.handle('cameras:salvar', async (_e, dados) => {
   await aplicarCadastro();
   return id;
 });
+// arquivo de configuração rápida (.cctvx): o mesmo do app do celular, nos dois sentidos
+const arquivo = require('./arquivo');
+let arquivoAberto = null;
+ipcMain.handle('arquivo:exportar', async (_e, senha) => {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const r = await dialog.showSaveDialog(janela, { defaultPath: `cctv-express-${hoje}.cctvx`, filters: [{ name: 'CCTV Express', extensions: ['cctvx'] }] });
+  if (r.canceled || !r.filePath) return false;
+  require('node:fs').writeFileSync(r.filePath, arquivo.montar(String(senha || '')));
+  return true;
+});
+ipcMain.handle('arquivo:abrir', async () => {
+  const r = await dialog.showOpenDialog(janela, { properties: ['openFile'], filters: [{ name: 'CCTV Express', extensions: ['cctvx', 'json'] }] });
+  if (r.canceled || !r.filePaths[0]) return null;
+  try { arquivoAberto = require('node:fs').readFileSync(r.filePaths[0], 'utf8'); } catch { return { erro: 'invalido' }; }
+  return { cifrado: arquivo.cifrado(arquivoAberto) };
+});
+ipcMain.handle('arquivo:importar', async (_e, senha) => {
+  if (arquivoAberto === null) return { erro: 'invalido' };
+  try {
+    const novas = arquivo.importar(arquivo.ler(arquivoAberto, String(senha || '')));
+    arquivoAberto = null;
+    await aplicarCadastro();
+    gravador.iniciar();
+    deteccao.iniciar();
+    return { novas };
+  } catch (e) {
+    return { erro: e instanceof arquivo.SenhaErrada ? 'senha' : 'invalido' };
+  }
+});
 ipcMain.handle('cameras:remover', async (_e, id) => {
   cameras.remover(id);
   await aplicarCadastro();

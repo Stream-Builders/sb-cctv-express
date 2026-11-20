@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "カメラのサイレンを最大30秒鳴らしますか？外まで聞こえます。",
   "ptz.posicao": "位置 {n}",
   "ptz.posicoesDica": "クリックで移動、1秒長押しで現在の位置を保存",
-  "ptz.ronda": "位置を巡回"
+  "ptz.ronda": "位置を巡回",
+  "arquivo.titulo": "クイック設定",
+  "arquivo.exportar": "カメラを書き出す",
+  "arquivo.importar": "カメラを読み込む",
+  "arquivo.senha": "ファイルのパスワード(任意)",
+  "arquivo.senhaAjuda": "パスワードを付けると、カメラのパスワードも暗号化して含めます。付けない場合は含めません。パソコンでもスマートフォンでも使えます。",
+  "arquivo.pedirSenha": "このファイルは保護されています。パスワードを入力してください。",
+  "arquivo.senhaErrada": "ファイルのパスワードが違います。",
+  "arquivo.invalido": "CCTV Express のカメラファイルではありません。",
+  "arquivo.importadas": "{n} 台のカメラを読み込みました。",
+  "arquivo.exportado": "ファイルを保存しました。",
+  "arquivo.continuar": "続ける"
 };

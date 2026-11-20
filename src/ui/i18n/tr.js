@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Kamera sireni 30 saniyeye kadar çalınsın mı? Dışarıdan duyulacak.",
   "ptz.posicao": "Konum {n}",
   "ptz.posicoesDica": "Gitmek için tıklayın; mevcut konumu kaydetmek için 1 sn basılı tutun",
-  "ptz.ronda": "Konumlar arasında tur"
+  "ptz.ronda": "Konumlar arasında tur",
+  "arquivo.titulo": "Hızlı kurulum",
+  "arquivo.exportar": "Kameraları dışa aktar",
+  "arquivo.importar": "Kameraları içe aktar",
+  "arquivo.senha": "Dosya parolası (isteğe bağlı)",
+  "arquivo.senhaAjuda": "Parola ile dosya kamera parolalarını da şifreli taşır. Parolasız, onlar olmadan gider. Bilgisayar ve telefonda çalışır.",
+  "arquivo.pedirSenha": "Bu dosya korumalı. Parolasını girin.",
+  "arquivo.senhaErrada": "Dosya parolası hatalı.",
+  "arquivo.invalido": "Bu bir CCTV Express kamera dosyası değil.",
+  "arquivo.importadas": "{n} kamera içe aktarıldı.",
+  "arquivo.exportado": "Dosya kaydedildi.",
+  "arquivo.continuar": "Devam"
 };

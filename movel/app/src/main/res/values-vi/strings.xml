@@ -15,4 +15,6 @@
   <string name="luz">Đèn</string>
   <string name="escurecer">Làm tối màn hình</string>
   <string name="escuro_aviso">Đang phát. Chạm để bật lại màn hình.</string>
+  <string name="datahora">Ngày giờ</string>
+  <string name="inicio">Trang đầu</string>
 </resources>

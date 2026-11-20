@@ -5,21 +5,36 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+  <!-- busca de câmeras ONVIF (resposta ao multicast) e Wi-Fi/processador acordados enquanto o celular é câmera -->
+  <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-feature android:name="android.hardware.camera.any" android:required="false" />
   <application
     android:label="@string/app_nome"
     android:icon="@mipmap/ic_launcher"
     android:allowBackup="false"
+    android:usesCleartextTraffic="true"
     android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+    <!-- o início: abertura e escolha do modo -->
     <activity
-      android:name=".MainActivity"
+      android:name=".InicioActivity"
       android:exported="true"
-      android:screenOrientation="sensorLandscape"
-      android:configChanges="orientation|screenSize|keyboardHidden">
+      android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <!-- o celular como câmera da rede -->
+    <activity
+      android:name=".MainActivity"
+      android:exported="false"
+      android:screenOrientation="sensorLandscape"
+      android:configChanges="orientation|screenSize|keyboardHidden" />
+    <!-- assistir as câmeras da rede (gira com o celular; a tela se rearruma sem recarregar) -->
+    <activity
+      android:name=".AssistirActivity"
+      android:exported="false"
+      android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden" />
   </application>
 </manifest>

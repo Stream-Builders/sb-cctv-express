@@ -29,26 +29,9 @@
   .acesso .campo { display: flex; gap: 6px; align-items: center; } .acesso .campo input { flex: 1; min-width: 0; }
   .acesso .aviso { min-height: 1em; font-size: 12px; color: #ff6b6b; }
   .acesso .botoes { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-  /* a abertura: o letreiro 3D do CCTV Express sobre o palco escuro, como no computador */
-  .abertura { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 42%, #16191f 0%, #07080a 75%); transition: opacity .6s ease; }
-  .abertura canvas { width: 100%; height: 100%; display: block; }
-  .abertura img { width: 70%; }
-  .abertura.saindo { opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
-<div class="abertura" id="abertura"><canvas id="letreiro" aria-label="cctv.express"></canvas></div>
-<script>
-  // trava de segurança (script comum, roda mesmo se o módulo do letreiro falhar ou nunca terminar): a abertura sai no
-  // máximo em 12 s, e um toque pula na hora
-  (() => {
-    const ab = document.getElementById('abertura');
-    const fechar = () => { if (!ab.isConnected || ab.classList.contains('saindo')) return; ab.classList.add('saindo'); setTimeout(() => ab.remove(), 700); };
-    window.fecharAbertura = fechar;
-    setTimeout(fechar, 12000);
-    ab.addEventListener('click', fechar);
-  })();
-</script>
 <div class="acesso" id="acesso" hidden>
   <form id="form-acesso">
     <h2 id="a-titulo"></h2>
@@ -72,6 +55,8 @@
     trocar: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
     luz: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
     escurecer: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+    datahora: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    inicio: '<path d="M3 11l9-7 9 7M5 10v10h14V10"/>',
     acesso: '<rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
     olho: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     salvar: '<path d="M5 12l5 5L20 7"/>',
@@ -155,24 +140,12 @@
       botao('trocar', ICONES.trocar, T.trocar, false),
       botao('luz', ICONES.luz, T.luz, e.luz),
       botao('escurecer', ICONES.escurecer, T.escurecer, false),
+      botao('datahora', ICONES.datahora, T.datahora, Camera.dataHora()),
       botao('acesso', ICONES.acesso, TA[0], false, abrirAcesso),
+      botao('inicio', ICONES.inicio, T.inicio, false),
     );
   }
   atualizar(JSON.parse(Camera.estado()));
-</script>
-<script type="module">
-  import { montar } from './splash/letreiro.js';
-  const ab = document.getElementById('abertura');
-  const canvas = document.getElementById('letreiro');
-  // a abertura só sai depois da montagem inteira: o relógio conta a partir do primeiro quadro do letreiro (no
-  // celular o 3D demora a carregar), com a câmera e o nome já acesos por um tempo antes de sumir
-  const sair = (ms) => setTimeout(() => window.fecharAbertura(), ms);
-  montar(canvas, 'ui/marca/logo.svg').then(() => sair(5800)).catch(() => {
-    const img = document.createElement('img');
-    img.src = 'ui/marca/logo.svg'; img.alt = 'cctv.express';
-    canvas.replaceWith(img);
-    sair(2000);
-  });
 </script>
 </body>
 </html>

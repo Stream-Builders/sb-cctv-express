@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "कैमरे का सायरन 30 सेकंड तक बजाएँ? यह बाहर सुनाई देगा।",
   "ptz.posicao": "स्थिति {n}",
   "ptz.posicoesDica": "जाने के लिए क्लिक करें; वर्तमान स्थिति सहेजने के लिए 1 सेकंड दबाए रखें",
-  "ptz.ronda": "स्थितियों के बीच गश्त"
+  "ptz.ronda": "स्थितियों के बीच गश्त",
+  "arquivo.titulo": "त्वरित सेटअप",
+  "arquivo.exportar": "कैमरे निर्यात करें",
+  "arquivo.importar": "कैमरे आयात करें",
+  "arquivo.senha": "फ़ाइल पासवर्ड (वैकल्पिक)",
+  "arquivo.senhaAjuda": "पासवर्ड देने पर फ़ाइल में कैमरों के पासवर्ड भी एन्क्रिप्ट होकर जाते हैं। बिना पासवर्ड के वे नहीं जाते। कंप्यूटर और फ़ोन दोनों पर चलती है।",
+  "arquivo.pedirSenha": "यह फ़ाइल सुरक्षित है। इसका पासवर्ड लिखें।",
+  "arquivo.senhaErrada": "फ़ाइल पासवर्ड गलत है।",
+  "arquivo.invalido": "यह CCTV Express की कैमरा फ़ाइल नहीं है।",
+  "arquivo.importadas": "{n} कैमरे आयात हुए।",
+  "arquivo.exportado": "फ़ाइल सहेजी गई।",
+  "arquivo.continuar": "जारी रखें"
 };

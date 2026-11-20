@@ -475,8 +475,17 @@ export class VideoRTC extends HTMLElement {
                     if (this.video.currentTime < start) {
                         this.video.currentTime = start;
                     }
+                    // CCTV Express: o original tocava na velocidade igual ao buffer (0,3 s de folga = 0,3x, quase
+                    // parado; 2 s = 2x), e a câmera que chega com pequenas variações (o celular no Wi-Fi) ficava
+                    // travando e correndo. Agora a velocidade só se ajusta de leve (0,9x a 1,1x) em volta de 0,6 s de
+                    // folga, e só pula para o ao vivo quando fica mais de 3 s atrasada.
                     const gap = end - this.video.currentTime;
-                    this.video.playbackRate = gap > 0.1 ? gap : 0.1;
+                    if (gap > 3) {
+                        this.video.currentTime = end - 0.6;
+                        this.video.playbackRate = 1;
+                    } else {
+                        this.video.playbackRate = Math.min(1.1, Math.max(0.9, 1 + (gap - 0.6) * 0.25));
+                    }
                     // console.debug('VideoRTC.buffered', gap, this.video.playbackRate, this.video.readyState);
                 }
             });

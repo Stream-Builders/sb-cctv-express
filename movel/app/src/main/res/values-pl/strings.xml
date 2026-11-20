@@ -15,4 +15,6 @@
   <string name="luz">Światło</string>
   <string name="escurecer">Przyciemnij ekran</string>
   <string name="escuro_aviso">Nadawanie. Dotknij, aby wybudzić ekran.</string>
+  <string name="datahora">Data i godzina</string>
+  <string name="inicio">Start</string>
 </resources>

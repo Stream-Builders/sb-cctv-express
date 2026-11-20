@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "De camerasirene tot 30 seconden laten klinken? Die is buiten te horen.",
   "ptz.posicao": "Positie {n}",
   "ptz.posicoesDica": "Klik om te gaan; houd 1 s vast om de huidige positie op te slaan",
-  "ptz.ronda": "Ronde langs de posities"
+  "ptz.ronda": "Ronde langs de posities",
+  "arquivo.titulo": "Snelle instelling",
+  "arquivo.exportar": "Camera’s exporteren",
+  "arquivo.importar": "Camera’s importeren",
+  "arquivo.senha": "Bestandswachtwoord (optioneel)",
+  "arquivo.senhaAjuda": "Met een wachtwoord bevat het bestand ook de camerawachtwoorden, versleuteld. Zonder gaan ze niet mee. Voor computer en telefoon.",
+  "arquivo.pedirSenha": "Dit bestand is beveiligd. Vul het wachtwoord in.",
+  "arquivo.senhaErrada": "Onjuist bestandswachtwoord.",
+  "arquivo.invalido": "Dit is geen camerabestand van CCTV Express.",
+  "arquivo.importadas": "{n} camera’s geïmporteerd.",
+  "arquivo.exportado": "Bestand opgeslagen.",
+  "arquivo.continuar": "Doorgaan"
 };

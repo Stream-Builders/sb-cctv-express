@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "تشغيل صفارة الكاميرا لمدة تصل إلى 30 ثانية؟ ستُسمع في الشارع.",
   "ptz.posicao": "الموضع {n}",
   "ptz.posicoesDica": "انقر للانتقال؛ اضغط مطولًا ثانية واحدة لحفظ الموضع الحالي",
-  "ptz.ronda": "جولة بين المواضع"
+  "ptz.ronda": "جولة بين المواضع",
+  "arquivo.titulo": "إعداد سريع",
+  "arquivo.exportar": "تصدير الكاميرات",
+  "arquivo.importar": "استيراد الكاميرات",
+  "arquivo.senha": "كلمة مرور الملف (اختيارية)",
+  "arquivo.senhaAjuda": "مع كلمة المرور يحمل الملف كلمات مرور الكاميرات مشفّرة. بدونها لا يحملها. يعمل على الكمبيوتر والهاتف.",
+  "arquivo.pedirSenha": "هذا الملف محمي. أدخل كلمة مروره.",
+  "arquivo.senhaErrada": "كلمة مرور الملف غير صحيحة.",
+  "arquivo.invalido": "هذا ليس ملف كاميرات CCTV Express.",
+  "arquivo.importadas": "تم استيراد {n} كاميرات.",
+  "arquivo.exportado": "تم حفظ الملف.",
+  "arquivo.continuar": "متابعة"
 };

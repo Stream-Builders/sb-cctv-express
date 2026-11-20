@@ -15,4 +15,6 @@
   <string name="luz">Lumière</string>
   <string name="escurecer">Assombrir l’écran</string>
   <string name="escuro_aviso">Diffusion en cours. Touchez pour rallumer l’écran.</string>
+  <string name="datahora">Date et heure</string>
+  <string name="inicio">Accueil</string>
 </resources>

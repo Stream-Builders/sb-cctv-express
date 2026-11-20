@@ -239,3 +239,6 @@ body { grid-template-columns: minmax(0, 1fr); }
 /* senha com o botão de mostrar e esconder ao lado */
 .campo-senha { display: flex; gap: 6px; align-items: center; }
 .campo-senha input { flex: 1; min-width: 0; }
+
+/* configuração rápida (.cctvx) nas configurações */
+.arquivo-acoes { display: flex; flex-wrap: wrap; gap: 6px; }

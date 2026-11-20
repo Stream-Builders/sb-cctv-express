@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Sound the camera siren for up to 30 seconds? It will be heard outside.",
   "ptz.posicao": "Position {n}",
   "ptz.posicoesDica": "Click to go; hold 1 s to save the current position",
-  "ptz.ronda": "Tour between positions"
+  "ptz.ronda": "Tour between positions",
+  "arquivo.titulo": "Quick setup",
+  "arquivo.exportar": "Export cameras",
+  "arquivo.importar": "Import cameras",
+  "arquivo.senha": "File password (optional)",
+  "arquivo.senhaAjuda": "With a password, the file also carries the camera passwords, encrypted. Without one, it goes without them. Works on the computer and on the phone.",
+  "arquivo.pedirSenha": "This file is protected. Enter its password.",
+  "arquivo.senhaErrada": "Wrong file password.",
+  "arquivo.invalido": "This is not a CCTV Express camera file.",
+  "arquivo.importadas": "{n} cameras imported.",
+  "arquivo.exportado": "File saved.",
+  "arquivo.continuar": "Continue"
 };

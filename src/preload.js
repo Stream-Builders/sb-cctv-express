@@ -26,5 +26,8 @@ contextBridge.exposeInMainWorld('cctv', {
   escolherPasta: () => ipcRenderer.invoke('config:escolher-pasta'),
   abrirPastaGravacoes: () => ipcRenderer.invoke('config:abrir-pasta'),
   idiomaDoSistema: () => ipcRenderer.invoke('sistema:idioma'),
+  exportarArquivo: (senha) => ipcRenderer.invoke('arquivo:exportar', senha),
+  abrirArquivo: () => ipcRenderer.invoke('arquivo:abrir'),
+  importarArquivo: (senha) => ipcRenderer.invoke('arquivo:importar', senha),
   idiomaDoInstalador: () => ipcRenderer.invoke('sistema:idioma-instalador'),
 });

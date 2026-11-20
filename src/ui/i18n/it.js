@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Attivare la sirena della telecamera per un massimo di 30 secondi? Si sentirà in strada.",
   "ptz.posicao": "Posizione {n}",
   "ptz.posicoesDica": "Clicca per andare; tieni premuto 1 s per salvare la posizione attuale",
-  "ptz.ronda": "Giro tra le posizioni"
+  "ptz.ronda": "Giro tra le posizioni",
+  "arquivo.titulo": "Configurazione rapida",
+  "arquivo.exportar": "Esporta telecamere",
+  "arquivo.importar": "Importa telecamere",
+  "arquivo.senha": "Password del file (facoltativa)",
+  "arquivo.senhaAjuda": "Con la password, il file porta anche le password delle telecamere, cifrate. Senza, va senza di esse. Vale per computer e telefono.",
+  "arquivo.pedirSenha": "Questo file è protetto. Inserisci la sua password.",
+  "arquivo.senhaErrada": "Password del file errata.",
+  "arquivo.invalido": "Questo non è un file di telecamere di CCTV Express.",
+  "arquivo.importadas": "{n} telecamere importate.",
+  "arquivo.exportado": "File salvato.",
+  "arquivo.continuar": "Continua"
 };

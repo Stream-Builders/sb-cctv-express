@@ -15,4 +15,6 @@
   <string name="luz">Licht</string>
   <string name="escurecer">Scherm dimmen</string>
   <string name="escuro_aviso">Bezig met uitzenden. Tik om het scherm te wekken.</string>
+  <string name="datahora">Datum en tijd</string>
+  <string name="inicio">Start</string>
 </resources>

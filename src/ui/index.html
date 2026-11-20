@@ -89,6 +89,15 @@
       <label><span data-t="config.sensibilidade"></span> <input name="sensibilidade" type="range" min="1" max="10" step="1"></label>
       <label class="marcar"><input type="checkbox" name="notificar"> <span data-t="config.notificar"></span></label>
       <label class="marcar"><input type="checkbox" name="iniciarComWindows"> <span data-t="config.iniciarComWindows"></span></label>
+      <h3 data-t="arquivo.titulo"></h3>
+      <p class="ajuda" data-t="arquivo.senhaAjuda"></p>
+      <label><span data-t="arquivo.senha"></span> <input type="password" id="arquivo-senha" autocomplete="new-password"></label>
+      <div class="arquivo-acoes">
+        <button type="button" class="sb-btn sb-btn--sm" id="arquivo-exportar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="arquivo.exportar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <button type="button" class="sb-btn sb-btn--sm" id="arquivo-importar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="arquivo.importar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <button type="button" class="sb-btn sb-btn--sm" id="arquivo-continuar" hidden><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="arquivo.continuar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
+      <p class="ajuda" id="arquivo-aviso" aria-live="polite"></p>
       <menu>
         <span class="espaco"></span>
         <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="form.cancelar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>

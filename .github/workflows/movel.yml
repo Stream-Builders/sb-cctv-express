@@ -1,0 +1,38 @@
+# Monta o APK do celular a cada push que mexe no app (ou no que ele copia do computador: tema, abertura e textos),
+# para o erro de compilação aparecer antes da release. O APK fica como artefato do workflow por 7 dias.
+name: movel
+
+on:
+  push:
+    paths:
+      - 'movel/**'
+      - 'src/ui/i18n/**'
+      - 'src/ui/tema/**'
+      - 'src/ui/marca/**'
+      - 'src/splash/**'
+      - '.github/workflows/movel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Monta o APK
+        working-directory: movel
+        run: chmod +x gradlew && ./gradlew --no-daemon assembleRelease --warning-mode all
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: apk
+          path: movel/app/build/outputs/apk/release/app-release.apk
+          retention-days: 7

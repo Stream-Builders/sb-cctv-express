@@ -15,4 +15,6 @@
   <string name="luz">조명</string>
   <string name="escurecer">화면 어둡게</string>
   <string name="escuro_aviso">송출 중입니다. 탭하면 화면이 켜집니다.</string>
+  <string name="datahora">날짜와 시간</string>
+  <string name="inicio">처음</string>
 </resources>

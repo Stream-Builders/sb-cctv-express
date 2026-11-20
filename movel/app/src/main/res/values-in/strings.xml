@@ -15,4 +15,6 @@
   <string name="luz">Lampu</string>
   <string name="escurecer">Redupkan layar</string>
   <string name="escuro_aviso">Sedang menyiarkan. Ketuk untuk menyalakan layar.</string>
+  <string name="datahora">Tanggal dan jam</string>
+  <string name="inicio">Beranda</string>
 </resources>

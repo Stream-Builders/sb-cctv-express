@@ -58,6 +58,17 @@ const L = {
 };
 K.push('luz', 'escurecer', 'escuro_aviso');
 for (const d of Object.keys(T)) T[d].push(...L[d]);
+// a data e a hora gravadas na imagem e o botão que volta à escolha do modo (câmera ou assistir)
+const D = {
+  values: ['Date and time', 'Home'], 'values-pt': ['Data e hora', 'Início'], 'values-es': ['Fecha y hora', 'Inicio'],
+  'values-fr': ['Date et heure', 'Accueil'], 'values-de': ['Datum und Uhrzeit', 'Start'], 'values-it': ['Data e ora', 'Inizio'],
+  'values-nl': ['Datum en tijd', 'Start'], 'values-pl': ['Data i godzina', 'Start'], 'values-sv': ['Datum och tid', 'Start'],
+  'values-tr': ['Tarih ve saat', 'Başlangıç'], 'values-ru': ['Дата и время', 'Начало'], 'values-ar': ['التاريخ والوقت', 'البداية'],
+  'values-hi': ['तारीख और समय', 'शुरुआत'], 'values-in': ['Tanggal dan jam', 'Beranda'], 'values-vi': ['Ngày giờ', 'Trang đầu'],
+  'values-ja': ['日付と時刻', 'ホーム'], 'values-ko': ['날짜와 시간', '처음'], 'values-zh-rCN': ['日期和时间', '首页'],
+};
+K.push('datahora', 'inicio');
+for (const d of Object.keys(T)) T[d].push(...D[d]);
 // a barra invertida primeiro, senão uma "\" do texto escaparia a aspa que vem depois no strings.xml
 const esc = (s) => s.replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, "\\'").replace(/"/g, '\\"');
 for (const [d, v] of Object.entries(T)) {

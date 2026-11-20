@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "让摄像头警笛鸣响最多 30 秒？街上会听到。",
   "ptz.posicao": "位置 {n}",
   "ptz.posicoesDica": "点击前往；按住 1 秒保存当前位置",
-  "ptz.ronda": "在位置之间巡航"
+  "ptz.ronda": "在位置之间巡航",
+  "arquivo.titulo": "快速配置",
+  "arquivo.exportar": "导出摄像头",
+  "arquivo.importar": "导入摄像头",
+  "arquivo.senha": "文件密码（可选）",
+  "arquivo.senhaAjuda": "设置密码后，文件会同时加密保存摄像头密码；不设密码则不包含。电脑和手机通用。",
+  "arquivo.pedirSenha": "此文件受保护，请输入文件密码。",
+  "arquivo.senhaErrada": "文件密码错误。",
+  "arquivo.invalido": "这不是 CCTV Express 的摄像头文件。",
+  "arquivo.importadas": "已导入 {n} 个摄像头。",
+  "arquivo.exportado": "文件已保存。",
+  "arquivo.continuar": "继续"
 };

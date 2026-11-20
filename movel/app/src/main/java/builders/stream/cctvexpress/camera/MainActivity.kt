@@ -27,6 +27,17 @@ import android.widget.TextView
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.sources.video.Camera2Source
 import com.pedro.rtspserver.RtspServerStream
+import com.pedro.encoder.input.gl.render.filters.`object`.TextObjectFilterRender
+import android.content.Context
+import android.content.Intent
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : Activity(), ConnectChecker {
 
@@ -41,6 +52,19 @@ class MainActivity : Activity(), ConnectChecker {
   }
 
   private var stream: RtspServerStream? = null
+  // o Wi-Fi sem economia de energia e o processador acordado enquanto a câmera transmite: com a economia, o celular
+  // segurava os pacotes e o vídeo chegava no computador em rajadas (travando e correndo)
+  private var travaWifi: WifiManager.WifiLock? = null
+  private var travaCpu: PowerManager.WakeLock? = null
+  private val relogio = Handler(Looper.getMainLooper())
+  private var dataHora: TextObjectFilterRender? = null
+  private val formatoDataHora by lazy { SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()) }
+  private val tique = object : Runnable {
+    override fun run() {
+      dataHora?.let { escreverDataHora(it) }
+      relogio.postDelayed(this, 1000 - System.currentTimeMillis() % 1000)
+    }
+  }
   private lateinit var tela: SurfaceView
   private lateinit var cortina: TextView
 
@@ -55,6 +79,7 @@ class MainActivity : Activity(), ConnectChecker {
     super.onCreate(savedInstanceState)
     // a câmera fica ligada como uma câmera de verdade: a tela não apaga enquanto o app está aberto
     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    segurarRede()
     montarTela()
     if (temPermissoes()) preparar()
     else requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), PEDIDO_PERMISSAO)
@@ -106,8 +131,10 @@ class MainActivity : Activity(), ConnectChecker {
     @JavascriptInterface fun estado(): String = estadoJson()
     @JavascriptInterface fun textos(): String = JSONObject().apply {
       for ((k, id) in listOf("ao_vivo" to R.string.ao_vivo, "parado" to R.string.parado, "iniciar" to R.string.iniciar,
-        "parar" to R.string.parar, "trocar" to R.string.trocar, "luz" to R.string.luz, "escurecer" to R.string.escurecer)) put(k, getString(id))
+        "parar" to R.string.parar, "trocar" to R.string.trocar, "luz" to R.string.luz, "escurecer" to R.string.escurecer,
+        "datahora" to R.string.datahora, "inicio" to R.string.inicio)) put(k, getString(id))
     }.toString()
+    @JavascriptInterface fun dataHora(): Boolean = dataHoraLigada()
     @JavascriptInterface fun acesso(): String = JSONObject().put("usuario", usuario()).put("senha", senha()).toString()
     @JavascriptInterface fun salvarAcesso(u: String, p: String): Boolean = this@MainActivity.salvarAcesso(u, p)
     @JavascriptInterface fun acao(qual: String) {
@@ -117,6 +144,11 @@ class MainActivity : Activity(), ConnectChecker {
           "trocar" -> (stream?.videoSource as? Camera2Source)?.switchCamera()
           "luz" -> definirLuz(!lanternaAcesa())
           "escurecer" -> escurecerTela(true)
+          "datahora" -> definirDataHora(!dataHoraLigada())
+          "inicio" -> {
+            startActivity(Intent(this@MainActivity, InicioActivity::class.java).putExtra(InicioActivity.ESCOLHER, true))
+            finish()
+          }
         }
         mostrarEstado()
       }
@@ -162,10 +194,11 @@ class MainActivity : Activity(), ConnectChecker {
     // o endereço da rede de casa (192.168.x.x), não o IPv6 que o Android sorteia
     s.getStreamClient().forceIpType(com.pedro.rtspserver.server.IpType.IPv4)
     val ok = try {
-      s.prepareVideo(LARGURA, ALTURA, TAXA_VIDEO) && s.prepareAudio(32000, false, 64_000)
+      s.prepareVideo(LARGURA, ALTURA, 30, TAXA_VIDEO, 1, 0) && s.prepareAudio(32000, false, 64_000)
     } catch (_: IllegalArgumentException) { false }
     if (!ok) { Toast.makeText(this, R.string.falha, Toast.LENGTH_LONG).show(); return }
     stream = s
+    if (dataHoraLigada()) definirDataHora(true)
     tela.holder.addCallback(object : SurfaceHolder.Callback {
       override fun surfaceCreated(holder: SurfaceHolder) { if (!s.isOnPreview) s.startPreview(tela) }
       override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -215,8 +248,48 @@ class MainActivity : Activity(), ConnectChecker {
     painel.evaluateJavascript("window.atualizar && atualizar(${estadoJson()})", null)
   }
 
+  private fun segurarRede() {
+    val wifi = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    @Suppress("DEPRECATION")
+    val modo = if (Build.VERSION.SDK_INT >= 29) WifiManager.WIFI_MODE_FULL_LOW_LATENCY else WifiManager.WIFI_MODE_FULL_HIGH_PERF
+    travaWifi = wifi.createWifiLock(modo, "cctv-express:camera").apply { setReferenceCounted(false); acquire() }
+    val energia = getSystemService(Context.POWER_SERVICE) as PowerManager
+    travaCpu = energia.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "cctv-express:camera").apply { setReferenceCounted(false); acquire() }
+  }
+
+  private fun dataHoraLigada() = getSharedPreferences("camera", MODE_PRIVATE).getBoolean("dataHora", true)
+
+  /** a data e a hora gravadas na imagem, no canto de cima, como nas câmeras IP (vale para o vídeo que vai ao computador) */
+  private fun definirDataHora(ligar: Boolean) {
+    getSharedPreferences("camera", MODE_PRIVATE).edit().putBoolean("dataHora", ligar).apply()
+    val gl = stream?.getGlInterface() ?: return
+    relogio.removeCallbacks(tique)
+    dataHora?.let { try { gl.removeFilter(it) } catch (_: Exception) {} }
+    dataHora = null
+    if (!ligar) return
+    val f = TextObjectFilterRender()
+    escreverDataHora(f)
+    gl.addFilter(f)
+    dataHora = f
+    relogio.post(tique)
+  }
+
+  private fun escreverDataHora(f: TextObjectFilterRender) {
+    val texto = " " + formatoDataHora.format(Date()) + " "
+    f.setText(texto, 40f, Color.WHITE, 0x73000000)
+    // a escala é em % do quadro: a largura acompanha o tamanho do texto, com a altura na proporção da imagem
+    val pincel = android.graphics.Paint().apply { textSize = 40f }
+    val proporcao = pincel.measureText(texto) / (pincel.fontMetrics.bottom - pincel.fontMetrics.top)
+    val largura = 34f
+    f.setScale(largura, largura * LARGURA / ALTURA / proporcao)
+    f.setPosition(1.5f, 2f)
+  }
+
   override fun onDestroy() {
     super.onDestroy()
+    relogio.removeCallbacks(tique)
+    try { travaWifi?.release() } catch (_: Exception) {}
+    try { travaCpu?.release() } catch (_: Exception) {}
     controle?.parar()
     stream?.let {
       if (it.isStreaming) it.stopStream()

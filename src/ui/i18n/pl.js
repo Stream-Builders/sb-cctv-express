@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Włączyć syrenę kamery na maksymalnie 30 sekund? Będzie słyszalna na zewnątrz.",
   "ptz.posicao": "Pozycja {n}",
   "ptz.posicoesDica": "Kliknij, aby przejść; przytrzymaj 1 s, aby zapisać bieżącą pozycję",
-  "ptz.ronda": "Patrol między pozycjami"
+  "ptz.ronda": "Patrol między pozycjami",
+  "arquivo.titulo": "Szybka konfiguracja",
+  "arquivo.exportar": "Eksportuj kamery",
+  "arquivo.importar": "Importuj kamery",
+  "arquivo.senha": "Hasło pliku (opcjonalne)",
+  "arquivo.senhaAjuda": "Z hasłem plik zawiera też hasła kamer, zaszyfrowane. Bez hasła idzie bez nich. Działa na komputerze i telefonie.",
+  "arquivo.pedirSenha": "Ten plik jest chroniony. Wpisz jego hasło.",
+  "arquivo.senhaErrada": "Nieprawidłowe hasło pliku.",
+  "arquivo.invalido": "To nie jest plik kamer CCTV Express.",
+  "arquivo.importadas": "Zaimportowano kamery: {n}.",
+  "arquivo.exportado": "Plik zapisany.",
+  "arquivo.continuar": "Dalej"
 };

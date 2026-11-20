@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Kamerasirene bis zu 30 Sekunden auslösen? Sie ist draußen zu hören.",
   "ptz.posicao": "Position {n}",
   "ptz.posicoesDica": "Klicken zum Anfahren; 1 s halten, um die aktuelle Position zu speichern",
-  "ptz.ronda": "Rundgang zwischen Positionen"
+  "ptz.ronda": "Rundgang zwischen Positionen",
+  "arquivo.titulo": "Schnelleinrichtung",
+  "arquivo.exportar": "Kameras exportieren",
+  "arquivo.importar": "Kameras importieren",
+  "arquivo.senha": "Dateipasswort (optional)",
+  "arquivo.senhaAjuda": "Mit Passwort enthält die Datei auch die Kamerapasswörter, verschlüsselt. Ohne Passwort fehlen sie. Für Computer und Telefon.",
+  "arquivo.pedirSenha": "Diese Datei ist geschützt. Gib ihr Passwort ein.",
+  "arquivo.senhaErrada": "Falsches Dateipasswort.",
+  "arquivo.invalido": "Das ist keine Kameradatei von CCTV Express.",
+  "arquivo.importadas": "{n} Kameras importiert.",
+  "arquivo.exportado": "Datei gespeichert.",
+  "arquivo.continuar": "Weiter"
 };

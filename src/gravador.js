@@ -5,7 +5,7 @@
 // Para não parar e sempre voltar (o padrão dos NVR e do Frigate):
 // - o ffmpeg que cai volta sozinho, com espera crescente (5 s até 60 s) e zerada quando grava de novo;
 // - um supervisor a cada 20 s confere cada câmera: se a pasta ou o disco sumiram (disco externo, unidade de rede),
-//   espera voltar e retoma; se o ffmpeg está vivo mas o arquivo parou de crescer por 90 s, ele é derrubado e sobe de novo;
+//   espera voltar e retoma; se o ffmpeg está vivo mas o arquivo parou de crescer por 45 s, ele é derrubado e sobe de novo;
 // - mudar uma câmera ou a configuração só reinicia o ffmpeg do que mudou (as outras câmeras seguem gravando);
 // - timestamps das câmeras baratas são corrigidos (+genpts, discardcorrupt, avoid_negative_ts) e o áudio é reamostrado;
 // - o erro de cada ffmpeg vai para logs/<câmera>.log, para saber por que uma câmera parou.
@@ -17,7 +17,7 @@ const cameras = require('./cameras');
 const config = require('./config');
 
 const PORTA_RTSP = 18554; // o mesmo do go2rtc.js (RTSP local)
-const PARADO_MS = 90 * 1000; // arquivo sem crescer por mais que isso com o ffmpeg vivo: travado
+const PARADO_MS = 45 * 1000; // arquivo sem crescer por mais que isso com o ffmpeg vivo: travado
 const processos = new Map(); // id -> estado
 let supervisor = null;
 let limpeza = null;
@@ -95,7 +95,16 @@ function iniciarCamera(c, cfg) {
     estado.proc = proc;
     estado.subiuEm = Date.now();
     let erro = '';
-    proc.stderr.on('data', (d) => { erro = (erro + d).slice(-2000); });
+    proc.stderr.on('data', (d) => {
+      erro = (erro + d).slice(-2000);
+      // a câmera reiniciou a transmissão (o celular volta com a numeração RTP do zero): o ffmpeg fica vivo sem gravar
+      // nada até o supervisor notar; reinicia já, para a gravação perder só uns segundos
+      if (/bad cseq/i.test(String(d)) && Date.now() - estado.subiuEm > 10000 && !proc.killed) {
+        registrar(c.id, 'a câmera reiniciou a transmissão: reconectando a gravação');
+        estado.espera = 1000;
+        proc.kill();
+      }
+    });
     proc.on('error', (e) => registrar(c.id, `não abriu o ffmpeg: ${e.message}`));
     proc.on('exit', (codigo) => {
       if (estado.proc === proc) estado.proc = null;

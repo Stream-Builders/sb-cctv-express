@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Tocar a sirene da câmera por até 30 segundos? Ela será ouvida na rua.",
   "ptz.posicao": "Posição {n}",
   "ptz.posicoesDica": "Clique para ir; segure 1 s para salvar a posição atual",
-  "ptz.ronda": "Ronda entre as posições"
+  "ptz.ronda": "Ronda entre as posições",
+  "arquivo.titulo": "Configuração rápida",
+  "arquivo.exportar": "Exportar câmeras",
+  "arquivo.importar": "Importar câmeras",
+  "arquivo.senha": "Senha do arquivo (opcional)",
+  "arquivo.senhaAjuda": "Com senha, o arquivo leva também as senhas das câmeras, cifradas. Sem senha, vai sem elas. Serve para o computador e para o celular.",
+  "arquivo.pedirSenha": "Este arquivo é protegido. Digite a senha dele.",
+  "arquivo.senhaErrada": "Senha do arquivo incorreta.",
+  "arquivo.invalido": "Este não é um arquivo de câmeras do CCTV Express.",
+  "arquivo.importadas": "{n} câmeras importadas.",
+  "arquivo.exportado": "Arquivo salvo.",
+  "arquivo.continuar": "Continuar"
 };

@@ -15,4 +15,6 @@
   <string name="luz">Licht</string>
   <string name="escurecer">Bildschirm abdunkeln</string>
   <string name="escuro_aviso">Übertragung läuft. Tippen, um den Bildschirm zu wecken.</string>
+  <string name="datahora">Datum und Uhrzeit</string>
+  <string name="inicio">Start</string>
 </resources>

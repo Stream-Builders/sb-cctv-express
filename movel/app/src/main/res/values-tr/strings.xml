@@ -15,4 +15,6 @@
   <string name="luz">Işık</string>
   <string name="escurecer">Ekranı karart</string>
   <string name="escuro_aviso">Yayın sürüyor. Ekranı açmak için dokunun.</string>
+  <string name="datahora">Tarih ve saat</string>
+  <string name="inicio">Başlangıç</string>
 </resources>

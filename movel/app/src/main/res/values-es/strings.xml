@@ -15,4 +15,6 @@
   <string name="luz">Luz</string>
   <string name="escurecer">Oscurecer pantalla</string>
   <string name="escuro_aviso">Transmitiendo. Toca para encender la pantalla.</string>
+  <string name="datahora">Fecha y hora</string>
+  <string name="inicio">Inicio</string>
 </resources>

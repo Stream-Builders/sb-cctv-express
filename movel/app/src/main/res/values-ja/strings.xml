@@ -15,4 +15,6 @@
   <string name="luz">ライト</string>
   <string name="escurecer">画面を暗くする</string>
   <string name="escuro_aviso">配信中です。タップすると画面が点きます。</string>
+  <string name="datahora">日付と時刻</string>
+  <string name="inicio">ホーム</string>
 </resources>

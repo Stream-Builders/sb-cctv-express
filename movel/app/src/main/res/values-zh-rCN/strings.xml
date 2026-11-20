@@ -15,4 +15,6 @@
   <string name="luz">灯光</string>
   <string name="escurecer">调暗屏幕</string>
   <string name="escuro_aviso">正在推流。点按即可点亮屏幕。</string>
+  <string name="datahora">日期和时间</string>
+  <string name="inicio">首页</string>
 </resources>

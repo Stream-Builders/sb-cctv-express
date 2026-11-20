@@ -455,6 +455,8 @@ function quadroDaCamera(cam, reuso) {
 function vigiar(id, quadro, componente) {
   let ultimoTempo = -1;
   let paradoDesde = Date.now();
+  let ultimoErro = null;
+  let errosRecentes = [];
   if (!estados.has(id)) estados.set(id, 'conectando');
   const tm = setInterval(() => {
     if (!quadro.isConnected) return clearInterval(tm);
@@ -467,8 +469,16 @@ function vigiar(id, quadro, componente) {
       if (v.muted !== p.mudo) v.muted = p.mudo;
       if (Math.abs(v.volume - p.volume) > 0.01) v.volume = p.volume;
     }
-    // o navegador recusou o vídeo (perfil H264 que ele não decodifica): passa para o stream reconvertido, uma vez só
-    if (v && v.error && !quadro.dataset.compat) {
+    // o navegador recusou o vídeo (perfil H264 que ele não decodifica): passa para o stream reconvertido, uma vez só.
+    // Erro de decodificação passageiro (a câmera reiniciou a transmissão, como o celular) não conta: o player
+    // reconecta sozinho no vídeo direto; só o formato não suportado, ou o erro que volta 3 vezes em 2 min, vai para o
+    // reconvertido (que chega em rajadas e deixava a câmera intermitente para sempre)
+    if (v && v.error && v.error !== ultimoErro) {
+      ultimoErro = v.error;
+      errosRecentes = errosRecentes.filter((t) => Date.now() - t < 120000).concat(Date.now());
+    }
+    if (v && !v.error) ultimoErro = null;
+    if (v && v.error && !quadro.dataset.compat && (v.error.code === 4 || errosRecentes.length >= 3)) {
       quadro.dataset.compat = '1';
       componente.src = `ws://${motor}/api/ws?src=${encodeURIComponent(`${id}_compat`)}`;
       paradoDesde = Date.now();
@@ -802,6 +812,36 @@ formConfig.addEventListener('submit', async (e) => {
   }
   dialogoConfig.close();
 });
+
+// ---------- configuração rápida (.cctvx): câmeras e configurações entre o computador e o celular ----------
+const avisoArquivo = (k, vars) => { $('arquivo-aviso').textContent = k ? t(k, vars) : ''; };
+$('arquivo-exportar').addEventListener('click', async () => {
+  avisoArquivo('');
+  if (await window.cctv.exportarArquivo($('arquivo-senha').value)) avisoArquivo('arquivo.exportado');
+});
+async function concluirImportacao() {
+  const r = await window.cctv.importarArquivo($('arquivo-senha').value);
+  if (r?.erro) { avisoArquivo(r.erro === 'senha' ? 'arquivo.senhaErrada' : 'arquivo.invalido'); return; }
+  $('arquivo-continuar').hidden = true;
+  avisoArquivo('arquivo.importadas', { n: r.novas });
+  await carregar();
+}
+$('arquivo-importar').addEventListener('click', async () => {
+  avisoArquivo('');
+  $('arquivo-continuar').hidden = true;
+  const r = await window.cctv.abrirArquivo();
+  if (!r) return;
+  if (r.erro) return avisoArquivo('arquivo.invalido');
+  // arquivo protegido sem a senha digitada: pede a senha e espera o Continuar
+  if (r.cifrado && !$('arquivo-senha').value) {
+    avisoArquivo('arquivo.pedirSenha');
+    $('arquivo-continuar').hidden = false;
+    $('arquivo-senha').focus();
+    return;
+  }
+  await concluirImportacao();
+});
+$('arquivo-continuar').addEventListener('click', concluirImportacao);
 
 // ---------- detectar na rede ----------
 async function detectar() {

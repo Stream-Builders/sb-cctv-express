@@ -15,4 +15,6 @@
   <string name="luz">Luce</string>
   <string name="escurecer">Oscura schermo</string>
   <string name="escuro_aviso">In trasmissione. Tocca per riaccendere lo schermo.</string>
+  <string name="datahora">Data e ora</string>
+  <string name="inicio">Inizio</string>
 </resources>

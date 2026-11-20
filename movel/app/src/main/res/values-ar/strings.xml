@@ -15,4 +15,6 @@
   <string name="luz">الضوء</string>
   <string name="escurecer">تعتيم الشاشة</string>
   <string name="escuro_aviso">البث جارٍ. المس لإضاءة الشاشة.</string>
+  <string name="datahora">التاريخ والوقت</string>
+  <string name="inicio">البداية</string>
 </resources>

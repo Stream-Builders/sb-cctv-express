@@ -15,4 +15,6 @@
   <string name="luz">Свет</string>
   <string name="escurecer">Затемнить экран</string>
   <string name="escuro_aviso">Идёт трансляция. Коснитесь, чтобы включить экран.</string>
+  <string name="datahora">Дата и время</string>
+  <string name="inicio">Начало</string>
 </resources>

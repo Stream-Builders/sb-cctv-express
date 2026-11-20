@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "카메라 사이렌을 최대 30초간 울릴까요? 밖에서 들립니다.",
   "ptz.posicao": "위치 {n}",
   "ptz.posicoesDica": "클릭하면 이동, 1초 누르면 현재 위치 저장",
-  "ptz.ronda": "위치 순회"
+  "ptz.ronda": "위치 순회",
+  "arquivo.titulo": "빠른 설정",
+  "arquivo.exportar": "카메라 내보내기",
+  "arquivo.importar": "카메라 가져오기",
+  "arquivo.senha": "파일 비밀번호(선택)",
+  "arquivo.senhaAjuda": "비밀번호를 정하면 카메라 비밀번호도 암호화되어 파일에 담깁니다. 없으면 빠집니다. 컴퓨터와 휴대폰 모두에서 쓸 수 있습니다.",
+  "arquivo.pedirSenha": "보호된 파일입니다. 파일 비밀번호를 입력하세요.",
+  "arquivo.senhaErrada": "파일 비밀번호가 틀렸습니다.",
+  "arquivo.invalido": "CCTV Express 카메라 파일이 아닙니다.",
+  "arquivo.importadas": "카메라 {n}대를 가져왔습니다.",
+  "arquivo.exportado": "파일을 저장했습니다.",
+  "arquivo.continuar": "계속"
 };

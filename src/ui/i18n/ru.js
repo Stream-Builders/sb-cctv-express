@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Включить сирену камеры на срок до 30 секунд? Её будет слышно на улице.",
   "ptz.posicao": "Позиция {n}",
   "ptz.posicoesDica": "Нажмите, чтобы перейти; удерживайте 1 с, чтобы сохранить текущую позицию",
-  "ptz.ronda": "Обход позиций"
+  "ptz.ronda": "Обход позиций",
+  "arquivo.titulo": "Быстрая настройка",
+  "arquivo.exportar": "Экспорт камер",
+  "arquivo.importar": "Импорт камер",
+  "arquivo.senha": "Пароль файла (необязательно)",
+  "arquivo.senhaAjuda": "С паролем файл содержит и пароли камер в зашифрованном виде. Без пароля — без них. Подходит для компьютера и телефона.",
+  "arquivo.pedirSenha": "Файл защищён. Введите его пароль.",
+  "arquivo.senhaErrada": "Неверный пароль файла.",
+  "arquivo.invalido": "Это не файл камер CCTV Express.",
+  "arquivo.importadas": "Импортировано камер: {n}.",
+  "arquivo.exportado": "Файл сохранён.",
+  "arquivo.continuar": "Продолжить"
 };

@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Bật còi camera tối đa 30 giây? Âm thanh sẽ nghe thấy ngoài đường.",
   "ptz.posicao": "Vị trí {n}",
   "ptz.posicoesDica": "Nhấp để đi tới; giữ 1 giây để lưu vị trí hiện tại",
-  "ptz.ronda": "Tuần tra giữa các vị trí"
+  "ptz.ronda": "Tuần tra giữa các vị trí",
+  "arquivo.titulo": "Cài đặt nhanh",
+  "arquivo.exportar": "Xuất camera",
+  "arquivo.importar": "Nhập camera",
+  "arquivo.senha": "Mật khẩu tệp (tùy chọn)",
+  "arquivo.senhaAjuda": "Có mật khẩu, tệp mang cả mật khẩu camera đã mã hóa. Không có, tệp không kèm chúng. Dùng được trên máy tính và điện thoại.",
+  "arquivo.pedirSenha": "Tệp này được bảo vệ. Nhập mật khẩu của tệp.",
+  "arquivo.senhaErrada": "Sai mật khẩu tệp.",
+  "arquivo.invalido": "Đây không phải tệp camera của CCTV Express.",
+  "arquivo.importadas": "Đã nhập {n} camera.",
+  "arquivo.exportado": "Đã lưu tệp.",
+  "arquivo.continuar": "Tiếp tục"
 };

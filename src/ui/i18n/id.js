@@ -113,5 +113,16 @@ export default {
   "ajustes.sireneConfirmar": "Bunyikan sirene kamera hingga 30 detik? Suaranya terdengar di jalan.",
   "ptz.posicao": "Posisi {n}",
   "ptz.posicoesDica": "Klik untuk pergi; tahan 1 dtk untuk menyimpan posisi saat ini",
-  "ptz.ronda": "Patroli antar posisi"
+  "ptz.ronda": "Patroli antar posisi",
+  "arquivo.titulo": "Penyiapan cepat",
+  "arquivo.exportar": "Ekspor kamera",
+  "arquivo.importar": "Impor kamera",
+  "arquivo.senha": "Kata sandi file (opsional)",
+  "arquivo.senhaAjuda": "Dengan kata sandi, file juga membawa kata sandi kamera secara terenkripsi. Tanpa kata sandi, tidak dibawa. Berlaku di komputer dan ponsel.",
+  "arquivo.pedirSenha": "File ini dilindungi. Masukkan kata sandinya.",
+  "arquivo.senhaErrada": "Kata sandi file salah.",
+  "arquivo.invalido": "Ini bukan file kamera CCTV Express.",
+  "arquivo.importadas": "{n} kamera diimpor.",
+  "arquivo.exportado": "File disimpan.",
+  "arquivo.continuar": "Lanjut"
 };

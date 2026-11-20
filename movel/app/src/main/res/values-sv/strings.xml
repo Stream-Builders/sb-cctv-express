@@ -15,4 +15,6 @@
   <string name="luz">Ljus</string>
   <string name="escurecer">Släck skärmen</string>
   <string name="escuro_aviso">Sänder. Tryck för att väcka skärmen.</string>
+  <string name="datahora">Datum och tid</string>
+  <string name="inicio">Start</string>
 </resources>
