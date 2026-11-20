@@ -88,6 +88,7 @@ function desenharBotoesMosaico() {
     const b = botao({ icone: `<path d="${d}"/>`, rotulo: String(n), titulo: n === 1 ? t('mosaico.um') : t('mosaico.titulo', { n }) });
     b.dataset.mosaico = n;
     b.addEventListener('click', () => {
+      pararRonda(false);
       mosaico = n;
       telaCheia = null;
       localStorage.setItem('mosaico', String(n));
@@ -131,7 +132,9 @@ function barraDoQuadro(cam) {
   const cheia = botao({ icone: ICONES.telaCheia, quadrado: true, titulo: t('quadro.telaCheia') });
   cheia.addEventListener('click', (e) => {
     e.stopPropagation();
-    telaCheia = telaCheia ? null : cam.id;
+    const emRonda = ronda.ativa;
+    pararRonda(false);
+    telaCheia = !emRonda && telaCheia ? null : cam.id;
     desenharMosaico();
   });
   // som: o clique liga ou deixa no mudo e abre o volume. Só a tela: a gravação leva o áudio inteiro sempre.
@@ -516,10 +519,13 @@ function ordemDoMosaico() {
   let vistas = [];
   try { vistas = JSON.parse(localStorage.getItem('cameras-vistas-mosaico') || '[]'); } catch { vistas = []; }
   const conhecidas = new Set(vistas);
+  let entrou = false;
   for (const c of cameras) {
-    if (!conhecidas.has(c.id) && !ordem.includes(c.id) && ordem.includes(null)) ordem[ordem.indexOf(null)] = c.id;
+    if (!conhecidas.has(c.id) && !ordem.includes(c.id) && ordem.includes(null)) { ordem[ordem.indexOf(null)] = c.id; entrou = true; }
     conhecidas.add(c.id);
   }
+  // a posição da câmera que entrou sozinha fica guardada (sem isso ela sumia do mosaico no redesenho seguinte)
+  if (entrou) guardarOrdem(ordem);
   try { localStorage.setItem('cameras-vistas-mosaico', JSON.stringify([...conhecidas].filter((id) => ids.has(id)))); } catch { /* sem armazenamento */ }
   return ordem;
 }
@@ -593,14 +599,18 @@ function desenharMosaico() {
     const player = q.querySelector('video-stream');
     if (player && !anteriores.has(q.dataset.id)) anteriores.set(q.dataset.id, { player, compat: q.dataset.compat });
   }
-  const lado = Math.sqrt(mosaico);
-  const n = telaCheia ? 1 : mosaico;
-  const colunas = telaCheia ? 1 : lado;
+  // durante a ronda a tela mostra o passo dela; a arrumação guardada não muda
+  const ex = exibicao();
+  const cheia = ex.cheia;
+  const lado = Math.sqrt(ex.mosaico);
+  const n = cheia ? 1 : ex.mosaico;
+  const colunas = cheia ? 1 : lado;
+  const base = cheia ? 0 : ex.pagina * ex.mosaico;
+  const livre = !cheia && !ronda.ativa;
   mosaicoEl.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
   mosaicoEl.style.gridTemplateRows = `repeat(${colunas}, 1fr)`;
-  const ordem = ordemDoMosaico();
   const porId = new Map(cameras.map((c) => [c.id, c]));
-  const visiveis = telaCheia ? cameras.filter((c) => c.id === telaCheia) : ordem.slice(0, n).map((id) => porId.get(id) || null);
+  const visiveis = cheia ? cameras.filter((c) => c.id === cheia) : ex.ordem.slice(base, base + n).map((id) => porId.get(id) || null);
   const ficam = new Set(visiveis.filter(Boolean).map((c) => c.id));
   for (const id of [...anteriores.keys()]) if (!ficam.has(id)) anteriores.delete(id);
   encerrarPlayers(mosaicoEl, new Set([...anteriores.values()].map((a) => a.player)));
@@ -611,8 +621,8 @@ function desenharMosaico() {
     if (cam) {
       q = quadroDaCamera(cam, anteriores.get(cam.id));
       // o X tira a câmera só desta posição do mosaico: ela continua cadastrada, gravando e na lista, e pode voltar arrastada
-      if (!telaCheia) {
-        const posicao = i;
+      if (livre) {
+        const posicao = base + i;
         const tirar = botao({ icone: ICONES.fechar, quadrado: true, titulo: t('quadro.tirar') });
         tirar.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -631,21 +641,24 @@ function desenharMosaico() {
       v.textContent = cameras.length ? '' : t('mosaico.vazio');
       q.append(v);
     }
-    if (i === selecionado && !telaCheia) q.classList.add('quadro--selecionado');
+    if (i === selecionado && !cheia) q.classList.add('quadro--selecionado');
     q.addEventListener('click', () => {
       selecionado = i;
       document.querySelectorAll('.quadro').forEach((x, k) => x.classList.toggle('quadro--selecionado', k === i));
     });
+    // duplo clique: tela cheia da câmera (ou volta); durante a ronda, para a ronda e abre esta câmera
     q.addEventListener('dblclick', () => {
       if (!cam) return;
-      telaCheia = telaCheia ? null : cam.id;
+      const emRonda = ronda.ativa;
+      pararRonda(false);
+      telaCheia = !emRonda && telaCheia ? null : cam.id;
       desenharMosaico();
     });
-    if (!telaCheia) arrastavel(q, i, cam);
+    if (livre) arrastavel(q, base + i, cam);
     mosaicoEl.append(q);
   }
   document.querySelectorAll('[data-mosaico]').forEach((b) => {
-    const ativo = Number(b.dataset.mosaico) === mosaico && !telaCheia;
+    const ativo = Number(b.dataset.mosaico) === ex.mosaico && !cheia;
     b.classList.toggle('sb-btn--ativo', ativo);
     b.setAttribute('aria-pressed', String(ativo));
   });
@@ -695,6 +708,7 @@ function desenharResumo() {
   resumoEl.append(selo('vivo', t('resumo.vivos', { n: vivos })));
   if (semSinal) resumoEl.append(selo('semSinal', t('resumo.semSinal', { n: semSinal })));
   if (cameras.length) resumoEl.append(selo(gravando ? 'gravando' : 'nao-grava', t('resumo.gravando', { n: gravando, total: cameras.length })));
+  if (ronda.ativa) resumoEl.append(selo('ronda', t('resumo.ronda', { i: (ronda.passo % ronda.total) + 1, n: ronda.total })));
 }
 
 /** O estado de gravação vem do disco (o arquivo do bloco crescendo), conferido a cada 3 s. */
@@ -881,7 +895,191 @@ $('detectar').addEventListener('click', () => { dialogoDetectar.showModal(); det
 $('detectar-de-novo').addEventListener('click', detectar);
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && telaCheia && !document.querySelector('dialog[open]')) { telaCheia = null; desenharMosaico(); }
+  if (e.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+  if (ronda.ativa) { pararRonda(); return; }
+  if (telaCheia) { telaCheia = null; desenharMosaico(); }
+});
+
+// ---------- vistas salvas e ronda automática ----------
+// Uma vista guarda o tamanho do mosaico e a câmera de cada posição. A ronda troca a tela sozinha (entre as vistas, as
+// páginas do mosaico ou uma câmera por vez); ela só mostra, nunca altera a arrumação guardada, e qualquer comando de
+// tela (mosaico, duplo clique, tela cheia, Esc, abrir uma vista) para a ronda.
+const dialogoVistas = $('dialogo-vistas');
+let vistasDados = { vistas: [], ronda: { modo: 'vistas', segundos: 15, aoAbrir: false } };
+const ronda = { ativa: false, passo: 0, total: 0, timer: 0, atual: null, mosaicoBase: 4 };
+
+/** O que a tela mostra agora: o passo da ronda ou a arrumação da pessoa. */
+function exibicao() {
+  return ronda.atual || { mosaico, ordem: ordemDoMosaico(), pagina: 0, cheia: telaCheia };
+}
+
+function normalizarOrdem(o) {
+  const ids = new Set(cameras.map((c) => c.id));
+  return Array.from({ length: POSICOES }, (_, i) => (ids.has(o?.[i]) ? o[i] : null));
+}
+
+function guardarVistas() {
+  return window.cctv.salvarVistas(vistasDados).then((d) => { vistasDados = d; }).catch(() => {});
+}
+
+/** As telas da ronda no modo escolhido, montadas na hora (câmeras e vistas podem ter mudado). */
+function passosDaRonda() {
+  const modo = vistasDados.ronda.modo;
+  if (modo === 'vistas') {
+    return vistasDados.vistas
+      .map((v) => ({ mosaico: v.mosaico, ordem: normalizarOrdem(v.ordem), pagina: 0, cheia: null }))
+      .filter((p) => p.ordem.slice(0, p.mosaico).some(Boolean));
+  }
+  const ordem = ordemDoMosaico();
+  if (modo === 'cameras') {
+    const ids = [...ordem.filter(Boolean), ...cameras.map((c) => c.id).filter((id) => !ordem.includes(id))];
+    return ids.map((id) => ({ mosaico, ordem, pagina: 0, cheia: id }));
+  }
+  const m = ronda.mosaicoBase;
+  const passos = [];
+  for (let p = 0; p * m < POSICOES; p++) if (ordem.slice(p * m, p * m + m).some(Boolean)) passos.push({ mosaico: m, ordem, pagina: p, cheia: null });
+  return passos;
+}
+
+function mostrarPasso(passos) {
+  ronda.total = passos.length;
+  ronda.atual = passos[ronda.passo % passos.length];
+  desenharMosaico();
+  desenharResumo();
+}
+
+function agendarRonda() {
+  clearTimeout(ronda.timer);
+  ronda.timer = setTimeout(() => {
+    if (!ronda.ativa) return;
+    // espera enquanto a pessoa mexe numa câmera (painel de PTZ, luz, volume ou ajustes aberto) ou numa janela
+    if (!document.querySelector('dialog[open], .painel-quadro, .quadro--mirando')) {
+      const passos = passosDaRonda();
+      if (passos.length < 2) { pararRonda(); return; }
+      ronda.passo = (ronda.passo + 1) % passos.length;
+      mostrarPasso(passos);
+    }
+    agendarRonda();
+  }, vistasDados.ronda.segundos * 1000);
+}
+
+function iniciarRonda() {
+  ronda.mosaicoBase = mosaico;
+  const passos = passosDaRonda();
+  if (passos.length < 2) return false;
+  ronda.ativa = true;
+  ronda.passo = 0;
+  mostrarPasso(passos);
+  agendarRonda();
+  atualizarRondaNaTela();
+  return true;
+}
+
+function pararRonda(redesenhar = true) {
+  if (!ronda.ativa) return;
+  ronda.ativa = false;
+  clearTimeout(ronda.timer);
+  ronda.atual = null;
+  atualizarRondaNaTela();
+  if (redesenhar) desenharMosaico();
+  desenharResumo();
+}
+
+function atualizarRondaNaTela() {
+  const b = $('ronda');
+  b.classList.toggle('sb-btn--ativo', ronda.ativa);
+  b.setAttribute('aria-pressed', String(ronda.ativa));
+  b.title = t(ronda.ativa ? 'ronda.parar' : 'ronda.iniciar');
+  const d = $('ronda-alternar');
+  d.querySelector('.sb-btn__label').textContent = t(ronda.ativa ? 'ronda.parar' : 'ronda.iniciar');
+  d.classList.toggle('sb-btn--danger', ronda.ativa);
+}
+
+function abrirVista(v) {
+  pararRonda(false);
+  mosaico = v.mosaico;
+  telaCheia = null;
+  selecionado = 0;
+  try { localStorage.setItem('mosaico', String(mosaico)); } catch { /* sem armazenamento */ }
+  guardarOrdem(normalizarOrdem(v.ordem));
+  desenharMosaico();
+}
+
+function desenharVistas() {
+  const lista = $('vistas-lista');
+  lista.replaceChildren();
+  if (!vistasDados.vistas.length) {
+    const li = document.createElement('li');
+    li.className = 'lista__vazia';
+    li.textContent = t('vistas.nenhuma');
+    lista.append(li);
+  }
+  for (const v of vistasDados.vistas) {
+    const li = document.createElement('li');
+    const texto = document.createElement('div');
+    texto.textContent = v.nome;
+    const info = document.createElement('small');
+    info.textContent = t('vistas.info', { m: v.mosaico, n: normalizarOrdem(v.ordem).slice(0, v.mosaico).filter(Boolean).length });
+    texto.append(info);
+    const acoes = document.createElement('div');
+    acoes.className = 'vistas__acoes';
+    const abrir = botao({ icone: '<path d="M4 4h16v16H4zM4 12h16M12 4v16"/>', rotulo: t('vistas.abrir') });
+    abrir.addEventListener('click', () => { abrirVista(v); dialogoVistas.close(); });
+    const atualizar = botao({ icone: '<path d="M5 12l5 5L20 7"/>', quadrado: true, titulo: t('vistas.atualizar') });
+    atualizar.addEventListener('click', () => {
+      Object.assign(v, { mosaico, ordem: ordemDoMosaico() });
+      guardarVistas().then(desenharVistas);
+    });
+    const remover = botao({ icone: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', quadrado: true, titulo: t('vistas.remover') });
+    remover.addEventListener('click', () => {
+      vistasDados.vistas = vistasDados.vistas.filter((x) => x !== v);
+      guardarVistas().then(desenharVistas);
+    });
+    acoes.append(abrir, atualizar, remover);
+    // clicar no nome também abre
+    texto.addEventListener('click', () => { abrirVista(v); dialogoVistas.close(); });
+    li.append(document.createElement('span'), texto, acoes);
+    lista.append(li);
+  }
+}
+
+$('abrir-vistas').addEventListener('click', () => {
+  $('vistas-nome').value = '';
+  $('ronda-aviso').textContent = '';
+  $('ronda-modo').value = vistasDados.ronda.modo;
+  $('ronda-segundos').value = String(vistasDados.ronda.segundos);
+  $('ronda-ao-abrir').checked = vistasDados.ronda.aoAbrir;
+  desenharVistas();
+  atualizarRondaNaTela();
+  dialogoVistas.showModal();
+});
+$('vistas-salvar').addEventListener('click', () => {
+  const nome = $('vistas-nome').value.trim() || t('vistas.semNome', { n: vistasDados.vistas.length + 1 });
+  vistasDados.vistas.push({ id: `v${Date.now().toString(36)}`, nome, mosaico, ordem: ordemDoMosaico() });
+  $('vistas-nome').value = '';
+  guardarVistas().then(desenharVistas);
+});
+$('vistas-nome').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('vistas-salvar').click(); } });
+for (const id of ['ronda-modo', 'ronda-segundos', 'ronda-ao-abrir']) {
+  $(id).addEventListener('change', () => {
+    vistasDados.ronda = { modo: $('ronda-modo').value, segundos: Number($('ronda-segundos').value), aoAbrir: $('ronda-ao-abrir').checked };
+    guardarVistas().then(() => { $('ronda-segundos').value = String(vistasDados.ronda.segundos); if (ronda.ativa) { pararRonda(); iniciarRonda(); } });
+  });
+}
+function alternarRonda() {
+  $('ronda-aviso').textContent = '';
+  if (ronda.ativa) { pararRonda(); return true; }
+  if (iniciarRonda()) return true;
+  $('ronda-aviso').textContent = t('ronda.poucas');
+  return false;
+}
+$('ronda-alternar').addEventListener('click', () => { if (alternarRonda() && ronda.ativa) dialogoVistas.close(); });
+// o botão do topo liga e desliga direto; sem telas suficientes, abre as opções com o aviso
+$('ronda').addEventListener('click', () => {
+  if (!alternarRonda()) {
+    $('abrir-vistas').click();
+    $('ronda-aviso').textContent = t('ronda.poucas');
+  }
 });
 
 // ---------- reprodução ----------
@@ -1036,6 +1234,7 @@ window.cctv.aoMovimento((ev) => {
 async function aplicarIdioma(codigo) {
   await carregarIdioma(codigo);
   desenharBotoesMosaico();
+  atualizarRondaNaTela();
   if (cameras.length || mosaicoEl.childElementCount) {
     desenharMosaico();
     desenharLista();
@@ -1057,5 +1256,8 @@ try {
 await aplicarIdioma(escolhido || maisProximo(await window.cctv.idiomaDoSistema()));
 traduzirPagina();
 await carregar();
+try { vistasDados = await window.cctv.lerVistas(); } catch { /* sem vistas: a ronda fica nos padrões */ }
+// a ronda que estava marcada para começar com o app: o motor precisa de um instante para as câmeras entrarem
+if (vistasDados.ronda.aoAbrir) setTimeout(() => { if (!ronda.ativa) iniciarRonda(); }, 1500);
 setInterval(atualizarGravacao, 3000);
 atualizarGravacao();

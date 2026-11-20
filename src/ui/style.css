@@ -140,7 +140,6 @@ form h3 { margin: 6px 0 0; font-size: 14px; text-transform: uppercase; letter-sp
   position: absolute; inset-inline-end: 8px; bottom: 52px; padding: 8px; border-radius: 6px;
   background: #0b0d10e6; border: 1px solid var(--borda); display: grid; gap: 6px; cursor: default;
 }
-.painel-ptz { grid-template-columns: repeat(3, auto); grid-template-areas: ". cima ." "esquerda . direita" ". baixo ." "aproximar . afastar"; }
 .painel-ptz [data-dir="cima"] { grid-area: cima; }
 .painel-ptz [data-dir="baixo"] { grid-area: baixo; }
 .painel-ptz [data-dir="esquerda"] { grid-area: esquerda; }
@@ -196,9 +195,6 @@ body { grid-template-columns: minmax(0, 1fr); }
 .quadro--alvo { border-color: var(--destaque); box-shadow: inset 0 0 0 2px var(--destaque), 0 0 18px rgb(255 51 51 / 0.35); }
 .lista li[draggable="true"] { cursor: grab; }
 
-/* posições salvas da PTZ e ronda: uma linha embaixo das setas */
-.painel-ptz { grid-template-areas: ". cima ." "esquerda . direita" ". baixo ." "aproximar . afastar" "posicoes posicoes posicoes"; }
-.ptz-posicoes { grid-area: posicoes; display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
 /* ajustes da câmera */
 .painel-ajustes { grid-template-columns: 1fr; min-width: 240px; max-height: 80%; overflow-y: auto; gap: 10px; }
 .ajuste { display: grid; gap: 4px; }
@@ -242,3 +238,49 @@ body { grid-template-columns: minmax(0, 1fr); }
 
 /* configuração rápida (.cctvx) nas configurações */
 .arquivo-acoes { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* os painéis sobre a câmera cabem no quadro em qualquer mosaico: o espaço vai do fim dos selos de cima até acima dos
+   atalhos de baixo; o que passar disso rola por dentro do painel */
+.painel-quadro {
+  --painel-base: calc(max(4px, calc((var(--tarja) - var(--faixa)) / 2)) + var(--faixa) + 8px);
+  --painel-alt: calc(100cqh - var(--painel-base) - max(var(--tarja), calc(var(--faixa) + 8px)) - 4px);
+  max-block-size: var(--painel-alt); max-inline-size: calc(100cqw - 2 * max(6px, calc(var(--faixa) * 0.3)));
+  overflow: auto; overscroll-behavior: contain;
+}
+.painel-quadro .sb-btn { --sb-h: clamp(22px, calc(var(--faixa) * 1.6), 36px); }
+.painel-luz, .painel-som, .painel-ajustes { min-width: min(240px, calc(100cqw - 16px)); }
+.painel-ajustes { max-height: var(--painel-alt); }
+
+/* PTZ: setas em cruz com aproximar e afastar nos cantos de cima, e as posições salvas numa coluna ao lado (3 linhas
+   no total). O lado de cada botão (--b) sai do quadro: o menor entre o que cabe na altura livre (3 botões) e na largura
+   (5 botões de 1,48 lado cada, a largura da peça quadrada), entre 12px e 44px. */
+.painel-ptz {
+  --g: clamp(2px, 1cqmin, 6px);
+  --b: clamp(12px, min(calc((var(--painel-alt) - 4 * var(--g)) / 3), calc((100cqw - 2 * max(6px, calc(var(--faixa) * 0.3)) - 8 * var(--g)) / 7.4)), 44px);
+  gap: var(--g); padding: var(--g); overflow: hidden;
+  grid-template-columns: repeat(4, auto);
+  grid-template-areas: "aproximar cima afastar posicoes" "esquerda . direita posicoes" ". baixo . posicoes";
+}
+.painel-ptz .sb-btn { --sb-h: var(--b); font-size: calc(var(--b) * 0.5); }
+.ptz-posicoes {
+  grid-area: posicoes; display: grid; grid-template-columns: repeat(2, auto); grid-auto-rows: var(--b); gap: var(--g);
+  padding-inline-start: var(--g); border-inline-start: 1px solid var(--borda); align-content: start;
+}
+
+/* vistas e ronda no topo */
+.topo__vistas { display: flex; gap: 6px; }
+.selo--ronda { background: #1c1430; color: #c4b5fd; border: 1px solid #6d28d9; }
+.lista--vistas { max-height: 40vh; padding: 0; }
+.lista--vistas li { grid-template-columns: 0 1fr auto; cursor: default; }
+.lista--vistas .lista__vazia { display: block; }
+#dialogo-vistas h3 { margin: 6px 0 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--destaque); }
+.lista--vistas li > div:first-of-type { cursor: pointer; }
+.vistas__acoes { display: flex; gap: 6px; }
+.vistas__nova { display: flex; gap: 8px; align-items: center; }
+.vistas__nova input { flex: 1; min-width: 0; }
+/* janela estreita: os botões de vistas e ronda ficam só com o ícone (o nome segue no aviso ao passar o mouse) */
+@media (max-width: 1500px) { .topo__vistas .sb-btn__body { display: none; } .topo__vistas .sb-btn { padding-inline-end: 0; } }
+
+/* o texto de diagnóstico do player do go2rtc ("MSE", "loading", erros): o estilo embutido dele é barrado pela política
+   de segurança da tela, e o texto aparecia solto embaixo de cada câmera. O estado de verdade já está nos selos. */
+.quadro video-stream .info { display: none; }

@@ -278,6 +278,9 @@ ipcMain.handle('cameras:detectar', () => descoberta.detectar());
 ipcMain.handle('motor:porta', () => go2rtc.PORTA_API);
 ipcMain.handle('gravacao:estados', () => gravador.estados());
 ipcMain.handle('config:ler', () => config.ler());
+const vistas = require('./vistas');
+ipcMain.handle('vistas:ler', () => vistas.ler());
+ipcMain.handle('vistas:salvar', (_e, dados) => vistas.salvar(dados));
 ipcMain.handle('config:salvar', (_e, dados) => {
   const c = config.salvar(dados);
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: c.iniciarComWindows !== false, args: ['--oculto'] });

@@ -14,6 +14,7 @@
   <header class="topo">
     <div class="marca"><img src="marca/emblema.svg" alt="" width="36" height="35"><span><b>cctv</b>.express</span></div>
     <nav class="mosaicos" id="mosaicos" aria-label="Mosaico"></nav>
+    <div class="topo__vistas"><button type="button" class="sb-btn sb-btn--sm" id="abrir-vistas" data-t-title="topo.vistas"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4z"/><path d="M16.5 13v7M13 16.5h7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.vistas"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button><button type="button" class="sb-btn sb-btn--sm" id="ronda"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/><path d="M10 9l5 3-5 3z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.ronda"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button></div>
     <button class="sb-btn sb-btn--sm" id="abrir-reproducao"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.reproducao"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
     <button class="sb-btn sb-btn--sm" id="abrir-config"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.configuracoes"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
   </header>
@@ -113,6 +114,37 @@
       <ul class="lista lista--detectar" id="detectar-lista"></ul>
       <menu>
         <button type="button" class="sb-btn sb-btn--sm" id="detectar-de-novo"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="detectar.procurarDeNovo"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <span class="espaco"></span>
+        <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="config.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </menu>
+    </div>
+  </dialog>
+
+  <dialog id="dialogo-vistas">
+    <div class="painel">
+      <h2 data-t="vistas.titulo"></h2>
+      <p class="ajuda" data-t="vistas.ajuda"></p>
+      <ul class="lista lista--vistas" id="vistas-lista"></ul>
+      <div class="vistas__nova">
+        <input id="vistas-nome" maxlength="60" autocomplete="off" data-t-placeholder="vistas.nomeExemplo" data-t-title="vistas.nome">
+        <button type="button" class="sb-btn sb-btn--sm" id="vistas-salvar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="vistas.salvar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
+      <h3 data-t="ronda.titulo"></h3>
+      <p class="ajuda" data-t="ronda.ajuda"></p>
+      <div class="linha">
+        <label><span data-t="ronda.modo"></span>
+          <select id="ronda-modo">
+            <option value="vistas" data-t="ronda.modoVistas"></option>
+            <option value="paginas" data-t="ronda.modoPaginas"></option>
+            <option value="cameras" data-t="ronda.modoCameras"></option>
+          </select>
+        </label>
+        <label><span data-t="ronda.segundos"></span> <input id="ronda-segundos" type="number" min="3" max="600" step="1"></label>
+      </div>
+      <label class="marcar"><input type="checkbox" id="ronda-ao-abrir"> <span data-t="ronda.aoAbrir"></span></label>
+      <p class="aviso" id="ronda-aviso" aria-live="polite"></p>
+      <menu>
+        <button type="button" class="sb-btn sb-btn--sm" id="ronda-alternar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/><path d="M10 9l5 3-5 3z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="ronda.iniciar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
         <span class="espaco"></span>
         <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="config.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
       </menu>
