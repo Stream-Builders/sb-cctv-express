@@ -53,6 +53,8 @@ function salvar(dados) {
     // grava por padrão; desligar é escolha explícita da pessoa
     gravar: dados.gravar === undefined ? atual.gravar !== false : dados.gravar === true || dados.gravar === 'on',
   };
+  // salvar pela tela pergunta de novo à câmera quantas lentes ela tem (a lente que já existe não é recriada)
+  delete camera.lentesVerificadas;
   // senha em branco na edição = manter a que já existe
   if (dados.senha) camera.senhaCifrada = cifrar(dados.senha);
   if (i >= 0) lista[i] = camera;
@@ -87,8 +89,14 @@ function completarLentes(id, titulos) {
   let novas = 0;
   titulos.forEach((titulo, i) => {
     const canal = i + 1;
-    if (lista.some((c) => c.ip === base.ip && c.tipo === base.tipo && (c.canal || 1) === canal)) return;
-    lista.push({ ...base, id: randomUUID(), canal, nome: `${base.nome} · ${titulo || canal}` });
+    // a lente já cadastrada no mesmo IP, com qualquer tipo, não é recriada
+    if (lista.some((c) => c.ip === base.ip && (c.canal || 1) === canal)) return;
+    const lente = { ...base, id: randomUUID(), canal, nome: `${base.nome} · ${titulo || canal}` };
+    delete lente.lentesVerificadas;
+    // lente 1 em RTSP: nas Xiongmai o RTSP ignora o canal e entrega sempre a lente 1 (conferido numa câmera de duas
+    // lentes em 20/11); as outras lentes vêm pelo protocolo próprio (DVRIP, porta 34567), que escolhe a lente pelo canal
+    if (base.tipo === 'rtsp') Object.assign(lente, { tipo: 'xiongmai', porta: 34567, url: '' });
+    lista.push(lente);
     novas++;
   });
   gravar(lista);

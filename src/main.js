@@ -127,12 +127,41 @@ async function reiniciar() {
   }, 1500);
 }
 
-/** Câmeras Xiongmai ainda não verificadas: pergunta quantas lentes têm e cadastra as que faltam (até 6 s). */
+/** A porta DVRIP da Xiongmai (34567) responde neste IP? */
+function dvripAberta(ip) {
+  return new Promise((ok) => {
+    const sock = require('node:net').connect({ host: ip, port: 34567 });
+    const fim = (v) => { sock.destroy(); ok(v); };
+    sock.setTimeout(1500, () => fim(false));
+    sock.once('connect', () => fim(true));
+    sock.once('error', () => fim(false));
+  });
+}
+
+/** Os nomes das lentes pela DVRIP: pela conexão de controle (tipo Xiongmai) ou por uma conexão só para perguntar. */
+async function titulosDasLentes(c) {
+  if (c.tipo === 'xiongmai') return controle.canais(c.id);
+  const { Dvrip } = require('./controle/dvrip');
+  const d = new Dvrip({ ip: c.ip, porta: 34567, usuario: c.usuario || 'admin', senha: cameras.abrir(c.senhaCifrada) });
+  try {
+    await d.entrar();
+    const r = await d.ler('ChannelTitle');
+    return Array.isArray(r?.ChannelTitle) ? r.ChannelTitle : [];
+  } finally {
+    try { d.sock?.destroy(); } catch { /* já fechada */ }
+  }
+}
+
+/**
+ * Câmeras Xiongmai (XMEye, iCSee) ainda não verificadas, cadastradas como Xiongmai ou como RTSP (caminho Xiongmai ou
+ * porta 34567 aberta): pergunta quantas lentes têm e cadastra as que faltam (até 6 s).
+ */
 async function completarLentes() {
-  const pendentes = cameras.ler().filter((c) => c.tipo === 'xiongmai' && (c.canal || 1) === 1 && !c.lentesVerificadas);
-  await Promise.all(pendentes.map(async (c) => {
+  const candidatas = cameras.ler().filter((c) => (c.canal || 1) === 1 && !c.lentesVerificadas && ['xiongmai', 'rtsp'].includes(c.tipo));
+  await Promise.all(candidatas.map(async (c) => {
     try {
-      const titulos = await Promise.race([controle.canais(c.id), new Promise((_, n) => setTimeout(() => n(new Error('tempo')), 6000))]);
+      if (c.tipo === 'rtsp' && !/[?&/_]user=.*channel=/i.test(c.url || '') && !(await dvripAberta(c.ip))) return;
+      const titulos = await Promise.race([titulosDasLentes(c), new Promise((_, n) => setTimeout(() => n(new Error('tempo')), 6000))]);
       if (titulos.length) cameras.completarLentes(c.id, titulos);
     } catch { /* câmera fora do ar: tenta de novo na próxima abertura */ }
   }));
