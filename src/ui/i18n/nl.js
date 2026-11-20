@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Beweging op camera's detecteren",
   "config.sensibilidade": "Gevoeligheid",
   "config.notificar": "Melden in Windows bij elke beweging",
+  "config.iniciarComWindows": "Starten met Windows en blijven opnemen als het venster sluit",
   "reproducao.titulo": "Afspelen",
   "reproducao.marcarInicio": "Begin markeren",
   "reproducao.marcarFim": "Einde markeren",

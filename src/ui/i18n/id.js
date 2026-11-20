@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Deteksi gerakan di kamera",
   "config.sensibilidade": "Sensitivitas",
   "config.notificar": "Beri tahu di Windows setiap ada gerakan",
+  "config.iniciarComWindows": "Buka bersama Windows dan tetap merekam saat jendela ditutup",
   "reproducao.titulo": "Pemutaran",
   "reproducao.marcarInicio": "Tandai awal",
   "reproducao.marcarFim": "Tandai akhir",

@@ -1,15 +1,25 @@
 // Gravação contínua: um ffmpeg por câmera lê o vídeo do go2rtc local (RTSP em 127.0.0.1) e grava em blocos sem
-// recomprimir. MP4 fragmentado: se a energia cair, o que já foi gravado no bloco continua abrindo. O ffmpeg que cai
-// volta sozinho. "Gravando" só vale quando o arquivo do bloco está crescendo de verdade.
+// recomprimir. MP4 fragmentado: se a energia cair, o que já foi gravado no bloco continua abrindo. "Gravando" só vale
+// quando o arquivo do bloco está crescendo de verdade.
+//
+// Para não parar e sempre voltar (o padrão dos NVR e do Frigate):
+// - o ffmpeg que cai volta sozinho, com espera crescente (5 s até 60 s) e zerada quando grava de novo;
+// - um supervisor a cada 20 s confere cada câmera: se a pasta ou o disco sumiram (disco externo, unidade de rede),
+//   espera voltar e retoma; se o ffmpeg está vivo mas o arquivo parou de crescer por 90 s, ele é derrubado e sobe de novo;
+// - mudar uma câmera ou a configuração só reinicia o ffmpeg do que mudou (as outras câmeras seguem gravando);
+// - timestamps das câmeras baratas são corrigidos (+genpts, discardcorrupt, avoid_negative_ts) e o áudio é reamostrado;
+// - o erro de cada ffmpeg vai para logs/<câmera>.log, para saber por que uma câmera parou.
 const { app } = require('electron');
 const { spawn } = require('node:child_process');
-const { mkdirSync, readdirSync, statSync, statfsSync, unlinkSync, existsSync } = require('node:fs');
+const { mkdirSync, readdirSync, statSync, statfsSync, unlinkSync, existsSync, appendFileSync, renameSync } = require('node:fs');
 const { join } = require('node:path');
 const cameras = require('./cameras');
 const config = require('./config');
 
 const PORTA_RTSP = 18554; // o mesmo do go2rtc.js (RTSP local)
-const processos = new Map(); // id -> { proc, pasta, parar }
+const PARADO_MS = 90 * 1000; // arquivo sem crescer por mais que isso com o ffmpeg vivo: travado
+const processos = new Map(); // id -> estado
+let supervisor = null;
 let limpeza = null;
 
 function binario() {
@@ -24,17 +34,33 @@ function pastaDaCamera(raiz, c) {
   return join(raiz, `${nome}_${c.id.slice(0, 8)}`);
 }
 
-function iniciarCamera(c, cfg) {
-  const pasta = pastaDaCamera(cfg.pastaGravacoes, c);
-  mkdirSync(pasta, { recursive: true });
-  const segundos = Math.round(cfg.minutosPorBloco * 60);
-  const args = [
+function pastaLogs() {
+  const p = join(app.getPath('userData'), 'logs');
+  mkdirSync(p, { recursive: true });
+  return p;
+}
+
+/** Acrescenta ao log da câmera, girando em 1 MB (fica o atual e o anterior). */
+function registrar(id, texto) {
+  try {
+    const arq = join(pastaLogs(), `gravacao-${id.slice(0, 8)}.log`);
+    if (existsSync(arq) && statSync(arq).size > 1024 * 1024) renameSync(arq, `${arq}.1`);
+    appendFileSync(arq, `${new Date().toISOString()} ${texto}\n`);
+  } catch { /* log é ajuda, nunca motivo para parar a gravação */ }
+}
+
+function argumentos(c, pasta, segundos) {
+  return [
     '-hide_banner', '-loglevel', 'error', '-nostdin',
+    // entrada: TCP, 10 s sem dado derruba (e o supervisor sobe de novo); pacote corrompido é descartado e o pts que
+    // falta é gerado, em vez de o ffmpeg morrer com "non monotonous DTS"
     '-rtsp_transport', 'tcp', '-timeout', '10000000',
+    '-fflags', '+genpts+discardcorrupt',
     '-i', `rtsp://127.0.0.1:${PORTA_RTSP}/${c.id}`,
     // o vídeo copiado (sem recomprimir) e o áudio, se a câmera tiver, convertido para AAC (o G.711 das câmeras não
-    // cabe em MP4); o volume da tela não mexe aqui: a gravação sempre leva o áudio inteiro
-    '-map', '0:v:0', '-map', '0:a:0?', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '64k',
+    // cabe em MP4) e reamostrado para não acumular atraso; o volume da tela não mexe aqui
+    '-map', '0:v:0', '-map', '0:a:0?', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '64k', '-af', 'aresample=async=1',
+    '-avoid_negative_ts', 'make_zero',
     '-f', 'segment', '-segment_time', String(segundos), '-segment_atclocktime', '1', '-reset_timestamps', '1',
     // grava no disco a cada fragmento (sem esperar o buffer de 256 KB): câmera leve, como a do celular, não parece parada
     '-flush_packets', '1',
@@ -42,60 +68,136 @@ function iniciarCamera(c, cfg) {
     '-segment_format_options', 'movflags=+frag_keyframe+empty_moov+default_base_moof',
     join(pasta, '%Y-%m-%d_%H-%M-%S.mp4'),
   ];
-  const estado = { proc: null, pasta, parado: false };
+}
+
+/** O que, mudando, exige reiniciar o ffmpeg da câmera. */
+function chave(c, cfg) {
+  return JSON.stringify([pastaDaCamera(cfg.pastaGravacoes, c), Math.round(cfg.minutosPorBloco * 60)]);
+}
+
+function iniciarCamera(c, cfg) {
+  const pasta = pastaDaCamera(cfg.pastaGravacoes, c);
+  const estado = { proc: null, pasta, chave: chave(c, cfg), parado: false, espera: 5000, timer: null, subiuEm: 0, id: c.id };
   const subir = () => {
+    estado.timer = null;
     if (estado.parado) return;
-    estado.proc = spawn(binario(), args, { windowsHide: true, stdio: 'ignore' });
-    estado.proc.on('exit', () => {
-      if (!estado.parado) setTimeout(subir, 5000);
+    try {
+      mkdirSync(pasta, { recursive: true });
+    } catch (e) {
+      // disco ou unidade de rede fora: o supervisor tenta de novo
+      registrar(c.id, `pasta indisponível (${e.code || e.message}); tenta de novo`);
+      estado.timer = setTimeout(subir, 20000);
+      return;
+    }
+    const proc = spawn(binario(), argumentos(c, pasta, Math.round(cfg.minutosPorBloco * 60)), { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
+    estado.proc = proc;
+    estado.subiuEm = Date.now();
+    let erro = '';
+    proc.stderr.on('data', (d) => { erro = (erro + d).slice(-2000); });
+    proc.on('error', (e) => registrar(c.id, `não abriu o ffmpeg: ${e.message}`));
+    proc.on('exit', (codigo) => {
+      if (estado.proc === proc) estado.proc = null;
+      if (estado.parado) return;
+      // gravou por mais de 2 min: a queda é nova, volta rápido; senão, espera crescente até 60 s
+      if (Date.now() - estado.subiuEm > 120000) estado.espera = 5000;
+      registrar(c.id, `ffmpeg saiu (código ${codigo}); volta em ${estado.espera / 1000} s${erro ? `: ${erro.trim().split('\n').slice(-3).join(' | ')}` : ''}`);
+      estado.timer = setTimeout(subir, estado.espera);
+      estado.espera = Math.min(60000, estado.espera * 2);
     });
   };
   subir();
   processos.set(c.id, estado);
 }
 
-function pararTodas() {
-  for (const e of processos.values()) {
-    e.parado = true;
-    if (e.proc && !e.proc.killed) e.proc.kill();
-  }
-  processos.clear();
+function pararCamera(id) {
+  const e = processos.get(id);
+  if (!e) return;
+  e.parado = true;
+  if (e.timer) clearTimeout(e.timer);
+  if (e.proc && !e.proc.killed) e.proc.kill();
+  processos.delete(id);
 }
 
-function iniciar() {
-  pararTodas();
+function pararTodas() {
+  for (const id of [...processos.keys()]) pararCamera(id);
+  if (supervisor) { clearInterval(supervisor); supervisor = null; }
+}
+
+/**
+ * Põe a gravação em dia com o cadastro e a configuração: sobe o que falta, para o que saiu ou foi desligado e
+ * reinicia só a câmera cuja pasta ou tamanho de bloco mudou. Chamado a cada mudança e pelo supervisor.
+ */
+function sincronizar() {
   const cfg = config.ler();
   try {
     mkdirSync(cfg.pastaGravacoes, { recursive: true });
   } catch {
-    return; // pasta inválida: a tela mostra que não está gravando
+    return; // pasta ou disco fora: a tela mostra parada e o supervisor tenta de novo em 20 s
   }
-  for (const c of cameras.ler()) if (c.gravar !== false) iniciarCamera(c, cfg);
-  if (!limpeza) limpeza = setInterval(limpar, 10 * 60 * 1000);
+  const lista = cameras.ler().filter((c) => c.gravar !== false);
+  const ids = new Set(lista.map((c) => c.id));
+  for (const id of [...processos.keys()]) if (!ids.has(id)) pararCamera(id);
+  for (const c of lista) {
+    const e = processos.get(c.id);
+    if (e && e.chave !== chave(c, cfg)) pararCamera(c.id);
+    if (!processos.has(c.id)) iniciarCamera(c, cfg);
+  }
+}
+
+/** Derruba o ffmpeg vivo que parou de gravar (conexão meio aberta, câmera congelada): a saída faz ele subir de novo. */
+function vigiar() {
+  sincronizar();
+  const agora = Date.now();
+  for (const e of processos.values()) {
+    if (!e.proc || agora - e.subiuEm < PARADO_MS) continue;
+    const atual = arquivos(e.pasta).at(-1);
+    const mexeu = atual ? Math.max(atual.alterado, e.subiuEm) : e.subiuEm;
+    if (agora - mexeu > PARADO_MS) {
+      registrar(e.id, `arquivo parado há ${Math.round((agora - mexeu) / 1000)} s com o ffmpeg vivo: reiniciando`);
+      e.proc.kill();
+    }
+  }
+}
+
+function iniciar() {
+  sincronizar();
+  if (!supervisor) supervisor = setInterval(vigiar, 20 * 1000);
+  if (!limpeza) limpeza = setInterval(limpar, 2 * 60 * 1000);
   setTimeout(limpar, 30 * 1000);
 }
 
 /** Arquivos .mp4 de uma pasta, do mais antigo para o mais novo. */
 function arquivos(pasta) {
   if (!existsSync(pasta)) return [];
-  return readdirSync(pasta)
-    .filter((f) => f.endsWith('.mp4'))
-    .map((f) => {
-      const caminho = join(pasta, f);
-      const s = statSync(caminho);
-      return { caminho, tamanho: s.size, alterado: s.mtimeMs };
-    })
-    .sort((a, b) => a.alterado - b.alterado);
+  try {
+    return readdirSync(pasta)
+      .filter((f) => f.endsWith('.mp4'))
+      .map((f) => {
+        const caminho = join(pasta, f);
+        const s = statSync(caminho);
+        return { caminho, tamanho: s.size, alterado: s.mtimeMs };
+      })
+      .sort((a, b) => a.alterado - b.alterado);
+  } catch {
+    return [];
+  }
 }
 
-/** Retenção: apaga o que passou dos dias configurados e, se o disco estiver cheio, o mais antigo primeiro. */
+/**
+ * Retenção: apaga o que passou dos dias configurados e, se o disco estiver cheio, o mais antigo primeiro. Também tira
+ * os arquivos vazios (só o cabeçalho, menos de 1 KB) que sobram quando a câmera cai logo ao abrir.
+ */
 function limpar() {
   const cfg = config.ler();
   if (!existsSync(cfg.pastaGravacoes)) return;
   const limite = Date.now() - cfg.diasRetencao * 86400000;
   let todos = [];
-  for (const d of readdirSync(cfg.pastaGravacoes, { withFileTypes: true })) {
-    if (d.isDirectory()) todos = todos.concat(arquivos(join(cfg.pastaGravacoes, d.name)));
+  try {
+    for (const d of readdirSync(cfg.pastaGravacoes, { withFileTypes: true })) {
+      if (d.isDirectory()) todos = todos.concat(arquivos(join(cfg.pastaGravacoes, d.name)));
+    }
+  } catch {
+    return;
   }
   todos.sort((a, b) => a.alterado - b.alterado);
   // o bloco mais novo de cada câmera está sendo gravado: nunca é apagado
@@ -106,6 +208,12 @@ function limpar() {
   };
   for (const a of todos) {
     if (emGravacao.has(a.caminho)) continue;
+    if (a.tamanho < 1024 && Date.now() - a.alterado > 60000) {
+      try { unlinkSync(a.caminho); } catch { /* em uso */ }
+    }
+  }
+  for (const a of todos) {
+    if (emGravacao.has(a.caminho) || !existsSync(a.caminho)) continue;
     if (a.alterado < limite || livre() < cfg.espacoMinimoGB) {
       try { unlinkSync(a.caminho); } catch { /* arquivo em uso: fica para a próxima */ }
     } else {
@@ -116,7 +224,7 @@ function limpar() {
 
 const crescimento = new Map(); // id -> { caminho, tamanho, quando }
 
-/** Estado de gravação de cada câmera: gravando só se o bloco atual cresceu nos últimos 20 s. */
+/** Estado de gravação de cada câmera: gravando só se o bloco atual cresceu no último minuto. */
 function estados() {
   const r = {};
   for (const c of cameras.ler()) {

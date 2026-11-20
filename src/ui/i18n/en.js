@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Detect motion on cameras",
   "config.sensibilidade": "Sensitivity",
   "config.notificar": "Notify in Windows on each motion",
+  "config.iniciarComWindows": "Start with Windows and keep recording when the window is closed",
   "reproducao.titulo": "Playback",
   "reproducao.marcarInicio": "Mark start",
   "reproducao.marcarFim": "Mark end",

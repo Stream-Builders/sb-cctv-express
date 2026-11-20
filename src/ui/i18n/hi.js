@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "कैमरों में गति पहचानें",
   "config.sensibilidade": "संवेदनशीलता",
   "config.notificar": "हर गति पर Windows में सूचना दें",
+  "config.iniciarComWindows": "Windows के साथ खोलें और विंडो बंद करने पर भी रिकॉर्डिंग जारी रखें",
   "reproducao.titulo": "प्लेबैक",
   "reproducao.marcarInicio": "शुरुआत चिह्नित करें",
   "reproducao.marcarFim": "अंत चिह्नित करें",

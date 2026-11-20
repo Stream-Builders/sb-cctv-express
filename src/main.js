@@ -1,5 +1,5 @@
 // CCTV Express: processo principal (janela, motor de vídeo e câmeras).
-const { app, BrowserWindow, ipcMain, Menu, dialog, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, dialog, shell, powerSaveBlocker } = require('electron');
 const { join } = require('node:path');
 const { mkdirSync } = require('node:fs');
 const cameras = require('./cameras');
@@ -10,6 +10,11 @@ const descoberta = require('./descoberta');
 const controle = require('./controle');
 const gravacoes = require('./gravacoes');
 const deteccao = require('./deteccao');
+const bandeja = require('./bandeja');
+
+// aberto pelo Windows ao entrar na conta (--oculto): grava sem mostrar a janela; o ícone da bandeja abre
+const OCULTO = process.argv.includes('--oculto');
+let saindo = false;
 
 gravacoes.registrarEsquema();
 
@@ -38,7 +43,7 @@ function criarSplash() {
 }
 
 function criarJanela() {
-  const splash = criarSplash();
+  const splash = OCULTO ? { isDestroyed: () => true, close() {} } : criarSplash();
   const minimo = new Promise((ok) => setTimeout(ok, 3800));
   janela = new BrowserWindow({
     show: false,
@@ -59,8 +64,14 @@ function criarJanela() {
   motorNoAr.then(() => janela.loadFile(join(__dirname, 'ui', 'index.html')));
   const pronta = new Promise((ok) => janela.once('ready-to-show', ok));
   Promise.all([pronta, minimo]).then(() => {
-    janela.show();
+    if (!OCULTO) janela.show();
     if (!splash.isDestroyed()) splash.close();
+  });
+  // fechar a janela só esconde: a gravação continua (como num NVR); para encerrar, "Sair" no ícone da bandeja
+  janela.on('close', (e) => {
+    if (saindo) return;
+    e.preventDefault();
+    janela.hide();
   });
   // conferência visual: com CCTV_PRINT=<arquivo.png>, salva uma imagem da janela 6 s depois de abrir
   if (process.env.CCTV_PRINT) {
@@ -77,8 +88,17 @@ function criarJanela() {
   }
 }
 
+function mostrar() {
+  if (janela && !janela.isDestroyed()) {
+    if (janela.isMinimized()) janela.restore();
+    janela.show();
+    janela.focus();
+  }
+}
+
 app.on('second-instance', () => {
   if (janela) {
+    janela.show();
     if (janela.isMinimized()) janela.restore();
     janela.focus();
   }
@@ -148,6 +168,16 @@ ipcMain.handle('cameras:salvar', async (_e, dados) => {
       dados = { ...dados, tipo: 'onvif', ip, porta, url: '' };
     }
   }
+  // RTSP sem o caminho do vídeo (só o IP): testa os caminhos das marcas e fica com o que responde
+  if (dados.tipo === 'rtsp' && dados.ip) {
+    let caminho = '';
+    try { caminho = new URL(String(dados.url || '').replace(/^(rstp|rtps):/i, 'rtsp:')).pathname; } catch { /* sem URL */ }
+    if (!dados.url || caminho === '/' || caminho === '') {
+      const senha = dados.senha || (dados.id ? cameras.senhaDe(dados.id) : '');
+      const achado = await require('./controle/rtsp').descobrir({ ip: dados.ip, porta: dados.porta, usuario: dados.usuario || 'admin', senha, canal: dados.canal || 1 });
+      if (achado.url) dados = { ...dados, url: achado.url };
+    }
+  }
   const id = cameras.salvar(dados);
   await completarLentes();
   await aplicarCadastro();
@@ -186,6 +216,7 @@ ipcMain.handle('gravacao:estados', () => gravador.estados());
 ipcMain.handle('config:ler', () => config.ler());
 ipcMain.handle('config:salvar', (_e, dados) => {
   const c = config.salvar(dados);
+  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: c.iniciarComWindows !== false, args: ['--oculto'] });
   gravador.iniciar();
   deteccao.iniciar();
   return c;
@@ -221,9 +252,16 @@ app.whenReady().then(() => {
   gravacoes.servir();
   motorPronto = completarLentes().then(() => reiniciar());
   criarJanela();
+  bandeja.criar({ abrir: mostrar, sair: () => { saindo = true; app.quit(); } });
+  // o Windows não suspende o app (a gravação para se o processo for suspenso); a tela pode desligar
+  powerSaveBlocker.start('prevent-app-suspension');
+  // abre com o Windows, escondido na bandeja, para voltar a gravar sozinho depois de reiniciar o computador
+  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: config.ler().iniciarComWindows !== false, args: ['--oculto'] });
 });
 
-app.on('window-all-closed', () => app.quit());
+// a janela escondida não fecha o app: só o "Sair" da bandeja (ou o desligamento do Windows) encerra
+app.on('window-all-closed', () => { if (saindo) app.quit(); });
+app.on('before-quit', () => { saindo = true; });
 app.on('before-quit', () => {
   gravador.pararTodas();
   controle.fecharTodas();

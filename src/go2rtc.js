@@ -59,7 +59,9 @@ function fonte(c, i, env) {
     default:
       if (c.url) {
         // RTSP com usuário e senha colocados pelo app (o endereço salvo não guarda a senha)
-        return `${c.url.replace(/^rtsp:\/\//, `rtsp://${cred}@`)}${SO_VIDEO}`;
+        // caminho Xiongmai (user=...&password=...): a senha vai também no caminho, onde a câmera a lê
+        const url = c.url.replace(/([?&/]password=)(?=&|$)/i, `$1\${${variavel}}`);
+        return `${url.replace(/^rtsp:\/\//, `rtsp://${cred}@`)}${SO_VIDEO}`;
       }
       // câmera de várias lentes sem endereço próprio: a partir do canal 2, o caminho RTSP das câmeras Xiongmai
       // (o mais comum nas câmeras de duas lentes), que escolhe a lente pelo canal
@@ -116,9 +118,10 @@ function iniciar() {
   const { arq, env } = configurar();
   processo = spawn(binario(), ['-config', arq], { env, windowsHide: true, stdio: 'ignore' });
   fontesEmUso = fontesAtuais();
-  // se o motor cair, volta sozinho em 2 s
-  processo.on('exit', (codigo) => {
-    if (processo && codigo !== null) setTimeout(() => { if (processo) iniciar(); }, 2000);
+  // se o motor cair (ou for encerrado de fora, sem código de saída), volta sozinho em 2 s; o parar() zera o processo antes
+  const este = processo;
+  processo.on('exit', () => {
+    if (processo === este) setTimeout(() => { if (processo === este) iniciar(); }, 2000);
   });
 }
 

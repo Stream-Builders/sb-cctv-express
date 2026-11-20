@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Обнаруживать движение на камерах",
   "config.sensibilidade": "Чувствительность",
   "config.notificar": "Уведомлять в Windows о каждом движении",
+  "config.iniciarComWindows": "Запускать вместе с Windows и продолжать запись после закрытия окна",
   "reproducao.titulo": "Воспроизведение",
   "reproducao.marcarInicio": "Отметить начало",
   "reproducao.marcarFim": "Отметить конец",

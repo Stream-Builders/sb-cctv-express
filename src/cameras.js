@@ -95,4 +95,10 @@ function completarLentes(id, titulos) {
   return novas;
 }
 
-module.exports = { ler, listar, salvar, remover, abrir, definirGravacao, completarLentes };
+/** A senha guardada de uma câmera (para testar o endereço na edição sem pedir de novo). */
+function senhaDe(id) {
+  const c = ler().find((x) => x.id === id);
+  return c?.senhaCifrada ? abrir(c.senhaCifrada) : '';
+}
+
+module.exports = { senhaDe, ler, listar, salvar, remover, abrir, definirGravacao, completarLentes };

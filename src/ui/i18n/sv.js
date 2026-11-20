@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Upptäck rörelse i kamerorna",
   "config.sensibilidade": "Känslighet",
   "config.notificar": "Meddela i Windows vid varje rörelse",
+  "config.iniciarComWindows": "Starta med Windows och fortsätt spela in när fönstret stängs",
   "reproducao.titulo": "Uppspelning",
   "reproducao.marcarInicio": "Markera start",
   "reproducao.marcarFim": "Markera slut",

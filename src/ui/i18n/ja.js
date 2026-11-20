@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "カメラの動きを検知する",
   "config.sensibilidade": "感度",
   "config.notificar": "動きのたびに Windows で通知",
+  "config.iniciarComWindows": "Windows と同時に起動し、ウィンドウを閉じても録画を続ける",
   "reproducao.titulo": "再生",
   "reproducao.marcarInicio": "開始をマーク",
   "reproducao.marcarFim": "終了をマーク",

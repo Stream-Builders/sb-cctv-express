@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Détecter le mouvement sur les caméras",
   "config.sensibilidade": "Sensibilité",
   "config.notificar": "Notifier dans Windows à chaque mouvement",
+  "config.iniciarComWindows": "Démarrer avec Windows et continuer d'enregistrer à la fermeture de la fenêtre",
   "reproducao.titulo": "Lecture",
   "reproducao.marcarInicio": "Marquer le début",
   "reproducao.marcarFim": "Marquer la fin",

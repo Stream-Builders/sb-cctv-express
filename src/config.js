@@ -16,6 +16,8 @@ const PADRAO = {
   deteccao: true,
   sensibilidade: 5,
   notificar: true,
+  // abre com o Windows (escondido na bandeja) para a gravação voltar sozinha depois de reiniciar o computador
+  iniciarComWindows: true,
 };
 
 const arquivo = () => join(app.getPath('userData'), 'config.json');
@@ -39,6 +41,7 @@ function salvar(dados) {
     deteccao: dados.deteccao === undefined ? atual.deteccao : dados.deteccao === true || dados.deteccao === 'on',
     sensibilidade: Math.min(10, Math.max(1, Number(dados.sensibilidade ?? atual.sensibilidade) || PADRAO.sensibilidade)),
     notificar: dados.notificar === undefined ? atual.notificar : dados.notificar === true || dados.notificar === 'on',
+    iniciarComWindows: dados.iniciarComWindows === undefined ? atual.iniciarComWindows : dados.iniciarComWindows === true || dados.iniciarComWindows === 'on',
   };
   writeFileSync(arquivo(), JSON.stringify(limpo, null, 2));
   return limpo;

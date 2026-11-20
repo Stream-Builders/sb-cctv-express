@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Kameralarda hareketi algıla",
   "config.sensibilidade": "Hassasiyet",
   "config.notificar": "Her harekette Windows'ta bildir",
+  "config.iniciarComWindows": "Windows ile başlat ve pencere kapatılınca kayda devam et",
   "reproducao.titulo": "Oynatma",
   "reproducao.marcarInicio": "Başlangıcı işaretle",
   "reproducao.marcarFim": "Bitişi işaretle",

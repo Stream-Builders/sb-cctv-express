@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "كشف الحركة في الكاميرات",
   "config.sensibilidade": "الحساسية",
   "config.notificar": "التنبيه في Windows عند كل حركة",
+  "config.iniciarComWindows": "التشغيل مع Windows ومواصلة التسجيل عند إغلاق النافذة",
   "reproducao.titulo": "التشغيل",
   "reproducao.marcarInicio": "تحديد البداية",
   "reproducao.marcarFim": "تحديد النهاية",

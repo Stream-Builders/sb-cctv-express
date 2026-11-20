@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "카메라에서 움직임 감지",
   "config.sensibilidade": "감도",
   "config.notificar": "움직임마다 Windows 알림",
+  "config.iniciarComWindows": "Windows와 함께 시작하고 창을 닫아도 계속 녹화",
   "reproducao.titulo": "재생",
   "reproducao.marcarInicio": "시작 표시",
   "reproducao.marcarFim": "끝 표시",

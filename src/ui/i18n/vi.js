@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Phát hiện chuyển động trên camera",
   "config.sensibilidade": "Độ nhạy",
   "config.notificar": "Thông báo trên Windows mỗi khi có chuyển động",
+  "config.iniciarComWindows": "Mở cùng Windows và tiếp tục ghi khi đóng cửa sổ",
   "reproducao.titulo": "Phát lại",
   "reproducao.marcarInicio": "Đánh dấu bắt đầu",
   "reproducao.marcarFim": "Đánh dấu kết thúc",

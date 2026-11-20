@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "侦测摄像机画面中的移动",
   "config.sensibilidade": "灵敏度",
   "config.notificar": "每次移动时在 Windows 中提醒",
+  "config.iniciarComWindows": "随 Windows 启动，关闭窗口后继续录像",
   "reproducao.titulo": "回放",
   "reproducao.marcarInicio": "标记开始",
   "reproducao.marcarFim": "标记结束",

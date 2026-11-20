@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Bewegung auf den Kameras erkennen",
   "config.sensibilidade": "Empfindlichkeit",
   "config.notificar": "Bei jeder Bewegung in Windows benachrichtigen",
+  "config.iniciarComWindows": "Mit Windows starten und beim Schließen des Fensters weiter aufnehmen",
   "reproducao.titulo": "Wiedergabe",
   "reproducao.marcarInicio": "Start markieren",
   "reproducao.marcarFim": "Ende markieren",

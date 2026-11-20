@@ -778,6 +778,7 @@ $('abrir-config').addEventListener('click', async () => {
   for (const k of ['pastaGravacoes', 'minutosPorBloco', 'diasRetencao', 'espacoMinimoGB', 'sensibilidade']) formConfig[k].value = c[k];
   formConfig.deteccao.checked = c.deteccao;
   formConfig.notificar.checked = c.notificar;
+  formConfig.iniciarComWindows.checked = c.iniciarComWindows !== false;
   seletorIdioma.value = idioma;
   dialogoConfig.showModal();
 });
@@ -791,6 +792,7 @@ formConfig.addEventListener('submit', async (e) => {
   const dados = Object.fromEntries(new FormData(formConfig));
   dados.deteccao = formConfig.deteccao.checked;
   dados.notificar = formConfig.notificar.checked;
+  dados.iniciarComWindows = formConfig.iniciarComWindows.checked;
   const novoIdioma = dados.idioma;
   delete dados.idioma;
   await window.cctv.salvarConfig(dados);

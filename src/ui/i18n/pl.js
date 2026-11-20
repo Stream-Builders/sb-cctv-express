@@ -83,6 +83,7 @@ export default {
   "config.deteccaoLigada": "Wykrywaj ruch na kamerach",
   "config.sensibilidade": "Czułość",
   "config.notificar": "Powiadamiaj w Windows o każdym ruchu",
+  "config.iniciarComWindows": "Uruchamiaj z systemem Windows i nagrywaj dalej po zamknięciu okna",
   "reproducao.titulo": "Odtwarzanie",
   "reproducao.marcarInicio": "Zaznacz początek",
   "reproducao.marcarFim": "Zaznacz koniec",
