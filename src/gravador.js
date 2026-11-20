@@ -44,7 +44,9 @@ function pastaLogs() {
 function registrar(id, texto) {
   try {
     const arq = join(pastaLogs(), `gravacao-${id.slice(0, 8)}.log`);
-    if (existsSync(arq) && statSync(arq).size > 1024 * 1024) renameSync(arq, `${arq}.1`);
+    let tamanho = 0;
+    try { tamanho = statSync(arq).size; } catch { /* ainda não existe */ }
+    if (tamanho > 1024 * 1024) renameSync(arq, `${arq}.1`);
     appendFileSync(arq, `${new Date().toISOString()} ${texto}\n`);
   } catch { /* log é ajuda, nunca motivo para parar a gravação */ }
 }

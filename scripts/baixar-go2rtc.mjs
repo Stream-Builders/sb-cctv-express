@@ -37,11 +37,22 @@ for (const m of MOTORES) {
     console.log(`${m.nome} já está em ${destino}`);
     continue;
   }
-  const r = await fetch(m.url(m.versao));
-  if (!r.ok) throw new Error(`não consegui baixar o ${m.nome} (${r.status})`);
+  // até 3 tentativas: o download do ffmpeg (100 MB) às vezes cai no meio no runner
+  let bytesBaixados = null;
+  for (let tentativa = 1; !bytesBaixados; tentativa++) {
+    try {
+      const r = await fetch(m.url(m.versao));
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      bytesBaixados = Buffer.from(await r.arrayBuffer());
+    } catch (e) {
+      if (tentativa >= 3) throw new Error(`não consegui baixar o ${m.nome}: ${e.message}`);
+      console.log(`${m.nome}: download falhou (${e.message}), tentando de novo`);
+      await new Promise((ok) => setTimeout(ok, 5000 * tentativa));
+    }
+  }
   const temp = mkdtempSync(join(tmpdir(), `${m.nome}-`));
   const zip = join(temp, `${m.nome}-${m.versao}.zip`);
-  const bytes = Buffer.from(await r.arrayBuffer());
+  const bytes = bytesBaixados;
   const hash = createHash('sha256').update(bytes).digest('hex');
   if (hash !== m.sha256) throw new Error(`${m.nome} ${m.versao}: SHA-256 não confere (${hash}); arquivo descartado`);
   writeFileSync(zip, bytes);
