@@ -479,12 +479,18 @@ export class VideoRTC extends HTMLElement {
                     // parado; 2 s = 2x), e a câmera que chega com pequenas variações (o celular no Wi-Fi) ficava
                     // travando e correndo. Agora a velocidade só se ajusta de leve (0,9x a 1,1x) em volta de 0,6 s de
                     // folga, e só pula para o ao vivo quando fica mais de 3 s atrasada.
+                    // Depois: o ajuste fica em 0,97x a 1,03x, e com menos de 0,3 s de folga toca a 1x. A 0,9x o
+                    // navegador estica o som para manter o tom, e a fala saía arrastada e grossa (a .114, pela fonte
+                    // compatível, secava o buffer a cada poucos segundos e passava boa parte do tempo a 0,9x);
+                    // desacelerar com o buffer vazio não traz dado nenhum, só estica a voz.
                     const gap = end - this.video.currentTime;
                     if (gap > 3) {
                         this.video.currentTime = end - 0.6;
                         this.video.playbackRate = 1;
+                    } else if (gap < 0.3) {
+                        this.video.playbackRate = 1;
                     } else {
-                        this.video.playbackRate = Math.min(1.1, Math.max(0.9, 1 + (gap - 0.6) * 0.25));
+                        this.video.playbackRate = Math.min(1.03, Math.max(0.97, 1 + (gap - 0.6) * 0.1));
                     }
                     // console.debug('VideoRTC.buffered', gap, this.video.playbackRate, this.video.readyState);
                 }
