@@ -125,7 +125,7 @@ function desenharMosaico() {
       barra.className = 'quadro__barra';
       const comSom = som.has(cam.id);
       barra.append(
-        botao(comSom ? ICONES.som : ICONES.mudo, comSom ? t('quadro.mudo') : t('quadro.ligarSom'), { ativo: comSom }, (e) => {
+        botao(comSom ? ICONES.som : ICONES.mudo, comSom ? t('quadro.mudo') : t('quadro.ligarSom'), { ativo: comSom, soIcone: true }, (e) => {
           e.stopPropagation();
           if (som.has(cam.id)) som.delete(cam.id); else som.add(cam.id);
           desenharMosaico();

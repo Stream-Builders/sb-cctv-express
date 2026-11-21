@@ -279,7 +279,7 @@ body { grid-template-columns: minmax(0, 1fr); }
 .vistas__nova { display: flex; gap: 8px; align-items: center; }
 .vistas__nova input { flex: 1; min-width: 0; }
 /* janela estreita: os botões de vistas e ronda ficam só com o ícone (o nome segue no aviso ao passar o mouse) */
-@media (max-width: 1500px) { .topo__vistas .sb-btn__body { display: none; } .topo__vistas .sb-btn { padding-inline-end: 0; } }
+@media (max-width: 1820px) { .topo__vistas .sb-btn__body { display: none; } .topo__vistas .sb-btn { padding-inline-end: 0; } }
 
 /* o texto de diagnóstico do player do go2rtc ("MSE", "loading", erros): o estilo embutido dele é barrado pela política
    de segurança da tela, e o texto aparecia solto embaixo de cada câmera. O estado de verdade já está nos selos. */
@@ -307,7 +307,7 @@ body { grid-template-columns: minmax(0, 1fr); }
 .marca { flex: none; }
 
 /* o topo cabe em qualquer largura de janela: os rótulos saem por ordem (o nome segue no aviso ao passar o mouse) */
-@media (max-width: 1500px) {
+@media (max-width: 1640px) {
   #abrir-reproducao .sb-btn__body, #abrir-config .sb-btn__body { display: none; }
   #abrir-reproducao, #abrir-config { padding-inline-end: 0; }
 }
@@ -336,3 +336,7 @@ body { grid-template-columns: minmax(0, 1fr); }
 .area--recolhida .lista li > :not(.ponto) { display: none; }
 [dir="rtl"] #alternar-lateral svg { transform: scaleX(-1); }
 @media (prefers-reduced-motion: reduce) { .area { transition: none; } }
+
+/* o que está escondido fica escondido: a peça .sb-btn (display: inline-flex) anulava o atributo hidden, e o
+   "Continuar" da configuração rápida aparecia antes da hora */
+[hidden] { display: none !important; }

@@ -1,0 +1,178 @@
+<!-- Apresentação do CCTV Express (computador e Android) para quem vai usar ou indicar o app (21/11/2026). Gratuito, sem
+     anúncios: o documento apresenta os recursos, não vende. Telas capturadas da tela real com as câmeras ao vivo do autor
+     (docs/comercial/ferramentas/capturar-telas.mjs). Gerar com o gerador de documentos da Stream.Builders:
+     node <livros-wl-site>/tools/gerar-documento-legal.mjs docs/comercial/fontes/apresentacao.html CCTV-EXPRESS-APRESENTACAO-20261121 --destino <sb-cctv-express>/docs/comercial --marcas docs/comercial/marcas-cctv.mjs --titulo "Câmeras de segurança no computador e no celular" --subtitulo "CCTV Express: monitoramento de câmeras IP gratuito, sem anúncios, sem nuvem e sem assinatura, para Windows e Android" --tipo "Apresentação do produto" --data "21 de novembro de 2026" --versao "1.0" -->
+
+<section class="sec" id="resumo">
+  <p class="rotulo-sec">Em uma página</p>
+  <h2>O CCTV Express</h2>
+  <p class="resumo"><b>Um app gratuito para ver, gravar e controlar câmeras de segurança IP, no computador com Windows e no celular Android.</b> Não tem anúncio, assinatura nem conta para criar. O vídeo vai da câmera direto para o disco do seu computador, sem passar pelo servidor de ninguém.</p>
+  <div class="numeros">
+    <div><b>R$ 0</b><span>grátis, sem anúncios e sem assinatura</span></div>
+    <div><b>36</b><span>câmeras ao vivo numa tela só</span></div>
+    <div><b>18</b><span>idiomas, no computador e no celular</span></div>
+    <div><b>24 h</b><span>de gravação contínua, com movimento marcado</span></div>
+  </div>
+  <figure class="tela larga"><img src="../prints/pc-mosaico.jpg" alt=""><figcaption>Quatro câmeras na tela principal, todas gravando</figcaption></figure>
+  <p>O CCTV Express é feito pela <b>Stream.Builders</b> e tem o código aberto, sob a licença MIT. Funciona com câmeras ONVIF, RTSP e Xiongmai (iCSee, XMeye), as marcas mais comuns nas casas e nos pequenos comércios, e com um celular Android usado como câmera.</p>
+</section>
+
+<section class="sec" id="para-quem">
+  <p class="rotulo-sec">Para quem é</p>
+  <h2>Segurança sem mensalidade e sem complicação</h2>
+  <p>Quem compra câmeras IP costuma ficar entre o aplicativo do fabricante, que depende da nuvem dele, e um gravador (NVR) que custa caro. O CCTV Express transforma o computador que você já tem nesse gravador.</p>
+  <div class="cartoes">
+    <div><h4>Para a casa</h4><p>Veja o quintal, a garagem e a entrada numa tela só, com som, e grave o dia inteiro no seu disco.</p></div>
+    <div><h4>Para o pequeno comércio</h4><p>Volte no horário de um movimento pela linha do tempo e exporte o trecho em MP4 para mostrar a quem precisar.</p></div>
+    <div><h4>Para quem tem pouca prática</h4><p>Selos grandes e coloridos dizem na hora o que está ao vivo e o que está gravando. Minimizar e fechar ficam em botões no topo.</p></div>
+    <div><h4>Para quem não quer nuvem</h4><p>Nada sai da sua rede. As senhas das câmeras ficam cifradas pelo próprio Windows.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="mosaico">
+  <p class="rotulo-sec">No computador</p>
+  <h2>O mosaico ao vivo</h2>
+  <p>A tela principal mostra as câmeras lado a lado, em mosaicos de <b>1, 4, 9, 16, 25 ou 36</b> posições. Cada quadro tem os próprios botões, que aparecem ao passar o mouse: som, qualidade, gravar, luz, PTZ, ajustes, tela cheia e tirar do mosaico.</p>
+  <p>A tela se ajusta ao tamanho da janela. Numa janela estreita, os botões do topo ficam só com o ícone, os selos viram pontos coloridos e a lista de câmeras recolhe numa coluna fina:</p>
+  <figure class="tela larga estreita"><img src="../prints/pc-janela-estreita.jpg" alt=""><figcaption>Nove quadros numa janela estreita, com a lista de câmeras recolhida</figcaption></figure>
+  <ul>
+    <li><b>Selos de estado:</b> ao vivo, conectando, sem sinal, gravando e movimento. O selo de gravando só acende quando o arquivo está crescendo de fato no disco.</li>
+    <li><b>Arrastar e soltar:</b> cada câmera vai para a posição que você quiser; o duplo clique abre a câmera em tela cheia.</li>
+    <li><b>Reconexão sozinha:</b> a câmera que cai volta sem precisar mexer em nada, e o vídeo chega sem ser recomprimido.</li>
+    <li><b>SD ou FHD em cada quadro:</b> o SD usa o segundo vídeo da própria câmera (ou, sem ele, uma versão reduzida pelo app), mais leve para a rede e para o computador; o FHD mostra a imagem completa. A gravação segue sempre no vídeo principal.</li>
+    <li><b>Compatibilidade automática:</b> a câmera com um formato de vídeo que o computador não toca é convertida na hora, pela placa de vídeo quando existe.</li>
+  </ul>
+</section>
+
+<section class="sec" id="controle">
+  <p class="rotulo-sec">No computador</p>
+  <h2>Girar, iluminar e ajustar a câmera</h2>
+  <p>Nas câmeras que giram, o painel de PTZ move a câmera enquanto o botão fica apertado, aproxima e afasta, guarda até quatro posições e liga a ronda da própria câmera. O painel cabe dentro do quadro em qualquer mosaico.</p>
+  <div class="telas par">
+    <figure class="tela"><img src="../prints/pc-ptz.jpg" alt=""><figcaption>Controle PTZ, com as posições salvas</figcaption></figure>
+    <figure class="tela"><img src="../prints/pc-luz.jpg" alt=""><figcaption>Modos de luz da câmera</figcaption></figure>
+  </div>
+  <ul>
+    <li><b>Luz:</b> inteligente (infravermelho e luz ao detectar), colorida à noite, só infravermelho ou sempre acesa.</li>
+    <li><b>Câmera de duas lentes:</b> a segunda lente entra sozinha no cadastro, e um clique na imagem da lente fixa aponta a lente PTZ para aquele lugar.</li>
+    <li><b>Ajustes:</b> imagem automática, sempre colorida ou preto e branco; detectar só pessoas; seguir a pessoa com o PTZ; quanto tempo a luz fica acesa e o brilho dela; sirene.</li>
+  </ul>
+  <figure class="tela larga media"><img src="../prints/pc-ajustes.jpg" alt=""><figcaption>Os ajustes que a própria câmera oferece, sem abrir o aplicativo do fabricante</figcaption></figure>
+</section>
+
+<section class="sec" id="som">
+  <p class="rotulo-sec">No computador</p>
+  <h2>Som ao vivo, com filtro de voz</h2>
+  <p>Cada câmera tem o próprio volume e o próprio mudo, guardados neste computador. Passando o mouse no botão de som, o painel mostra o volume e o <b>filtro de som</b>:</p>
+  <ul>
+    <li><b>Original:</b> o som como a câmera envia.</li>
+    <li><b>Voz:</b> corta o grave do vento e do zumbido de aparelhos, corta o chiado agudo, realça a faixa da fala e aumenta as vozes baixas.</li>
+    <li><b>Voz forte:</b> faz o mesmo e ainda abaixa o ruído de fundo nas pausas entre as falas.</li>
+  </ul>
+  <figure class="tela larga media"><img src="../prints/pc-som.jpg" alt=""><figcaption>Volume e filtro de som na câmera do celular</figcaption></figure>
+  <div class="caixa regra"><span class="rotulo">A prova não muda</span><p>O filtro vale só para ouvir ao vivo. A gravação guarda sempre o som original da câmera.</p></div>
+</section>
+
+<section class="sec" id="vistas">
+  <p class="rotulo-sec">No computador</p>
+  <h2>Vistas salvas e ronda automática</h2>
+  <p>Uma <b>vista</b> guarda o tamanho do mosaico e a câmera de cada posição, com um nome. Um clique abre a vista; outro troca o conteúdo dela pela arrumação de agora.</p>
+  <p>A <b>ronda</b> troca a tela sozinha, de tempos em tempos: as vistas salvas uma por vez, as páginas do mosaico ou uma câmera por vez em tela cheia. Ela pode começar sozinha quando o app abre, e espera enquanto alguém mexe numa câmera.</p>
+  <div class="telas par">
+    <figure class="tela"><img src="../prints/pc-vistas.jpg" alt=""><figcaption>Vistas e configuração da ronda</figcaption></figure>
+    <figure class="tela"><img src="../prints/pc-ronda.jpg" alt=""><figcaption>A ronda em andamento, com o selo "Ronda 1/2"</figcaption></figure>
+  </div>
+</section>
+
+<section class="sec" id="gravacao">
+  <p class="rotulo-sec">No computador</p>
+  <h2>Gravação contínua e reprodução</h2>
+  <p>O app grava as câmeras o dia inteiro, em arquivos MP4 de duração ajustável, na pasta que você escolher. Quando passa dos dias definidos ou o disco fica sem espaço, o mais antigo é apagado primeiro.</p>
+  <p>A <b>reprodução</b> mostra a linha do tempo do dia: em cinza o que foi gravado, em âmbar cada movimento detectado. Um clique leva àquele momento; marcar início e fim exporta o trecho em MP4.</p>
+  <figure class="tela larga media"><img src="../prints/pc-reproducao.jpg" alt=""><figcaption>Um dia inteiro de gravação, com os movimentos marcados na linha do tempo</figcaption></figure>
+  <ul>
+    <li><b>Detecção de movimento:</b> sensibilidade ajustável, selo na tela, marca na linha do tempo e aviso do Windows a cada movimento, se você quiser.</li>
+    <li><b>Grava em segundo plano:</b> fechar a janela não para a gravação; o app abre com o Windows, escondido na bandeja, e volta a gravar sozinho depois de reiniciar o computador.</li>
+  </ul>
+</section>
+
+<section class="sec" id="cadastro">
+  <p class="rotulo-sec">No computador</p>
+  <h2>Cadastro, configurações e janela</h2>
+  <p>Adicionar uma câmera pede o tipo, o endereço e o usuário. A busca na rede encontra as câmeras ONVIF, RTSP e Xiongmai sozinha. As configurações reúnem o idioma, a gravação, a detecção de movimento e a configuração rápida.</p>
+  <div class="telas par">
+    <figure class="tela"><img src="../prints/pc-adicionar.jpg" alt=""><figcaption>Adicionar câmera</figcaption></figure>
+    <figure class="tela"><img src="../prints/pc-configuracoes.jpg" alt=""><figcaption>Configurações</figcaption></figure>
+  </div>
+  <p><b>Minimizar e Fechar</b> ficam no topo da tela, sem precisar do clique direito no ícone da bandeja. Minimizar esconde o app e ele continua gravando. Fechar pede confirmação, porque a gravação para:</p>
+  <figure class="tela larga media"><img src="../prints/pc-fechar.jpg" alt=""><figcaption>Fechar pede confirmação e oferece Minimizar</figcaption></figure>
+</section>
+
+<section class="sec" id="celular-camera">
+  <p class="rotulo-sec">No celular</p>
+  <h2>Um celular vira câmera de segurança</h2>
+  <p>O <b>CCTV Express Câmera</b>, para Android, pergunta na abertura como usar o celular: como câmera da rede ou para assistir as câmeras.</p>
+  <div class="telas celulares">
+    <figure class="tela celular"><img src="../prints/android-abertura.jpg" alt=""><figcaption>Abertura</figcaption></figure>
+    <figure class="tela celular"><img src="../prints/android-inicio.jpg" alt=""><figcaption>Escolha do modo</figcaption></figure>
+    <figure class="tela celular"><img src="../prints/android-camera.jpg" alt=""><figcaption>Celular transmitindo</figcaption></figure>
+  </div>
+  <p>Como câmera, o celular transmite na sua rede e mostra o endereço para adicionar no computador. Um celular antigo vira uma câmera de segurança:</p>
+  <ul>
+    <li><b>Trocar câmera:</b> a de trás ou a da frente.</li>
+    <li><b>Luz:</b> o flash acende pelo celular ou pelo computador.</li>
+    <li><b>Escurecer tela:</b> a tela apaga e a transmissão continua.</li>
+    <li><b>Data e hora</b> na imagem, como nas outras câmeras.</li>
+    <li><b>Acesso:</b> o usuário e a senha que o computador usa para ver o vídeo e controlar a luz.</li>
+  </ul>
+</section>
+
+<section class="sec" id="celular-assistir">
+  <p class="rotulo-sec">No celular</p>
+  <h2>Assistir as câmeras no celular</h2>
+  <p>No modo de assistir, o celular mostra as câmeras da rede como no computador: até nove por página, com o selo de estado em cada uma. Um toque abre a câmera em tela cheia, com som. Pelo topo, você adiciona câmeras, busca na rede, vê a lista e abre o arquivo de configuração rápida.</p>
+  <div class="telas celulares">
+    <figure class="tela celular"><img src="../prints/android-assistir.jpg" alt=""><figcaption>Mosaico</figcaption></figure>
+    <figure class="tela celular"><img src="../prints/android-tela-cheia.jpg" alt=""><figcaption>Tela cheia</figcaption></figure>
+    <figure class="tela celular"><img src="../prints/android-adicionar.jpg" alt=""><figcaption>Adicionar câmera</figcaption></figure>
+  </div>
+</section>
+
+<section class="sec" id="configuracao-rapida">
+  <p class="rotulo-sec">Computador e celular</p>
+  <h2>Configuração rápida em um arquivo</h2>
+  <p>As câmeras cadastradas saem num arquivo <b>.cctvx</b>, que o outro aparelho importa de uma vez: do computador para o celular e do celular para o computador. Com senha, o arquivo leva também as senhas das câmeras, cifradas; sem senha, vai sem elas.</p>
+  <div class="telas celulares baixos">
+    <figure class="tela celular"><img src="../prints/android-arquivo.jpg" alt=""><figcaption>Exportar e importar no celular</figcaption></figure>
+    <figure class="tela celular"><img src="../prints/android-acesso.jpg" alt=""><figcaption>Acesso da câmera do celular</figcaption></figure>
+  </div>
+</section>
+
+<section class="sec" id="privacidade">
+  <p class="rotulo-sec">Confiança</p>
+  <h2>Privacidade e segurança</h2>
+  <div class="cartoes">
+    <div><h4>Sem nuvem</h4><p>O vídeo vai da câmera para o seu disco. O motor de vídeo só escuta dentro do próprio computador.</p></div>
+    <div><h4>Senhas cifradas</h4><p>As senhas das câmeras ficam cifradas pelo Windows e nunca num arquivo aberto.</p></div>
+    <div><h4>Sem conta e sem anúncio</h4><p>Não há cadastro, rastreamento nem propaganda. O app não pede nada de quem usa.</p></div>
+    <div><h4>Código aberto</h4><p>Qualquer pessoa pode ler o código no GitHub, sob a licença MIT.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="baixar">
+  <p class="rotulo-sec">Como começar</p>
+  <h2>Requisitos e download</h2>
+  <table class="tabela">
+    <thead><tr><th>Onde</th><th>O que precisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Computador</b></td><td>Windows 10 ou 11, 64 bits. O instalador está na página de downloads.</td></tr>
+      <tr><td><b>Celular</b></td><td>Android. O APK do CCTV Express Câmera está na mesma página.</td></tr>
+      <tr><td><b>Câmeras</b></td><td>IP com ONVIF, RTSP ou o protocolo Xiongmai (iCSee, XMeye), na mesma rede do computador.</td></tr>
+    </tbody>
+  </table>
+  <div class="chamada">
+    <h3>Baixe grátis</h3>
+    <p><b>cctvexpress.stream.builders</b></p>
+    <p>github.com/Stream-Builders/sb-cctv-express/releases</p>
+  </div>
+</section>
