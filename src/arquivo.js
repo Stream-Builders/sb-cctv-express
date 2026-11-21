@@ -1,14 +1,18 @@
 // O arquivo de configuração rápida (.cctvx): leva as câmeras (e as configurações) do computador para o celular e do
 // celular para o computador. O mesmo formato do app do celular (movel/.../Arquivo.kt):
 //   aberto:  {"formato":"cctv-express","versao":1,"cifrado":false,"cameras":[...],"config":{...}}   (sem as senhas)
-//   cifrado: {"formato":"cctv-express","versao":1,"cifrado":true,"kdf":"pbkdf2-sha256","voltas":210000,
+//   cifrado: {"formato":"cctv-express","versao":1,"cifrado":true,"kdf":"pbkdf2-sha256","voltas":600000,
 //             "sal":"<b64>","iv":"<b64>","dados":"<b64 do texto cifrado + etiqueta GCM>"}       (com as senhas)
 const { pbkdf2Sync, randomBytes, createCipheriv, createDecipheriv } = require('node:crypto');
 const cameras = require('./cameras');
 const config = require('./config');
 
 const FORMATO = 'cctv-express';
-const VOLTAS = 210000;
+// 600 mil voltas: o mínimo da OWASP para PBKDF2-HMAC-SHA256 desde 2023 (antes 210 mil). As voltas vão gravadas no arquivo,
+// então os arquivos antigos continuam abrindo; ao ler, só valem de 100 mil a 5 milhões (um arquivo forjado com bilhões
+// de voltas travaria o app).
+const VOLTAS = 600000;
+const voltasDoArquivo = (v) => { const n = Number(v) || VOLTAS; return Math.min(5000000, Math.max(100000, Math.floor(n))); };
 
 class SenhaErrada extends Error {}
 class Invalido extends Error {}
@@ -49,7 +53,7 @@ function ler(texto, senha) {
   let bruto;
   try {
     bruto = Buffer.from(j.dados, 'base64');
-    const d = createDecipheriv('aes-256-gcm', chave(senha || '', Buffer.from(j.sal, 'base64'), Number(j.voltas) || VOLTAS), Buffer.from(j.iv, 'base64'));
+    const d = createDecipheriv('aes-256-gcm', chave(senha || '', Buffer.from(j.sal, 'base64'), voltasDoArquivo(j.voltas)), Buffer.from(j.iv, 'base64'));
     d.setAuthTag(bruto.subarray(bruto.length - 16));
     return JSON.parse(Buffer.concat([d.update(bruto.subarray(0, bruto.length - 16)), d.final()]).toString('utf8'));
   } catch (e) {

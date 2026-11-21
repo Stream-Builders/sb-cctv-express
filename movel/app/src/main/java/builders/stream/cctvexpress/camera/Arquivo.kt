@@ -1,8 +1,8 @@
 // O arquivo de configuração rápida (.cctvx), o mesmo do CCTV Express do computador, para levar as câmeras do PC para o
 // celular e do celular para o PC. Com senha, o conteúdo inteiro vai cifrado (AES-256-GCM, chave por PBKDF2-SHA256 com
-// 210 mil voltas) e leva as senhas das câmeras; sem senha, vai legível e sem as senhas das câmeras.
+// 600 mil voltas, o mínimo da OWASP desde 2023) e leva as senhas das câmeras; sem senha, vai legível e sem as senhas das câmeras.
 //   aberto:  {"formato":"cctv-express","versao":1,"cifrado":false,"cameras":[...],"config":{...}}
-//   cifrado: {"formato":"cctv-express","versao":1,"cifrado":true,"kdf":"pbkdf2-sha256","voltas":210000,
+//   cifrado: {"formato":"cctv-express","versao":1,"cifrado":true,"kdf":"pbkdf2-sha256","voltas":600000,
 //             "sal":"<b64>","iv":"<b64>","dados":"<b64 do texto cifrado + etiqueta GCM>"}
 package builders.stream.cctvexpress.camera
 
@@ -16,7 +16,8 @@ import javax.crypto.spec.SecretKeySpec
 
 object Arquivo {
   const val FORMATO = "cctv-express"
-  private const val VOLTAS = 210_000
+  // as voltas vão no arquivo (os de 210 mil seguem abrindo); ao ler, só de 100 mil a 5 milhões, contra arquivo forjado
+  private const val VOLTAS = 600_000
 
   class SenhaErrada : Exception()
   class Invalido : Exception()
@@ -59,7 +60,7 @@ object Arquivo {
       val sal = Base64.decode(j.getString("sal"), Base64.NO_WRAP)
       val iv = Base64.decode(j.getString("iv"), Base64.NO_WRAP)
       val c = Cipher.getInstance("AES/GCM/NoPadding")
-      c.init(Cipher.DECRYPT_MODE, SecretKeySpec(pbkdf2(senha, sal, j.optInt("voltas", VOLTAS)), "AES"), GCMParameterSpec(128, iv))
+      c.init(Cipher.DECRYPT_MODE, SecretKeySpec(pbkdf2(senha, sal, j.optInt("voltas", VOLTAS).coerceIn(100_000, 5_000_000)), "AES"), GCMParameterSpec(128, iv))
       return JSONObject(String(c.doFinal(Base64.decode(j.getString("dados"), Base64.NO_WRAP)), Charsets.UTF_8))
     } catch (_: javax.crypto.AEADBadTagException) { throw SenhaErrada() } catch (_: Exception) { throw Invalido() }
   }

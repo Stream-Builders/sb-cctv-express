@@ -13,18 +13,28 @@ function cabecalhoSeguranca(usuario, senha, desvioMs = 0) {
 }
 
 const esc = (s) => String(s ?? '').replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
-const md5 = (s) => createHash('md5').update(s).digest('hex');
+/**
+ * Escolhe o desafio Digest mais forte entre os que a câmera mandou: SHA-256 (RFC 7616) quando ela oferece, MD5 só
+ * quando é o único (a maioria das câmeras só fala MD5, e o protocolo não deixa escolher outro).
+ */
+function melhorDesafio(desafios) {
+  const lista = (Array.isArray(desafios) ? desafios : [desafios]).filter((d) => /^digest/i.test(d || ''));
+  return lista.find((d) => /algorithm="?SHA-256"?/i.test(d)) || lista[0] || '';
+}
 
-/** Cabeçalho Authorization do HTTP Digest (RFC 7616, MD5, qop=auth), que o ONVIF Profile S também aceita. */
-function digestHttp(desafio, usuario, senha, metodo, caminho) {
+/** Cabeçalho Authorization do HTTP Digest (RFC 7616, SHA-256 ou MD5, qop=auth), que o ONVIF Profile S também aceita. */
+function digestHttp(desafios, usuario, senha, metodo, caminho) {
+  const desafio = melhorDesafio(desafios);
   const p = Object.fromEntries([...desafio.matchAll(/(\w+)="?([^",]+)"?/g)].map(([, k, v]) => [k.toLowerCase(), v]));
+  const sha256 = /^SHA-256$/i.test(p.algorithm || '');
+  const h = (s) => createHash(sha256 ? 'sha256' : 'md5').update(s).digest('hex');
   const cnonce = randomBytes(8).toString('hex');
   const nc = '00000001';
-  const ha1 = md5(`${usuario}:${p.realm}:${senha || ''}`);
-  const ha2 = md5(`${metodo}:${caminho}`);
+  const ha1 = h(`${usuario}:${p.realm}:${senha || ''}`);
+  const ha2 = h(`${metodo}:${caminho}`);
   const qop = /auth/.test(p.qop || '') ? 'auth' : '';
-  const resposta = qop ? md5(`${ha1}:${p.nonce}:${nc}:${cnonce}:${qop}:${ha2}`) : md5(`${ha1}:${p.nonce}:${ha2}`);
-  return `Digest username="${usuario}", realm="${p.realm}", nonce="${p.nonce}", uri="${caminho}", response="${resposta}"${p.opaque ? `, opaque="${p.opaque}"` : ''}${qop ? `, qop=${qop}, nc=${nc}, cnonce="${cnonce}"` : ''}`;
+  const resposta = qop ? h(`${ha1}:${p.nonce}:${nc}:${cnonce}:${qop}:${ha2}`) : h(`${ha1}:${p.nonce}:${ha2}`);
+  return `Digest username="${usuario}", realm="${p.realm}", nonce="${p.nonce}", uri="${caminho}", response="${resposta}"${sha256 ? ', algorithm=SHA-256' : ''}${p.opaque ? `, opaque="${p.opaque}"` : ''}${qop ? `, qop=${qop}, nc=${nc}, cnonce="${cnonce}"` : ''}`;
 }
 
 function post(url, xml, ms, autorizacao) {
@@ -34,7 +44,7 @@ function post(url, xml, ms, autorizacao) {
       headers: { 'Content-Type': 'application/soap+xml; charset=utf-8', 'Content-Length': Buffer.byteLength(xml), ...(autorizacao ? { Authorization: autorizacao } : {}) } }, (res) => {
       let d = '';
       res.on('data', (c) => { d += c; });
-      res.on('end', () => ok({ status: res.statusCode, corpo: d, desafio: res.headers['www-authenticate'] || '' }));
+      res.on('end', () => ok({ status: res.statusCode, corpo: d, desafio: res.headersDistinct?.['www-authenticate'] || [res.headers['www-authenticate'] || ''] }));
     });
     req.on('timeout', () => req.destroy(new Error('a câmera não respondeu')));
     req.on('error', falha);

@@ -21,13 +21,14 @@ const CAMINHOS = [
   '/',
 ];
 
-const md5 = (s) => createHash('md5').update(s).digest('hex');
-
 function autorizacao(desafio, usuario, senha, url) {
   if (/^basic/i.test(desafio)) return `Basic ${Buffer.from(`${usuario}:${senha}`).toString('base64')}`;
-  const p = Object.fromEntries([...desafio.matchAll(/(\w+)="([^"]*)"/g)].map(([, k, v]) => [k.toLowerCase(), v]));
-  const resposta = md5(`${md5(`${usuario}:${p.realm}:${senha}`)}:${p.nonce}:${md5(`DESCRIBE:${url}`)}`);
-  return `Digest username="${usuario}", realm="${p.realm}", nonce="${p.nonce}", uri="${url}", response="${resposta}"`;
+  const p = Object.fromEntries([...desafio.matchAll(/(\w+)="?([^",]+)"?/g)].map(([, k, v]) => [k.toLowerCase(), v]));
+  // SHA-256 (RFC 7616) quando a câmera oferece; MD5 só quando é o único que ela fala
+  const sha256 = /^SHA-256$/i.test(p.algorithm || '');
+  const h = (s) => createHash(sha256 ? 'sha256' : 'md5').update(s).digest('hex');
+  const resposta = h(`${h(`${usuario}:${p.realm}:${senha}`)}:${p.nonce}:${h(`DESCRIBE:${url}`)}`);
+  return `Digest username="${usuario}", realm="${p.realm}", nonce="${p.nonce}", uri="${url}", response="${resposta}"${sha256 ? ', algorithm=SHA-256' : ''}`;
 }
 
 /** Uma requisição DESCRIBE; devolve { status, desafio, sdp }. */
@@ -47,7 +48,7 @@ function describe(ip, porta, url, auth, ms = 4000) {
       const tam = Number(d.match(/Content-Length:\s*(\d+)/i)?.[1] || 0);
       if (status === 200 && d.length < fimCab + 4 + tam) return;
       const desafios = [...d.slice(0, fimCab).matchAll(/WWW-Authenticate:\s*(.+)/gi)].map((m) => m[1].trim());
-      fim({ status, desafio: desafios.find((x) => /^digest/i.test(x)) || desafios[0] || '', sdp: d.slice(fimCab + 4) });
+      fim({ status, desafio: desafios.find((x) => /^digest/i.test(x) && /algorithm="?SHA-256/i.test(x)) || desafios.find((x) => /^digest/i.test(x)) || desafios[0] || '', sdp: d.slice(fimCab + 4) });
     });
   });
 }
