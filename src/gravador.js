@@ -51,7 +51,28 @@ function registrar(id, texto) {
   } catch { /* log é ajuda, nunca motivo para parar a gravação */ }
 }
 
-function argumentos(c, pasta, segundos) {
+const dois = (n) => String(n).padStart(2, '0');
+
+/** Nome do bloco pela hora local de início (o mesmo formato de sempre: 2026-11-21_02-27-00.mp4). */
+function nomeDoBloco(d) {
+  return `${d.getFullYear()}-${dois(d.getMonth() + 1)}-${dois(d.getDate())}_${dois(d.getHours())}-${dois(d.getMinutes())}-${dois(d.getSeconds())}.mp4`;
+}
+
+/**
+ * Segundos até a próxima virada de bloco no relógio local (blocos de 2 h viram às 0h, 2h, 4h...). Sobra menor que
+ * 10 s entra no bloco seguinte, para não abrir um arquivo de poucos segundos.
+ */
+function segundosAteVirar(d, segundos) {
+  const desdeMeiaNoite = d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
+  const resto = segundos - (desdeMeiaNoite % segundos);
+  return resto < 10 ? resto + segundos : resto;
+}
+
+// Um ffmpeg por bloco, gravando direto em MP4 fragmentado. O muxer de blocos do ffmpeg (segment) segurava até 256 KB
+// antes de escrever no disco: câmera de pouco movimento à noite, ou que quase não manda quadro-chave (a .114 passa
+// mais de 75 s sem nenhum), ficava mais de 45 s sem o arquivo crescer, e o supervisor achava que tinha travado. Aqui
+// o fragmento fecha a cada 2 s, com ou sem quadro-chave, e vai para o disco na hora.
+function argumentos(c, arquivo, duracao) {
   return [
     '-hide_banner', '-loglevel', 'error', '-nostdin',
     // entrada: TCP, 10 s sem dado derruba (e o supervisor sobe de novo); pacote corrompido é descartado e o pts que
@@ -63,12 +84,12 @@ function argumentos(c, pasta, segundos) {
     // cabe em MP4) e reamostrado para não acumular atraso; o volume da tela não mexe aqui
     '-map', '0:v:0', '-map', '0:a:0?', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '64k', '-af', 'aresample=async=1',
     '-avoid_negative_ts', 'make_zero',
-    '-f', 'segment', '-segment_time', String(segundos), '-segment_atclocktime', '1', '-reset_timestamps', '1',
-    // grava no disco a cada fragmento (sem esperar o buffer de 256 KB): câmera leve, como a do celular, não parece parada
-    '-flush_packets', '1',
-    '-strftime', '1', '-segment_format', 'mp4',
-    '-segment_format_options', 'movflags=+frag_keyframe+empty_moov+default_base_moof',
-    join(pasta, '%Y-%m-%d_%H-%M-%S.mp4'),
+    '-t', String(duracao),
+    // fragmento a cada quadro-chave ou a cada 2 s, o que vier antes, escrito no disco na hora: se a energia cair, o
+    // bloco abre até os últimos 2 s, e câmera leve (celular, cena parada) não parece parada
+    '-flush_packets', '1', '-frag_duration', '2000000',
+    '-movflags', '+frag_keyframe+empty_moov+default_base_moof',
+    '-f', 'mp4', arquivo,
   ];
 }
 
@@ -91,9 +112,12 @@ function iniciarCamera(c, cfg) {
       estado.timer = setTimeout(subir, 20000);
       return;
     }
-    const proc = spawn(binario(), argumentos(c, pasta, Math.round(cfg.minutosPorBloco * 60)), { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
+    const inicio = new Date();
+    const duracao = segundosAteVirar(inicio, Math.max(60, Math.round(cfg.minutosPorBloco * 60)));
+    const proc = spawn(binario(), argumentos(c, join(pasta, nomeDoBloco(inicio)), duracao), { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
     estado.proc = proc;
-    estado.subiuEm = Date.now();
+    estado.subiuEm = inicio.getTime();
+    const fimDoBloco = inicio.getTime() + duracao * 1000;
     let erro = '';
     proc.stderr.on('data', (d) => {
       erro = (erro + d).slice(-2000);
@@ -109,6 +133,12 @@ function iniciarCamera(c, cfg) {
     proc.on('exit', (codigo) => {
       if (estado.proc === proc) estado.proc = null;
       if (estado.parado) return;
+      // o bloco chegou ao fim (o -t): o próximo começa já, sem espera nem registro
+      if (codigo === 0 && Date.now() >= fimDoBloco - 3000) {
+        estado.espera = 5000;
+        estado.timer = setTimeout(subir, 0);
+        return;
+      }
       // gravou por mais de 2 min: a queda é nova, volta rápido; senão, espera crescente até 60 s
       if (Date.now() - estado.subiuEm > 120000) estado.espera = 5000;
       registrar(c.id, `ffmpeg saiu (código ${codigo}); volta em ${estado.espera / 1000} s${erro ? `: ${erro.trim().split('\n').slice(-3).join(' | ')}` : ''}`);
