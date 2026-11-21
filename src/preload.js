@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld('cctv', {
   salvarConfig: (dados) => ipcRenderer.invoke('config:salvar', dados),
   lerVistas: () => ipcRenderer.invoke('vistas:ler'),
   salvarVistas: (dados) => ipcRenderer.invoke('vistas:salvar', dados),
+  minimizarParaBandeja: (aviso) => ipcRenderer.invoke('janela:bandeja', aviso),
+  sair: () => ipcRenderer.invoke('app:sair'),
   escolherPasta: () => ipcRenderer.invoke('config:escolher-pasta'),
   abrirPastaGravacoes: () => ipcRenderer.invoke('config:abrir-pasta'),
   idiomaDoSistema: () => ipcRenderer.invoke('sistema:idioma'),

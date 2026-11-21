@@ -11,6 +11,8 @@ const PORTA_API = 18984;
 const PORTA_RTSP = 18554;
 // endereços RTSP que as câmeras ONVIF informam (preenchido por resolverOnvif antes de subir o motor)
 const rtspOnvif = new Map();
+// e o do segundo perfil (o vídeo mais leve, o SD do ao vivo)
+const rtspOnvifSd = new Map();
 let processo = null;
 
 function binario() {
@@ -72,6 +74,30 @@ function fonte(c, i, env) {
   }
 }
 
+/**
+ * O SD do ao vivo: o segundo vídeo da própria câmera (mais leve, sem custo para o computador), pelos endereços
+ * conhecidos dos fabricantes; sem um conhecido, o vídeo principal reduzido pelo ffmpeg do app. A gravação não muda.
+ */
+function fonteSd(c, principal) {
+  if (c.tipo === 'xiongmai') return principal.replace(/subtype=0\b/, 'subtype=1');
+  if (c.tipo === 'onvif') {
+    const uri = rtspOnvifSd.get(c.id);
+    if (!uri) return null;
+    const cred = principal.match(/^(?:rtsp|onvif):\/\/([^@/]*)@/)?.[1];
+    return cred ? uri.replace(/^rtsp:\/\//, `rtsp://${cred}@`) : uri;
+  }
+  const trocas = [
+    [/stream=0\.sdp/i, 'stream=1.sdp'], // Xiongmai e genéricas chinesas
+    [/subtype=0\b/i, 'subtype=1'], // Dahua, Intelbras
+    [/(\/Streaming\/Channels\/\d*?)01\b/i, '$102'], // Hikvision
+    [/\/h264\/ch(\d+)\/main\//i, '/h264/ch$1/sub/'], // Uniview
+    [/\/(live|stream)(_?)main\b/i, '/$1$2sub'],
+  ];
+  for (const [de, para] of trocas) if (de.test(principal)) return principal.replace(de, para);
+  return null;
+}
+const sdReduzido = (id) => `ffmpeg:${id}#video=h264#width=640#audio=aac#hardware`;
+
 function configurar() {
   const env = { ...process.env };
   const linhas = [
@@ -95,6 +121,10 @@ function configurar() {
     // compatibilidade: o mesmo vídeo reconvertido em H264 comum (e o áudio em AAC) (com a placa de vídeo, se houver), para câmeras cujo
     // perfil H264 o navegador recusa. O ffmpeg só roda enquanto alguém assiste a este stream.
     linhas.push(`  "${c.id}_compat":`, `    - ${JSON.stringify(`ffmpeg:${c.id}#video=h264#audio=aac#width=1920#hardware`)}`);
+    // SD do ao vivo, e o reduzido para quando a câmera não entrega o segundo vídeo (cada um só conecta se alguém assiste)
+    const principal = fonte(c, i, env);
+    linhas.push(`  "${c.id}_sd":`, `    - ${JSON.stringify(fonteSd(c, principal) || sdReduzido(c.id))}`);
+    linhas.push(`  "${c.id}_sdc":`, `    - ${JSON.stringify(sdReduzido(c.id))}`);
   });
   const arq = join(app.getPath('userData'), 'go2rtc.yaml');
   writeFileSync(arq, `${linhas.join('\n')}\n`);
@@ -109,6 +139,8 @@ async function resolverOnvif() {
       const o = new Onvif({ ip: c.ip, porta: c.porta || 80, usuario: c.usuario || 'admin', senha: cameras.abrir(c.senhaCifrada), canal: c.canal || 1 });
       const uri = await o.enderecoRtsp();
       if (uri && uri.startsWith('rtsp://')) rtspOnvif.set(c.id, uri.replace(/^rtsp:\/\/[^@/]*@/, 'rtsp://'));
+      const sd = o.perfilSd ? await o.enderecoRtsp(o.perfilSd).catch(() => null) : null;
+      if (sd && sd.startsWith('rtsp://') && sd !== uri) rtspOnvifSd.set(c.id, sd.replace(/^rtsp:\/\/[^@/]*@/, 'rtsp://'));
     } catch { /* câmera fora do ar agora: fica a descoberta do go2rtc */ }
   }));
 }
@@ -139,6 +171,8 @@ function fontesAtuais() {
     const f = fonte(c, i, env).replace(/\$\{(CCTV_SENHA_\d+)\}/g, (_, v) => env[v] ?? '');
     mapa.set(c.id, f);
     mapa.set(`${c.id}_compat`, `ffmpeg:${c.id}#video=h264#audio=aac#width=1920#hardware`);
+    mapa.set(`${c.id}_sd`, fonteSd(c, f) || sdReduzido(c.id));
+    mapa.set(`${c.id}_sdc`, sdReduzido(c.id));
   });
   return mapa;
 }

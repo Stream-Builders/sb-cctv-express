@@ -115,6 +115,9 @@ class Onvif {
       const alvo = fontes[this.canal - 1];
       this.perfil = (alvo && lista.find((p) => p.fonte === alvo)?.token) || lista[0]?.token
         || perfis.match(/Profiles[^>]*token="([^"]+)"/)?.[1];
+      // o segundo perfil da mesma lente é o vídeo mais leve (o SD do ao vivo)
+      const lente = lista.find((x) => x.token === this.perfil)?.fonte;
+      this.perfilSd = lista.find((p) => p.fonte === lente && p.token !== this.perfil)?.token || null;
     }
     return { ptz: !!(this.urlPtz && this.perfil) };
   }
@@ -127,9 +130,10 @@ class Onvif {
   }
 
   /** O endereço RTSP do perfil principal, como a câmera informa (GetStreamUri). */
-  async enderecoRtsp() {
+  async enderecoRtsp(perfil) {
     if (!this.urlMidia) await this.preparar();
-    const xml = await this.chamar(this.urlMidia, `<trt:GetStreamUri><trt:StreamSetup><tt:Stream>RTP-Unicast</tt:Stream><tt:Transport><tt:Protocol>RTSP</tt:Protocol></tt:Transport></trt:StreamSetup><trt:ProfileToken>${esc(this.perfil)}</trt:ProfileToken></trt:GetStreamUri>`);
+    const token = perfil || this.perfil;
+    const xml = await this.chamar(this.urlMidia, `<trt:GetStreamUri><trt:StreamSetup><tt:Stream>RTP-Unicast</tt:Stream><tt:Transport><tt:Protocol>RTSP</tt:Protocol></tt:Transport></trt:StreamSetup><trt:ProfileToken>${esc(token)}</trt:ProfileToken></trt:GetStreamUri>`);
     return noIpDaCamera(tag(xml, 'Uri')?.trim().replace(/&amp;/g, '&'), this.ip);
   }
 

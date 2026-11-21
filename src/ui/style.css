@@ -211,9 +211,9 @@ body { grid-template-columns: minmax(0, 1fr); }
    altura das peças, entre 10px (mosaicos grandes) e 44px (uma câmera só). */
 .quadro { container-type: size; }
 .quadro__topo, .quadro__barra, .painel-quadro, .quadro video-stream, .quadro video {
-  --respiro: clamp(16px, 7cqh, 52px);
+  --respiro: clamp(16px, 9cqh, 52px);
   --tarja: max(var(--respiro), calc((100cqh - 56.25cqw) / 2));
-  --faixa: clamp(10px, calc(var(--tarja) * 0.8), 44px);
+  --faixa: clamp(10px, min(calc(var(--tarja) * 0.8), 7.5cqw), 44px);
 }
 .quadro__topo {
   block-size: max(var(--tarja), calc(var(--faixa) + 8px)); padding-block: 0; padding-inline: max(6px, calc(var(--faixa) * 0.3));
@@ -284,3 +284,55 @@ body { grid-template-columns: minmax(0, 1fr); }
 /* o texto de diagnóstico do player do go2rtc ("MSE", "loading", erros): o estilo embutido dele é barrado pela política
    de segurança da tela, e o texto aparecia solto embaixo de cada câmera. O estado de verdade já está nos selos. */
 .quadro video-stream .info { display: none; }
+
+/* filtro de som no painel do volume: original, voz, voz com menos ruído */
+.painel-som { gap: 10px; }
+.som-filtro { display: grid; gap: 6px; }
+.som-filtro__titulo { font-size: 12px; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.06em; }
+.som-filtro__opcoes { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* selos do quadro: nunca empurram o nome para fora; quadro estreito (mosaicos grandes ou janela pequena) fica só com o
+   ponto colorido de cada selo, e o nome da câmera continua legível */
+.quadro__topo .selo { flex: none; }
+.quadro__topo .quadro__nome { flex: 1 1 auto; min-width: 3ch; }
+@container (max-width: 380px) {
+  .quadro__topo .selo { padding: 0 0.6em; }
+  .quadro__topo .selo__texto { font-size: 0; gap: 0; }
+  .quadro__topo .selo__texto::before { width: calc(var(--faixa) * 0.3); height: calc(var(--faixa) * 0.3); }
+}
+
+/* minimizar para a bandeja e fechar, no fim do topo */
+.topo__janela { display: flex; gap: 6px; flex: none; }
+.topo__vistas, .mosaicos { flex: none; }
+.marca { flex: none; }
+
+/* o topo cabe em qualquer largura de janela: os rótulos saem por ordem (o nome segue no aviso ao passar o mouse) */
+@media (max-width: 1500px) {
+  #abrir-reproducao .sb-btn__body, #abrir-config .sb-btn__body { display: none; }
+  #abrir-reproducao, #abrir-config { padding-inline-end: 0; }
+}
+@media (max-width: 1280px) {
+  .topo { gap: 10px; padding-inline: 10px; }
+  .marca span { display: none; }
+  .mosaicos .sb-btn__ico { display: none; }
+  .area { grid-template-columns: 1fr 260px; }
+}
+@media (max-width: 1100px) {
+  .topo__janela .sb-btn__body { display: none; }
+  .topo__janela .sb-btn { padding-inline-end: 0; }
+}
+
+/* lateral das câmeras: recolhe numa coluna estreita, só com o botão de voltar e o ponto de estado de cada câmera */
+.lateral__topo { display: flex; align-items: flex-start; border-bottom: 1px solid var(--borda); }
+.lateral__topo .resumo { flex: 1; min-width: 0; border-bottom: 0; }
+#alternar-lateral { flex: none; margin: 10px; margin-inline-start: 0; }
+.area { transition: grid-template-columns 0.2s ease; }
+.area.area--recolhida { grid-template-columns: 1fr 58px; }
+.area--recolhida .resumo, .area--recolhida .lateral__cabeca, .area--recolhida .lateral__acao, .area--recolhida .lista__vazia { display: none; }
+.area--recolhida .lateral__topo { justify-content: center; }
+.area--recolhida #alternar-lateral { margin: 10px 0; }
+.area--recolhida .lista { padding: 6px 0; }
+.area--recolhida .lista li { grid-template-columns: 1fr; justify-items: center; padding: 10px 0; }
+.area--recolhida .lista li > :not(.ponto) { display: none; }
+[dir="rtl"] #alternar-lateral svg { transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) { .area { transition: none; } }

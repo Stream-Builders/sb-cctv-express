@@ -281,6 +281,16 @@ ipcMain.handle('config:ler', () => config.ler());
 const vistas = require('./vistas');
 ipcMain.handle('vistas:ler', () => vistas.ler());
 ipcMain.handle('vistas:salvar', (_e, dados) => vistas.salvar(dados));
+// os botões do topo: minimizar para a bandeja (segue gravando, com um aviso no ícone na primeira vez) e fechar de vez
+let avisouBandeja = false;
+ipcMain.handle('janela:bandeja', (_e, aviso) => {
+  if (janela && !janela.isDestroyed()) janela.hide();
+  if (!avisouBandeja && aviso && typeof aviso.texto === 'string') {
+    avisouBandeja = true;
+    bandeja.avisar(String(aviso.titulo || 'CCTV Express').slice(0, 80), aviso.texto.slice(0, 200));
+  }
+});
+ipcMain.handle('app:sair', () => { saindo = true; app.quit(); });
 ipcMain.handle('config:salvar', (_e, dados) => {
   const c = config.salvar(dados);
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: c.iniciarComWindows !== false, args: ['--oculto'] });

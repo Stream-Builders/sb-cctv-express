@@ -17,12 +17,19 @@
     <div class="topo__vistas"><button type="button" class="sb-btn sb-btn--sm" id="abrir-vistas" data-t-title="topo.vistas"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4z"/><path d="M16.5 13v7M13 16.5h7"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.vistas"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button><button type="button" class="sb-btn sb-btn--sm" id="ronda"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/><path d="M10 9l5 3-5 3z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.ronda"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button></div>
     <button class="sb-btn sb-btn--sm" id="abrir-reproducao"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.reproducao"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
     <button class="sb-btn sb-btn--sm" id="abrir-config"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.configuracoes"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+    <div class="topo__janela">
+      <button type="button" class="sb-btn sb-btn--sm" id="minimizar" data-t-title="topo.minimizarDica"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 16v3h16v-3"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.minimizar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      <button type="button" class="sb-btn sb-btn--sm" id="fechar-app" data-t-title="topo.fecharDica"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7.1 6.5a7.5 7.5 0 1 0 9.8 0"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+    </div>
   </header>
 
   <main class="area">
     <section class="mosaico" id="mosaico" aria-label="Câmeras ao vivo"></section>
     <aside class="lateral">
-      <div class="resumo" id="resumo" aria-live="polite"></div>
+      <div class="lateral__topo">
+        <div class="resumo" id="resumo" aria-live="polite"></div>
+        <button type="button" class="sb-btn sb-btn--sm sb-btn--square" id="alternar-lateral" data-t-title="lateral.recolher"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/><path class="seta-recolher" d="M8 9l3 3-3 3"/></svg></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </div>
       <div class="lateral__cabeca">
         <h2 data-t="lateral.cameras"></h2>
         <button class="sb-btn sb-btn--sm" id="adicionar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="lateral.adicionar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
@@ -147,6 +154,19 @@
         <button type="button" class="sb-btn sb-btn--sm" id="ronda-alternar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/><path d="M10 9l5 3-5 3z"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="ronda.iniciar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
         <span class="espaco"></span>
         <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="config.fechar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+      </menu>
+    </div>
+  </dialog>
+
+  <dialog id="dialogo-fechar">
+    <div class="painel">
+      <h2 data-t="fechar.titulo"></h2>
+      <p class="ajuda" data-t="fechar.ajuda"></p>
+      <menu>
+        <button type="button" class="sb-btn sb-btn--sm" id="fechar-minimizar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 16v3h16v-3"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="topo.minimizar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <span class="espaco"></span>
+        <button type="button" class="sb-btn sb-btn--sm" data-fechar><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="fechar.cancelar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
+        <button type="button" class="sb-btn sb-btn--sm" id="fechar-confirmar"><span class="sb-btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7.1 6.5a7.5 7.5 0 1 0 9.8 0"/></svg></span><span class="sb-btn__body"><span class="sb-btn__label" data-t="fechar.confirmar"></span></span><span class="sb-btn__gloss" aria-hidden="true"></span></button>
       </menu>
     </div>
   </dialog>

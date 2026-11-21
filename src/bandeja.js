@@ -46,4 +46,9 @@ function criar({ abrir, sair }) {
   return bandeja;
 }
 
-module.exports = { criar };
+/** Balão do ícone da bandeja (Windows): avisa onde o app ficou ao minimizar. */
+function avisar(titulo, texto) {
+  try { bandeja?.displayBalloon({ title: titulo, content: texto, iconType: 'info' }); } catch { /* sem balão neste sistema */ }
+}
+
+module.exports = { criar, avisar };

@@ -38,6 +38,11 @@ const ICONES = {
   telaCheia: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   som: '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
   mudo: '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
+  original: '<path d="M3 12h3l2-6 3 12 3-9 2 3h5"/>',
+  voz: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  vozForte: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M2 5l2 1.5M22 5l-2 1.5M2 10h2M22 10h-2"/>',
+  fhd: '<text x="12" y="15.5" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor" stroke="none">FHD</text>',
+  sd: '<text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor" stroke="none">SD</text>',
 };
 
 function botao({ icone, rotulo, titulo, classes = '', quadrado = false }) {
@@ -167,8 +172,50 @@ function barraDoQuadro(cam) {
   };
   som.addEventListener('mouseenter', abrirSom);
   som.addEventListener('mouseleave', agendarFechar);
-  barra.append(som, gravar, luz, ptz, cheia);
+  // qualidade do ao vivo: FHD (o vídeo principal) ou SD (mais leve). Só a tela: a gravação segue no vídeo principal
+  const qual = botao({ icone: ICONES.fhd, quadrado: true });
+  qual.dataset.papel = 'qualidade';
+  desenharBotaoQualidade(qual, cam.id);
+  qual.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nova = qualidadeDaCamera(cam.id) === 'sd' ? 'fhd' : 'sd';
+    try { localStorage.setItem(`qualidade:${cam.id}`, nova); } catch { /* sem armazenamento: vale até fechar */ }
+    renovarPlayer(cam.id);
+  });
+  barra.append(som, qual, gravar, luz, ptz, cheia);
   return barra;
+}
+
+// ---------- qualidade do ao vivo por câmera (preferência só desta tela, guardada neste computador) ----------
+function qualidadeDaCamera(id) {
+  try { return localStorage.getItem(`qualidade:${id}`) === 'sd' ? 'sd' : 'fhd'; } catch { return 'fhd'; }
+}
+/** O stream do motor para o quadro: FHD é o vídeo da câmera; SD é o segundo vídeo dela (_sd) ou o reduzido (_sdc). */
+function fonteDoQuadro(id, compat) {
+  const sd = qualidadeDaCamera(id) === 'sd';
+  const nome = sd ? (compat || sdReduzido.has(id) ? `${id}_sdc` : `${id}_sd`) : (compat ? `${id}_compat` : id);
+  return `ws://${motor}/api/ws?src=${encodeURIComponent(nome)}`;
+}
+// câmeras cujo segundo vídeo não chegou nesta abertura: o SD delas vai direto para o reduzido pelo app
+const sdReduzido = new Set();
+/**
+ * Um player novo para a câmera, no stream da qualidade atual. Trocar o endereço do player em uso não serve: ele só
+ * pega o endereço novo na reconexão, e o fechamento da conexão antiga derrubava a nova.
+ */
+function renovarPlayer(id) {
+  const q = [...mosaicoEl.querySelectorAll('.quadro')].find((x) => x.dataset.id === id);
+  const vs = q?.querySelector('video-stream');
+  if (vs) {
+    if (typeof vs.ondisconnect === 'function') vs.ondisconnect();
+    vs.remove();
+  }
+  desenharMosaico();
+}
+function desenharBotaoQualidade(b, id) {
+  const sd = qualidadeDaCamera(id) === 'sd';
+  b.querySelector('svg').innerHTML = sd ? ICONES.sd : ICONES.fhd;
+  b.title = sd ? t('quadro.paraFhd') : t('quadro.paraSd');
+  b.setAttribute('aria-label', b.title);
 }
 
 // ---------- som por câmera (preferência só desta tela, guardada neste computador) ----------
@@ -184,9 +231,94 @@ function guardarSom(id, p) {
   aplicarSom(id);
 }
 function aplicarSom(id) {
-  const p = somDaCamera(id);
   const v = document.querySelector(`.quadro[data-id="${id}"] video`);
-  if (v) { v.muted = p.mudo; v.volume = p.volume; }
+  if (v) aplicarAudio(id, v);
+}
+
+// ---------- filtro de som: realça as vozes e abaixa vento, zumbido e chiado (só a tela; a gravação fica original) ----------
+let audioCtx = null;
+let workletPronto = null;
+const cadeias = new WeakMap(); // <video> -> { fonte, volume, filtro, nos }
+function contextoAudio() {
+  if (!audioCtx) {
+    audioCtx = new AudioContext();
+    workletPronto = audioCtx.audioWorklet.addModule('audio-voz.js').then(() => true, () => false);
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  return audioCtx;
+}
+/**
+ * Os estágios do filtro. "voz": corta o grave do vento e do zumbido da rede elétrica (passa-alta), o agudo do chiado e
+ * do apito de aparelhos (passa-baixa), realça a faixa da fala (~3 kHz) e nivela as vozes baixas e altas (compressor).
+ * "forte": a faixa fica mais estreita e o redutor de ruído abaixa o fundo entre as falas.
+ */
+function estagiosDoFiltro(ctx, filtro, comRedutor) {
+  const forte = filtro === 'forte';
+  const bq = (tipo, freq, q, ganho = 0) => {
+    const n = ctx.createBiquadFilter();
+    n.type = tipo;
+    n.frequency.value = freq;
+    n.Q.value = q;
+    n.gain.value = ganho;
+    return n;
+  };
+  const comp = (limiar, joelho, razao, ataque, soltura) => {
+    const n = ctx.createDynamicsCompressor();
+    n.threshold.value = limiar;
+    n.knee.value = joelho;
+    n.ratio.value = razao;
+    n.attack.value = ataque;
+    n.release.value = soltura;
+    return n;
+  };
+  const passaAlta = forte ? 200 : 140;
+  const passaBaixa = forte ? 5200 : 7000;
+  const nos = [
+    bq('highpass', passaAlta, 0.71), bq('highpass', passaAlta, 0.71),
+    bq('lowpass', passaBaixa, 0.71), bq('lowpass', passaBaixa, 0.71),
+    bq('peaking', 250, 1, -3), bq('peaking', 3000, 0.9, forte ? 6 : 5),
+  ];
+  if (forte && comRedutor) nos.push(new AudioWorkletNode(ctx, 'voz-ruido', { outputChannelCount: [2] }));
+  const ganho = ctx.createGain();
+  ganho.gain.value = forte ? 2.4 : 2;
+  nos.push(comp(-34, 12, 4, 0.004, 0.2), ganho, comp(-2, 0, 20, 0.001, 0.1));
+  return nos;
+}
+async function montarFiltro(c, filtro) {
+  c.filtro = filtro;
+  const ctx = contextoAudio();
+  const comRedutor = filtro === 'forte' ? await workletPronto : false;
+  if (c.filtro !== filtro) return;
+  c.fonte.disconnect();
+  for (const n of c.nos) n.disconnect();
+  c.nos = filtro === 'nenhum' ? [] : estagiosDoFiltro(ctx, filtro, comRedutor);
+  let anterior = c.fonte;
+  for (const n of c.nos) { anterior.connect(n); anterior = n; }
+  anterior.connect(c.volume);
+}
+/** Mudo, volume e filtro da câmera no vídeo dela. Com filtro, o som passa pela cadeia e o volume vai no fim dela. */
+function aplicarAudio(id, v) {
+  const p = somDaCamera(id);
+  const filtro = p.filtro || 'nenhum';
+  let c = cadeias.get(v);
+  if (!c && filtro !== 'nenhum') {
+    try {
+      const ctx = contextoAudio();
+      c = { fonte: ctx.createMediaElementSource(v), volume: ctx.createGain(), filtro: null, nos: [] };
+      c.volume.connect(ctx.destination);
+      cadeias.set(v, c);
+    } catch { c = null; }
+  }
+  if (!c) {
+    if (v.muted !== p.mudo) v.muted = p.mudo;
+    if (Math.abs(v.volume - p.volume) > 0.01) v.volume = p.volume;
+    return;
+  }
+  if (c.filtro !== filtro) montarFiltro(c, filtro);
+  if (v.muted !== p.mudo) v.muted = p.mudo;
+  if (v.volume !== 1) v.volume = 1;
+  const alvo = p.mudo ? 0 : p.volume;
+  if (Math.abs(c.volume.gain.value - alvo) > 0.005) c.volume.gain.setTargetAtTime(alvo, audioCtx.currentTime, 0.02);
 }
 function desenharBotaoSom(b, id) {
   const p = somDaCamera(id);
@@ -212,7 +344,33 @@ function painelSom(cam, botaoSom) {
     desenharBotaoSom(botaoSom, cam.id);
   });
   rotulo.append(faixa);
-  p.append(rotulo);
+  // filtro de som: original, voz (corta vento, zumbido e chiado) ou voz com menos ruído de fundo
+  const filtro = document.createElement('div');
+  filtro.className = 'som-filtro';
+  const titulo = document.createElement('span');
+  titulo.className = 'som-filtro__titulo';
+  titulo.textContent = t('som.filtro');
+  const opcoes = document.createElement('div');
+  opcoes.className = 'som-filtro__opcoes';
+  const botoes = [['nenhum', 'original', 'som.original', 'som.ajudaOriginal'], ['voz', 'voz', 'som.voz', 'som.ajudaVoz'], ['forte', 'vozForte', 'som.vozForte', 'som.ajudaForte']]
+    .map(([valor, icone, rotuloT, ajuda]) => {
+      const b = botao({ icone: ICONES[icone], rotulo: t(rotuloT), titulo: t(ajuda) });
+      b.dataset.filtro = valor;
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        guardarSom(cam.id, { ...somDaCamera(cam.id), filtro: valor });
+        marcar();
+      });
+      return b;
+    });
+  const marcar = () => {
+    const atual = somDaCamera(cam.id).filtro || 'nenhum';
+    for (const b of botoes) b.classList.toggle('sb-btn--ativo', b.dataset.filtro === atual);
+  };
+  marcar();
+  opcoes.append(...botoes);
+  filtro.append(titulo, opcoes);
+  p.append(rotulo, filtro);
   return p;
 }
 
@@ -433,7 +591,7 @@ function quadroDaCamera(cam, reuso) {
     video.background = true;
     video.mode = 'mse,hls,mjpeg';
     video.media = 'video,audio';
-    video.src = `ws://${motor}/api/ws?src=${encodeURIComponent(cam.id)}`;
+    video.src = fonteDoQuadro(cam.id, false);
   }
   q.append(video);
   const topo = document.createElement('div');
@@ -467,11 +625,7 @@ function vigiar(id, quadro, componente) {
     // câmera ao vivo não tem play, tempo nem barra de progresso: o player do go2rtc liga os controles por padrão
     if (v && v.controls) v.controls = false;
     // o player do go2rtc começa no mudo: vale a preferência de som desta câmera
-    if (v) {
-      const p = somDaCamera(id);
-      if (v.muted !== p.mudo) v.muted = p.mudo;
-      if (Math.abs(v.volume - p.volume) > 0.01) v.volume = p.volume;
-    }
+    if (v) aplicarAudio(id, v);
     // o navegador recusou o vídeo (perfil H264 que ele não decodifica): passa para o stream reconvertido, uma vez só.
     // Erro de decodificação passageiro (a câmera reiniciou a transmissão, como o celular) não conta: o player
     // reconecta sozinho no vídeo direto; só o formato não suportado, ou o erro que volta 3 vezes em 2 min, vai para o
@@ -483,8 +637,16 @@ function vigiar(id, quadro, componente) {
     if (v && !v.error) ultimoErro = null;
     if (v && v.error && !quadro.dataset.compat && (v.error.code === 4 || errosRecentes.length >= 3)) {
       quadro.dataset.compat = '1';
-      componente.src = `ws://${motor}/api/ws?src=${encodeURIComponent(`${id}_compat`)}`;
+      componente.src = fonteDoQuadro(id, true);
       paradoDesde = Date.now();
+    }
+    // SD pelo segundo vídeo da câmera que não chega em 15 s (câmera sem esse vídeo, ou noutro endereço): passa para o
+    // SD reduzido pelo próprio app, uma vez só
+    if (qualidadeDaCamera(id) === 'sd' && !sdReduzido.has(id) && !quadro.dataset.compat && Date.now() - paradoDesde > 15000) {
+      sdReduzido.add(id);
+      clearInterval(tm);
+      renovarPlayer(id);
+      return;
     }
     const agora = v ? v.currentTime : 0;
     let novo;
@@ -688,6 +850,7 @@ function desenharLista() {
     editar.className = 'editar';
     editar.textContent = t('lateral.editar');
     editar.addEventListener('click', (e) => { e.stopPropagation(); abrirFormulario(cam); });
+    li.title = cam.nome;
     li.append(ponto, texto, editar);
     li.addEventListener('dblclick', () => { telaCheia = cam.id; desenharMosaico(); });
     // arrastar da lista para um quadro do mosaico
@@ -760,6 +923,31 @@ async function carregar() {
 
 $('adicionar').addEventListener('click', () => abrirFormulario(null));
 for (const b of document.querySelectorAll('[data-fechar]')) b.addEventListener('click', () => b.closest('dialog').close());
+
+// ---------- minimizar para a bandeja e fechar de vez (sem precisar do clique direito no ícone da bandeja) ----------
+const minimizar = () => window.cctv.minimizarParaBandeja({ titulo: 'CCTV Express', texto: t('bandeja.aviso') });
+$('minimizar').addEventListener('click', minimizar);
+$('fechar-app').addEventListener('click', () => $('dialogo-fechar').showModal());
+$('fechar-minimizar').addEventListener('click', () => { $('dialogo-fechar').close(); minimizar(); });
+$('fechar-confirmar').addEventListener('click', () => window.cctv.sair());
+
+// ---------- lateral das câmeras: recolhe numa coluna estreita (só os pontos de estado) e volta; lembrado aqui ----------
+function aplicarLateral(recolhida) {
+  document.querySelector('.area').classList.toggle('area--recolhida', recolhida);
+  const b = $('alternar-lateral');
+  const titulo = t(recolhida ? 'lateral.expandir' : 'lateral.recolher');
+  b.title = titulo;
+  b.setAttribute('aria-label', titulo);
+  b.setAttribute('aria-expanded', String(!recolhida));
+  b.querySelector('.seta-recolher').setAttribute('d', recolhida ? 'M11 9l-3 3 3 3' : 'M8 9l3 3-3 3');
+}
+let lateralRecolhida = false;
+try { lateralRecolhida = localStorage.getItem('lateral-recolhida') === '1'; } catch { /* sem armazenamento */ }
+$('alternar-lateral').addEventListener('click', () => {
+  lateralRecolhida = !lateralRecolhida;
+  try { localStorage.setItem('lateral-recolhida', lateralRecolhida ? '1' : '0'); } catch { /* sem armazenamento */ }
+  aplicarLateral(lateralRecolhida);
+});
 form.tipo.addEventListener('change', atualizarCamposTipo);
 // o olho mostra e esconde a senha; na edição, com o campo vazio, traz a senha salva desta câmera
 $('ver-senha').addEventListener('click', async () => {
@@ -1235,6 +1423,7 @@ async function aplicarIdioma(codigo) {
   await carregarIdioma(codigo);
   desenharBotoesMosaico();
   atualizarRondaNaTela();
+  aplicarLateral(lateralRecolhida);
   if (cameras.length || mosaicoEl.childElementCount) {
     desenharMosaico();
     desenharLista();
