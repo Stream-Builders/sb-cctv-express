@@ -23,9 +23,9 @@ const MOTORES = [
   },
   {
     nome: 'ffmpeg',
-    versao: '9.0.2',
+    versao: '9.1',
     url: (v) => `https://github.com/GyanD/codexffmpeg/releases/download/${v}/ffmpeg-${v}-essentials_build.zip`,
-    sha256: '60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba',
+    sha256: 'b9bbbb3acece000cbeec994f856649354e52c773807841e78908374b24d658fd',
     dentro: (v) => `ffmpeg-${v}-essentials_build/bin/ffmpeg.exe`,
     destino: 'ffmpeg.exe',
   },
