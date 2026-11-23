@@ -1,37 +1,32 @@
 // Assistir câmeras da rede, como no CCTV Express do computador: mosaico ao vivo, uma câmera em tela cheia (com som),
 // adicionar por ONVIF, RTSP ou Xiongmai/iCSee, busca na rede e o arquivo de configuração rápida (.cctvx).
-// A tela (botões, nomes, formulários) é HTML por cima; o vídeo é o player nativo do Android (Media3, RTSP), um por
-// quadro, posicionado onde a tela HTML manda. O mosaico usa o vídeo secundário (leve) e a tela cheia o principal.
+// A tela (botões, nomes, formulários) é HTML por cima; o vídeo é decodificado pelo próprio aparelho (MediaCodec), um por
+// quadro, posicionado onde a tela HTML manda, vindo por RTSP (FonteRtsp) ou pelo protocolo da Xiongmai (FonteDvrip).
+// O mosaico usa o vídeo secundário (leve) e a tela cheia o principal. O zoom digital amplia a imagem de cada quadro.
 package builders.stream.cctvexpress.camera
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
-import android.view.SurfaceView
-import android.view.View
+import android.view.Surface
+import android.view.TextureView
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.FrameLayout
 import android.window.OnBackInvokedDispatcher
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.common.VideoSize
-import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.rtsp.RtspMediaSource
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.concurrent.thread
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class AssistirActivity : Activity() {
 
   private companion object {
@@ -44,19 +39,33 @@ class AssistirActivity : Activity() {
   private lateinit var tela: WebView
   private val principal = Handler(Looper.getMainLooper())
 
-  /** Um quadro do mosaico: a caixa na posição que a tela pediu, o vídeo encaixado nela sem esticar e o player. */
-  private inner class Quadro(val id: String) {
+  /**
+   * Um quadro do mosaico: a caixa na posição que a tela pediu, o vídeo encaixado nela sem esticar (ampliado pelo zoom
+   * digital, quando houver) e a conexão com a câmera, numa linha de execução própria.
+   */
+  private inner class Quadro(val id: String) : TextureView.SurfaceTextureListener {
     val caixa = FrameLayout(this@AssistirActivity).apply { setBackgroundColor(Color.BLACK) }
-    val video = SurfaceView(this@AssistirActivity)
-    var player: ExoPlayer? = null
-    var endereco: String? = null
+    val video = TextureView(this@AssistirActivity)
+    var plano: Cameras.Plano? = null
+    var principalPedido = false
     var tentativas = 0
     var proporcao = 16f / 9f
-    var som = false
-    var desdeBuffer = 0L
-    val religar = Runnable { conectar() }
+    @Volatile var som = false
+    var estado = ""
+    var desde = 0L
+    var ultimoQuadro = 0L
+    var zoom = 1f
+    var zx = .5f
+    var zy = .5f
+    private var superficie: Surface? = null
+    private var fonte: Fonte? = null
+    private var trabalho: Thread? = null
+    private var geracao = 0
+    private var agendado = false
+    val religar = Runnable { agendado = false; conectar() }
 
     init {
+      video.surfaceTextureListener = this
       caixa.addView(video, FrameLayout.LayoutParams(-1, -1, Gravity.CENTER))
       palco.addView(caixa, 0)
     }
@@ -71,68 +80,126 @@ class AssistirActivity : Activity() {
       if (w <= 0 || h <= 0) return
       val (vw, vh) = if (w.toFloat() / h > proporcao) Pair((h * proporcao).toInt(), h) else Pair(w, (w / proporcao).toInt())
       video.layoutParams = FrameLayout.LayoutParams(vw, vh, Gravity.CENTER)
+      aplicarZoom(vw, vh)
     }
 
-    fun tocar(url: String, comSom: Boolean) {
+    /** zoom digital: amplia a imagem em volta do ponto (zx, zy), de 0 a 1 na imagem, sem sair dela */
+    fun aplicarZoom(w: Int = video.layoutParams?.width ?: 0, h: Int = video.layoutParams?.height ?: 0) {
+      if (w <= 0 || h <= 0) return
+      val z = zoom.coerceIn(1f, 8f)
+      val cx = zx.coerceIn(.5f / z, 1 - .5f / z)
+      val cy = zy.coerceIn(.5f / z, 1 - .5f / z)
+      video.setTransform(Matrix().apply { setScale(z, z); postTranslate(w / 2f - z * cx * w, h / 2f - z * cy * h) })
+      video.invalidate()
+    }
+
+    fun tocar(p: Cameras.Plano, principalVideo: Boolean, comSom: Boolean) {
       som = comSom
-      player?.volume = if (som) 1f else 0f
-      if (url == endereco && player != null) return
-      endereco = url
+      if (p.chave == plano?.chave && principalVideo == principalPedido && (trabalho != null || agendado)) return
+      plano = p
+      principalPedido = principalVideo
       tentativas = 0
       conectar()
     }
 
     fun conectar() {
       principal.removeCallbacks(religar)
-      val url = endereco ?: return
-      avisar(id, "conectando")
-      val p = player ?: ExoPlayer.Builder(this@AssistirActivity)
-        // ao vivo: pouco buffer, para a imagem chegar logo e não atrasar
-        .setLoadControl(DefaultLoadControl.Builder().setBufferDurationsMs(500, 3000, 250, 500).build())
-        .build().also { novo ->
-          player = novo
-          novo.setVideoSurfaceView(video)
-          novo.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(estado: Int) {
-              when (estado) {
-                Player.STATE_READY -> { tentativas = 0; desdeBuffer = 0; avisar(id, "vivo") }
-                Player.STATE_BUFFERING -> { desdeBuffer = System.currentTimeMillis(); avisar(id, "conectando") }
-                // a câmera encerrou a transmissão: volta a pedir
-                Player.STATE_ENDED -> falhou()
-                else -> {}
-              }
-            }
-            override fun onPlayerError(error: PlaybackException) = falhou()
-            override fun onVideoSizeChanged(tamanho: VideoSize) {
-              if (tamanho.width > 0 && tamanho.height > 0) {
-                proporcao = tamanho.width * tamanho.pixelWidthHeightRatio / tamanho.height
-                encaixar()
-              }
-            }
-          })
+      agendado = false
+      val anterior = trabalho
+      parar()
+      val p = plano ?: return
+      // sem a superfície ainda: conecta quando ela ficar pronta (onSurfaceTextureAvailable)
+      val sup = superficie ?: return
+      mudar("conectando")
+      desde = System.currentTimeMillis()
+      val g = ++geracao
+      val audio = Som()
+      val dec = Decodificador(sup, { w, h ->
+        principal.post {
+          if (g == geracao) {
+            proporcao = w.toFloat() / h
+            encaixar()
+            chamarTela("proporcaoCamera", "${Web.js(id)}, $proporcao")
+          }
         }
-      // RTP dentro da própria conexão RTSP (TCP): passa por qualquer Wi-Fi, sem portas UDP
-      val fonte = RtspMediaSource.Factory().setForceUseRtpTcp(true).setTimeoutMs(8000).createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-      p.setMediaSource(fonte)
-      p.volume = if (som) 1f else 0f
-      p.playWhenReady = true
-      p.prepare()
+      }, {})
+      val destino = object : Destino {
+        override fun video(mime: String, quadro: ByteArray, chave: Boolean) = dec.entregar(mime, quadro, chave)
+        override fun pcm(amostras: ShortArray, n: Int, taxa: Int, canais: Int) { if (som) audio.pcm(amostras, n, taxa, canais) }
+        override fun aac(quadro: ByteArray, taxa: Int, canais: Int, config: ByteArray) { if (som) audio.aac(quadro, taxa, canais, config) }
+        override val comSom get() = som
+      }
+      val f: Fonte = when (p) {
+        // o som só é pedido à câmera na tela cheia (no mosaico, o celular não gasta rede com ele)
+        is Cameras.Plano.Rtsp -> FonteRtsp(p.url, destino, principalPedido)
+        is Cameras.Plano.Dvrip -> FonteDvrip(p.ip, p.porta, p.usuario, p.senha, p.canal, p.principal, destino)
+      }
+      fonte = f
+      trabalho = thread(name = "camera") {
+        // a conexão anterior solta a superfície antes desta usar (duas no mesmo lugar o Android recusa)
+        anterior?.join(3000)
+        try { f.rodar() } catch (_: Exception) {} finally {
+          f.parar()
+          dec.soltar()
+          audio.soltar()
+        }
+        principal.post { if (g == geracao) { trabalho = null; fonte = null; falhou() } }
+      }
+    }
+
+    private fun parar() {
+      geracao++
+      fonte?.parar()
+      fonte = null
+      trabalho = null
+    }
+
+    fun mudar(novo: String) {
+      if (estado == novo) return
+      estado = novo
+      avisar(id, novo)
     }
 
     /** caiu: tenta de novo em 2, 4, 8... até 30 s, para sempre, como no computador */
     fun falhou() {
-      avisar(id, "semSinal")
+      parar()
+      mudar("semSinal")
       principal.removeCallbacks(religar)
       val espera = minOf(30_000L, 2_000L shl minOf(tentativas, 4))
       tentativas++
+      agendado = true
       principal.postDelayed(religar, espera)
     }
 
     fun soltar() {
       principal.removeCallbacks(religar)
-      player?.release()
-      player = null
+      agendado = false
+      val t = trabalho
+      parar()
+      t?.join(1000)
       palco.removeView(caixa)
+    }
+
+    override fun onSurfaceTextureAvailable(st: SurfaceTexture, w: Int, h: Int) {
+      superficie = Surface(st)
+      if (plano != null) conectar()
+    }
+
+    override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, w: Int, h: Int) {}
+
+    override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
+      val t = trabalho
+      parar()
+      t?.join(1000)
+      superficie?.release()
+      superficie = null
+      return true
+    }
+
+    /** cada quadro que chega à tela: a câmera está ao vivo */
+    override fun onSurfaceTextureUpdated(st: SurfaceTexture) {
+      ultimoQuadro = System.currentTimeMillis()
+      if (estado != "vivo") { tentativas = 0; mudar("vivo") }
     }
   }
 
@@ -142,11 +209,15 @@ class AssistirActivity : Activity() {
   private var exportando: String? = null
   private var textoImportado: String? = null
 
-  // um quadro que segue "conectando" por mais de 20 s é reconectado (a câmera parou de mandar sem fechar a conexão)
+  // um quadro que segue "conectando" por mais de 20 s, ou ao vivo sem imagem nova há 12 s, é reconectado (a câmera
+  // parou de mandar vídeo sem fechar a conexão)
   private val vigia = object : Runnable {
     override fun run() {
       val agora = System.currentTimeMillis()
-      for (q in quadros.values) if (q.desdeBuffer > 0 && agora - q.desdeBuffer > 20_000) { q.desdeBuffer = 0; q.falhou() }
+      for (q in quadros.values) {
+        if (q.estado == "conectando" && q.desde > 0 && agora - q.desde > 20_000) q.falhou()
+        else if (q.estado == "vivo" && agora - q.ultimoQuadro > 12_000) q.falhou()
+      }
       principal.postDelayed(this, 5_000)
     }
   }
@@ -159,6 +230,7 @@ class AssistirActivity : Activity() {
     tela = Web.criar(this, Ponte(), "Assistir", "assistir.html")
     palco.addView(tela, FrameLayout.LayoutParams(-1, -1))
     setContentView(palco)
+    resolverPendentes()
     if (Build.VERSION.SDK_INT >= 33) {
       onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) { voltar() }
     }
@@ -212,11 +284,14 @@ class AssistirActivity : Activity() {
       val p = pedidos.getJSONObject(k)
       val id = p.optString("id")
       val c = todas[id] ?: continue
-      val url = cameras.enderecoParaTocar(c, secundario = !p.optBoolean("principal")) ?: continue
       vistos += id
       val q = quadros.getOrPut(id) { Quadro(id) }
+      p.optJSONObject("zoom")?.let { z -> q.zoom = z.optDouble("z", 1.0).toFloat(); q.zx = z.optDouble("x", .5).toFloat(); q.zy = z.optDouble("y", .5).toFloat() }
       q.posicionar(p.optInt("x"), p.optInt("y"), p.optInt("w"), p.optInt("h"))
-      q.tocar(url, p.optBoolean("som"))
+      val plano = cameras.plano(c, secundario = !p.optBoolean("principal"))
+      // sem endereço (câmera ainda não resolvida neste celular): sem sinal, até resolver
+      if (plano == null) { q.mudar("semSinal"); continue }
+      q.tocar(plano, p.optBoolean("principal"), p.optBoolean("som"))
     }
     for (id in quadros.keys - vistos) quadros.remove(id)?.soltar()
   }
@@ -246,6 +321,19 @@ class AssistirActivity : Activity() {
     }
   }
 
+  /**
+   * Câmeras sem o endereço resolvido neste celular (vindas do computador, ou Xiongmai salva antes do DVRIP): o app
+   * pergunta a cada uma, fora da tela, e o quadro dela reconecta com o endereço novo.
+   */
+  private fun resolverPendentes() {
+    thread {
+      for (c in cameras.ler().filter { cameras.precisaResolver(it) }) {
+        val r = cameras.resolver(c)
+        if (r.optBoolean("ok")) principal.post { quadros.remove(c.optString("id"))?.soltar(); aplicarLayout(ultimoLayout); chamarTela("recarregar", "") }
+      }
+    }
+  }
+
   private fun importarCom(senha: String) {
     val texto = textoImportado ?: return
     thread {
@@ -257,12 +345,7 @@ class AssistirActivity : Activity() {
       } catch (_: Arquivo.SenhaErrada) { JSONObject().put("erro", "senha") } catch (_: Exception) { JSONObject().put("erro", "invalido") }
       chamarTela("importado", r.toString())
       // câmeras vindas do computador sem o endereço do vídeo (Xiongmai, ONVIF): o celular pergunta a cada uma
-      if (r.has("novas")) {
-        for (c in cameras.ler().filter { cameras.precisaResolver(it) }) {
-          cameras.resolver(c)
-          chamarTela("recarregar", "")
-        }
-      }
+      if (r.has("novas")) resolverPendentes()
     }
   }
 
@@ -270,6 +353,9 @@ class AssistirActivity : Activity() {
   inner class Ponte {
     @JavascriptInterface fun listar(): String = cameras.listar().toString()
     @JavascriptInterface fun posicionar(json: String) { principal.post { aplicarLayout(json) } }
+    @JavascriptInterface fun zoom(id: String, z: Double, x: Double, y: Double) {
+      principal.post { quadros[id]?.apply { zoom = z.toFloat(); zx = x.toFloat(); zy = y.toFloat(); aplicarZoom() } }
+    }
     @JavascriptInterface fun salvar(json: String) {
       thread {
         val r = try { cameras.salvar(JSONObject(json)) } catch (_: Exception) { JSONObject().put("erro", "caminho") }

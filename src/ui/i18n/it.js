@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Annulla",
   "bandeja.aviso": "Continua a registrare. Fai clic su questa icona per riaprire.",
   "lateral.recolher": "Comprimi l’elenco delle telecamere",
-  "lateral.expandir": "Mostra l’elenco delle telecamere"
+  "lateral.expandir": "Mostra l’elenco delle telecamere",
+  "zoom.digital": "Zoom digitale",
+  "zoom.mais": "Ingrandisci",
+  "zoom.menos": "Riduci",
+  "zoom.normal": "Senza zoom",
+  "zoom.posicao": "Posizione dello zoom (trascina il riquadro)",
+  "zoom.dica": "Trascina per spostare l’immagine; usa due dita o la rotella del mouse per lo zoom"
 };

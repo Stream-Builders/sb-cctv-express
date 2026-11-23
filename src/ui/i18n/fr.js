@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Annuler",
   "bandeja.aviso": "L’enregistrement continue. Cliquez sur cette icône pour rouvrir.",
   "lateral.recolher": "Replier la liste des caméras",
-  "lateral.expandir": "Afficher la liste des caméras"
+  "lateral.expandir": "Afficher la liste des caméras",
+  "zoom.digital": "Zoom numérique",
+  "zoom.mais": "Zoomer",
+  "zoom.menos": "Dézoomer",
+  "zoom.normal": "Sans zoom",
+  "zoom.posicao": "Position du zoom (faites glisser le cadre)",
+  "zoom.dica": "Faites glisser pour déplacer l’image ; utilisez deux doigts ou la molette pour zoomer"
 };

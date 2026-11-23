@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Abbrechen",
   "bandeja.aviso": "Nimmt weiter auf. Klicken Sie auf dieses Symbol, um es wieder zu öffnen.",
   "lateral.recolher": "Kameraliste einklappen",
-  "lateral.expandir": "Kameraliste anzeigen"
+  "lateral.expandir": "Kameraliste anzeigen",
+  "zoom.digital": "Digitaler Zoom",
+  "zoom.mais": "Vergrößern",
+  "zoom.menos": "Verkleinern",
+  "zoom.normal": "Kein Zoom",
+  "zoom.posicao": "Zoomposition (Rahmen ziehen)",
+  "zoom.dica": "Ziehen, um das Bild zu verschieben; mit zwei Fingern oder dem Mausrad zoomen"
 };

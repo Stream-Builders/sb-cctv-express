@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "取消",
   "bandeja.aviso": "仍在录像。点击此图标可重新打开。",
   "lateral.recolher": "收起摄像头列表",
-  "lateral.expandir": "显示摄像头列表"
+  "lateral.expandir": "显示摄像头列表",
+  "zoom.digital": "数字变焦",
+  "zoom.mais": "放大",
+  "zoom.menos": "缩小",
+  "zoom.normal": "不缩放",
+  "zoom.posicao": "变焦位置（拖动方框）",
+  "zoom.dica": "拖动以移动画面；用两根手指或鼠标滚轮缩放"
 };

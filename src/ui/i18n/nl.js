@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Annuleren",
   "bandeja.aviso": "Blijft opnemen. Klik op dit pictogram om weer te openen.",
   "lateral.recolher": "Cameralijst inklappen",
-  "lateral.expandir": "Cameralijst tonen"
+  "lateral.expandir": "Cameralijst tonen",
+  "zoom.digital": "Digitale zoom",
+  "zoom.mais": "Inzoomen",
+  "zoom.menos": "Uitzoomen",
+  "zoom.normal": "Geen zoom",
+  "zoom.posicao": "Zoompositie (sleep het kader)",
+  "zoom.dica": "Sleep om het beeld te verplaatsen; gebruik twee vingers of het muiswiel om te zoomen"
 };

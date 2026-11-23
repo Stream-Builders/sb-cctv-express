@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "취소",
   "bandeja.aviso": "녹화 중입니다. 이 아이콘을 클릭하면 다시 열립니다.",
   "lateral.recolher": "카메라 목록 접기",
-  "lateral.expandir": "카메라 목록 보기"
+  "lateral.expandir": "카메라 목록 보기",
+  "zoom.digital": "디지털 줌",
+  "zoom.mais": "확대",
+  "zoom.menos": "축소",
+  "zoom.normal": "줌 없음",
+  "zoom.posicao": "줌 위치(사각형을 끌기)",
+  "zoom.dica": "끌어서 화면을 옮기고, 두 손가락이나 마우스 휠로 확대/축소하세요"
 };

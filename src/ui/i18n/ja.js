@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "キャンセル",
   "bandeja.aviso": "録画を続けています。このアイコンをクリックすると再び開きます。",
   "lateral.recolher": "カメラ一覧を折りたたむ",
-  "lateral.expandir": "カメラ一覧を表示"
+  "lateral.expandir": "カメラ一覧を表示",
+  "zoom.digital": "デジタルズーム",
+  "zoom.mais": "拡大",
+  "zoom.menos": "縮小",
+  "zoom.normal": "ズームなし",
+  "zoom.posicao": "ズーム位置（枠をドラッグ）",
+  "zoom.dica": "ドラッグで画像を移動、2本指またはマウスホイールでズーム"
 };

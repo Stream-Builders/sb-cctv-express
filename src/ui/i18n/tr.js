@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "İptal",
   "bandeja.aviso": "Kayıt sürüyor. Yeniden açmak için bu simgeye tıklayın.",
   "lateral.recolher": "Kamera listesini daralt",
-  "lateral.expandir": "Kamera listesini göster"
+  "lateral.expandir": "Kamera listesini göster",
+  "zoom.digital": "Dijital yakınlaştırma",
+  "zoom.mais": "Yakınlaştır",
+  "zoom.menos": "Uzaklaştır",
+  "zoom.normal": "Yakınlaştırma yok",
+  "zoom.posicao": "Yakınlaştırma konumu (çerçeveyi sürükleyin)",
+  "zoom.dica": "Görüntüyü taşımak için sürükleyin; yakınlaştırmak için iki parmak veya fare tekerleğini kullanın"
 };

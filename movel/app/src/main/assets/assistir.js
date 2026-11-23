@@ -2,6 +2,7 @@
 // sonda RTSP, busca na rede) e toca o vídeo; esta tela desenha o mosaico e manda onde fica cada quadro.
 import { carregar, maisProximo, t, traduzirPagina } from './i18n/i18n.js';
 import { textosDoCelular } from './textos.js';
+import { gestos, guardar, minimapa, normalizar, proximoNivel, zoomDe } from './zoom.js';
 
 const $ = (id) => document.getElementById(id);
 const idioma = maisProximo(navigator.language);
@@ -28,6 +29,9 @@ const ICONES = {
   importar: '<path d="M12 15V4M7 9l5-5 5 5M5 20h14"/>',
   procurar: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
   cheia: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  zoomMais: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/>',
+  zoomMenos: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/>',
+  lupa: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
 };
 
 function botao(icone, rotulo, { ativo = false, classes = '', soIcone = false } = {}, aoClicar) {
@@ -47,6 +51,9 @@ let cameras = [];
 const estados = new Map();
 let cheia = null; // id da câmera em tela cheia
 const som = new Set(); // câmeras com som ligado (só na tela cheia)
+const proporcoes = new Map(); // largura / altura do vídeo de cada câmera (o app avisa)
+let zoomAtual = null; // o zoom da câmera em tela cheia, durante os gestos: { id, z, x, y, desenhar }
+const nivelTexto = (z) => `${Number.isInteger(z) ? z : z.toFixed(1).replace(/\.0$/, '')}×`;
 let pagina = 0;
 const POR_PAGINA = 9;
 
@@ -96,6 +103,7 @@ function selo(estado) {
 }
 
 function desenharMosaico() {
+  zoomAtual = null;
   const area = $('mosaico');
   area.replaceChildren();
   area.classList.toggle('cheia', !!cheia);
@@ -119,6 +127,14 @@ function desenharMosaico() {
     const s = selo(estados.get(cam.id) || 'conectando');
     s.dataset.papel = 'estado';
     topo.append(s, nome);
+    const zq = zoomDe(cam.id);
+    if (!cheia && zq.z > 1.001) {
+      const zs = document.createElement('span');
+      zs.className = 'selo selo--zoom';
+      zs.textContent = nivelTexto(zq.z);
+      zs.title = t('zoom.digital');
+      topo.append(zs);
+    }
     q.append(topo);
     if (cheia) {
       const barra = document.createElement('div');
@@ -134,6 +150,7 @@ function desenharMosaico() {
         botao(ICONES.voltar, C.voltar, { ativo: true }, (e) => { e.stopPropagation(); sairDaTelaCheia(); }),
       );
       q.append(barra);
+      controlesDeZoom(q, cam);
     } else {
       // um toque abre a câmera em tela cheia (vídeo principal, com som se a pessoa ligar)
       q.addEventListener('click', () => { cheia = cam.id; desenharMosaico(); });
@@ -156,13 +173,66 @@ function desenharMosaico() {
   desenharResumo();
 }
 
+// ---------- zoom digital (na tela cheia: botões, gestos e o mapa da posição; o mosaico mostra o zoom guardado) ----------
+function controlesDeZoom(q, cam) {
+  const id = cam.id;
+  const estado = { id, ...zoomDe(id) };
+  zoomAtual = estado;
+  const proporcao = () => proporcoes.get(id) || 16 / 9;
+  const obter = () => normalizar(estado);
+  let quadroPedido = 0;
+  // durante o gesto: aplica no app a cada quadro da tela (sem redesenhar o mosaico)
+  const mudar = (z) => {
+    Object.assign(estado, normalizar(z));
+    if (quadroPedido) return;
+    quadroPedido = requestAnimationFrame(() => {
+      quadroPedido = 0;
+      Assistir.zoom(id, estado.z, estado.x, estado.y);
+      desenhar();
+    });
+  };
+  const fim = (z) => { Object.assign(estado, guardar(id, z)); desenhar(); };
+  const grupo = document.createElement('div');
+  grupo.className = 'zoom';
+  grupo.setAttribute('role', 'group');
+  grupo.setAttribute('aria-label', t('zoom.digital'));
+  const menos = botao(ICONES.zoomMenos, t('zoom.menos'), { soIcone: true }, (e) => { e.stopPropagation(); const n = normalizar({ ...estado, z: proximoNivel(estado.z, -1) }); mudar(n); fim(n); });
+  const nivel = botao(ICONES.lupa, '1×', {}, (e) => { e.stopPropagation(); const n = { z: 1, x: 0.5, y: 0.5 }; mudar(n); fim(n); });
+  nivel.classList.add('zoom__nivel');
+  const mais = botao(ICONES.zoomMais, t('zoom.mais'), { soIcone: true }, (e) => { e.stopPropagation(); const n = normalizar({ ...estado, z: proximoNivel(estado.z, 1) }); mudar(n); fim(n); });
+  grupo.append(menos, nivel, mais);
+  const mapa = minimapa({ obter, mudar, fim, proporcao, rotulo: t('zoom.posicao') });
+  function desenhar() {
+    const z = obter();
+    nivel.querySelector('.sb-btn__label').textContent = nivelTexto(z.z);
+    nivel.title = z.z > 1.001 ? t('zoom.normal') : t('zoom.dica');
+    nivel.setAttribute('aria-label', `${t('zoom.digital')}: ${nivelTexto(z.z)}. ${nivel.title}`);
+    nivel.classList.toggle('sb-btn--ativo', z.z > 1.001);
+    menos.disabled = z.z <= 1.001;
+    mais.disabled = z.z >= 8;
+    mapa.desenhar();
+  }
+  estado.desenhar = desenhar;
+  q.querySelector('.quadro__barra').prepend(grupo);
+  q.append(mapa.el);
+  gestos(q, { obter, mudar, fim, proporcao });
+  desenhar();
+}
+
+// chamado pelo app quando sabe o tamanho do vídeo de uma câmera (o mapa da posição e os gestos usam a proporção)
+window.proporcaoCamera = (id, p) => {
+  if (!(p > 0)) return;
+  proporcoes.set(id, p);
+  if (zoomAtual?.id === id) zoomAtual.desenhar?.();
+};
+
 /** manda ao app onde fica cada quadro, em pixels da tela, e qual vídeo tocar (o leve no mosaico, o principal na cheia) */
 function posicionar() {
   const dpr = window.devicePixelRatio || 1;
   const pedidos = [...document.querySelectorAll('#mosaico .quadro')].map((q) => {
     const r = q.getBoundingClientRect();
     return { id: q.dataset.id, x: Math.round(r.left * dpr), y: Math.round(r.top * dpr), w: Math.round(r.width * dpr), h: Math.round(r.height * dpr),
-      principal: !!cheia, som: !!cheia && som.has(q.dataset.id) };
+      principal: !!cheia, som: !!cheia && som.has(q.dataset.id), zoom: zoomDe(q.dataset.id) };
   });
   Assistir.posicionar(JSON.stringify(pedidos));
 }

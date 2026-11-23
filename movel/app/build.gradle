@@ -1,5 +1,6 @@
 // O CCTV Express no celular: transforma o celular numa câmera IP (o vídeo sai por RTSP na rede local, servidor RTSP do
-// RootEncoder, Apache 2.0) e assiste as câmeras da rede (player Media3 com RTSP, Apache 2.0), como o app do computador.
+// RootEncoder, Apache 2.0) e assiste as câmeras da rede (RTSP e DVRIP da Xiongmai, decodificados pelo MediaCodec do
+// próprio aparelho), como o app do computador.
 plugins { id 'com.android.application' }
 
 android {
@@ -9,8 +10,8 @@ android {
     applicationId = 'builders.stream.cctvexpress.camera'
     minSdk = 24
     targetSdk = 37
-    versionCode = 11
-    versionName = '0.4.2'
+    versionCode = 12
+    versionName = '0.5.0'
   }
   buildTypes {
     release {
@@ -27,9 +28,6 @@ dependencies {
   implementation 'com.github.pedroSG94.RootEncoder:library:2.8.2'
   // serve os assets por https local (módulos JS e fetch do letreiro 3D não abrem por file://)
   implementation 'androidx.webkit:webkit:1.18.0'
-  // assistir as câmeras da rede: o player do Android com RTSP (H.264/H.265, AAC e G.711)
-  implementation 'androidx.media3:media3-exoplayer:1.11.1'
-  implementation 'androidx.media3:media3-exoplayer-rtsp:1.11.1'
 }
 
 // a peça .sb-btn e o tema vêm do CCTV Express do computador (src/ui/tema): a mesma fonte, nunca uma cópia à mão

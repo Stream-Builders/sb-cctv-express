@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Cancel",
   "bandeja.aviso": "Still recording. Click this icon to open it again.",
   "lateral.recolher": "Collapse the camera list",
-  "lateral.expandir": "Show the camera list"
+  "lateral.expandir": "Show the camera list",
+  "zoom.digital": "Digital zoom",
+  "zoom.mais": "Zoom in",
+  "zoom.menos": "Zoom out",
+  "zoom.normal": "No zoom",
+  "zoom.posicao": "Zoom position (drag the frame)",
+  "zoom.dica": "Drag to move the image; use two fingers or the mouse wheel to zoom"
 };

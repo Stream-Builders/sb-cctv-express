@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Cancelar",
   "bandeja.aviso": "Continua gravando. Clique neste ícone para abrir de novo.",
   "lateral.recolher": "Recolher a lista de câmeras",
-  "lateral.expandir": "Mostrar a lista de câmeras"
+  "lateral.expandir": "Mostrar a lista de câmeras",
+  "zoom.digital": "Zoom digital",
+  "zoom.mais": "Aumentar o zoom",
+  "zoom.menos": "Diminuir o zoom",
+  "zoom.normal": "Sem zoom",
+  "zoom.posicao": "Posição do zoom (arraste o quadro)",
+  "zoom.dica": "Arraste para mover a imagem; use dois dedos ou a roda do mouse para o zoom"
 };

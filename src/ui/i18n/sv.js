@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "Avbryt",
   "bandeja.aviso": "Spelar fortfarande in. Klicka på ikonen för att öppna igen.",
   "lateral.recolher": "Fäll ihop kameralistan",
-  "lateral.expandir": "Visa kameralistan"
+  "lateral.expandir": "Visa kameralistan",
+  "zoom.digital": "Digital zoom",
+  "zoom.mais": "Zooma in",
+  "zoom.menos": "Zooma ut",
+  "zoom.normal": "Ingen zoom",
+  "zoom.posicao": "Zoomposition (dra ramen)",
+  "zoom.dica": "Dra för att flytta bilden; använd två fingrar eller mushjulet för att zooma"
 };

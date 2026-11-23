@@ -1,7 +1,8 @@
 // As câmeras que o celular assiste, guardadas nas preferências do app no mesmo formato do CCTV Express do computador
 // (nome, tipo, ip, porta, canal, usuário, endereço RTSP). A senha vai cifrada pelo Cofre (Android Keystore).
 // Ao salvar, o app descobre o endereço do vídeo (ONVIF ou sonda RTSP) e guarda o principal e o secundário (o leve, para
-// o mosaico), para assistir sem perguntar de novo à câmera.
+// o mosaico), para assistir sem perguntar de novo à câmera. A Xiongmai/iCSee vai pelo protocolo próprio (DVRIP), como no
+// computador: é o único que escolhe a lente nas câmeras de duas lentes (o RTSP delas sempre entrega a primeira).
 package builders.stream.cctvexpress.camera
 
 import android.content.Context
@@ -54,15 +55,27 @@ class Cameras(contexto: Context) {
     val porta = dados.optString("porta").toIntOrNull()
     val canal = dados.optString("canal").toIntOrNull()?.coerceIn(1, 64) ?: 1
     var sub: String? = null
+    var via = ""
     try {
       when {
         tipo == "onvif" -> {
           val e = Onvif(ipEfetivo, porta ?: 80, usuario.ifEmpty { "admin" }, senha, canal).enderecos()
           url = e.principal; sub = e.secundario
         }
-        // Xiongmai/iCSee: o protocolo próprio (34567) não toca no Android; o mesmo aparelho entrega o vídeo pelo RTSP
-        tipo == "xiongmai" || url.isEmpty() -> {
-          val r = SondaRtsp.descobrir(ipEfetivo, if (tipo == "xiongmai") 554 else porta, usuario.ifEmpty { "admin" }, senha, canal)
+        // Xiongmai/iCSee: o protocolo próprio (DVRIP); com a porta dele fechada, o RTSP (sem a escolha da lente)
+        tipo == "xiongmai" -> {
+          val falha = try {
+            FonteDvrip(ipEfetivo, portaDvrip(porta), usuario.ifEmpty { "admin" }, senha, canal, true, SemDestino).testar(); null
+          } catch (_: FonteDvrip.SenhaErrada) { "senha" } catch (_: Exception) { "porta" }
+          if (falha == "senha") return JSONObject().put("erro", "senha")
+          if (falha == null) { via = "dvrip"; url = "" } else {
+            val r = SondaRtsp.descobrir(ipEfetivo, 554, usuario.ifEmpty { "admin" }, senha, canal)
+            url = r.url ?: return JSONObject().put("erro", r.erro)
+            via = "rtsp"
+          }
+        }
+        url.isEmpty() -> {
+          val r = SondaRtsp.descobrir(ipEfetivo, porta, usuario.ifEmpty { "admin" }, senha, canal)
           url = r.url ?: return JSONObject().put("erro", r.erro)
         }
       }
@@ -77,7 +90,8 @@ class Cameras(contexto: Context) {
       .put("usuario", usuario)
       // o endereço digitado (RTSP) fica como a pessoa escreveu; o resolvido é o que o player usa
       .put("url", if (tipo == "rtsp") limparUrl(dados.optString("url")).ifEmpty { url } else "")
-      .put("video", url).put("videoSub", sub ?: secundarioDe(url) ?: JSONObject.NULL)
+      .put("video", url).put("videoSub", (if (url.isEmpty()) null else sub ?: secundarioDe(url)) ?: JSONObject.NULL)
+      .put("via", via)
     if (dados.optString("senha").isNotEmpty()) camera.put("senhaCifrada", Cofre.fechar(senha))
     if (i >= 0) lista[i] = camera else lista.add(camera)
     gravar(lista)
@@ -100,17 +114,33 @@ class Cameras(contexto: Context) {
 
   private fun enc(s: String) = URLEncoder.encode(s, "UTF-8").replace("+", "%20")
 
-  /** O endereço com usuário e senha, só na hora de tocar (o salvo não guarda a senha). */
-  fun enderecoParaTocar(c: JSONObject, secundario: Boolean): String? {
+  /** O que tocar: RTSP (com usuário e senha, só na hora de conectar; o salvo não guarda a senha) ou DVRIP (Xiongmai). */
+  sealed class Plano {
+    /** identifica a conexão: muda de plano = reconectar */
+    abstract val chave: String
+    class Rtsp(val url: String) : Plano() { override val chave get() = url }
+    class Dvrip(val ip: String, val porta: Int, val usuario: String, val senha: String, val canal: Int, val principal: Boolean) : Plano() {
+      override val chave get() = "dvrip://$usuario:$senha@$ip:$porta/$canal/${if (principal) "main" else "sub"}"
+    }
+  }
+
+  /** a porta do DVRIP: a cadastrada, menos a do RTSP (554), que é de outro protocolo */
+  fun portaDvrip(porta: Int?) = porta?.takeIf { it != 554 && it > 0 } ?: 34567
+
+  fun plano(c: JSONObject, secundario: Boolean): Plano? {
+    val usuario = c.optString("usuario").ifEmpty { "admin" }
+    val senha = senhaDe(c)
+    if (c.optString("tipo") == "xiongmai" && c.optString("via") == "dvrip") {
+      val porta = if (c.isNull("porta")) null else c.optInt("porta")
+      return Plano.Dvrip(c.optString("ip"), portaDvrip(porta), usuario, senha, c.optInt("canal", 1), !secundario)
+    }
     val base = (if (secundario) c.optString("videoSub").takeIf { it.isNotEmpty() && it != "null" } else null)
       ?: c.optString("video").ifEmpty { c.optString("url") }
     if (base.isEmpty()) return null
-    val usuario = c.optString("usuario").ifEmpty { "admin" }
-    val senha = senhaDe(c)
     // caminho Xiongmai (user=...&password=...): a senha vai também no caminho, onde a câmera a lê
-    val comSenha = base.replace(Regex("([?&/]password=)(?=&|$)", RegexOption.IGNORE_CASE), "$1${Regex.escapeReplacement(enc(senha))}")
-    if (senha.isEmpty() && c.optString("usuario").isEmpty()) return comSenha
-    return comSenha.replace(Regex("^rtsp://(?:[^@/]*@)?"), "rtsp://${Regex.escapeReplacement(enc(usuario))}:${Regex.escapeReplacement(enc(senha))}@")
+    val comSenha = base.replace(Regex("([?&/_]password=)(?=[&_]|$)", RegexOption.IGNORE_CASE), "$1${Regex.escapeReplacement(enc(senha))}")
+    if (senha.isEmpty() && c.optString("usuario").isEmpty()) return Plano.Rtsp(comSenha)
+    return Plano.Rtsp(comSenha.replace(Regex("^rtsp://(?:[^@/]*@)?"), "rtsp://${Regex.escapeReplacement(enc(usuario))}:${Regex.escapeReplacement(enc(senha))}@"))
   }
 
   // ---- arquivo de configuração rápida (.cctvx), o mesmo do CCTV Express do computador ----
@@ -146,8 +176,15 @@ class Cameras(contexto: Context) {
     return novas
   }
 
-  /** Câmera importada do computador sem o endereço resolvido (Xiongmai/ONVIF): o app resolve na primeira vez. */
-  fun precisaResolver(c: JSONObject) = c.optString("video").isEmpty() && c.optString("url").isEmpty()
+  /**
+   * Câmera sem o endereço resolvido no celular: a importada do computador (o endereço que vem de lá é o do computador:
+   * na ONVIF, a porta do ONVIF, e na Xiongmai, o RTSP que ignora a lente) e a Xiongmai salva antes do DVRIP.
+   */
+  fun precisaResolver(c: JSONObject) = when (c.optString("tipo")) {
+    "xiongmai" -> c.optString("via").isEmpty()
+    "onvif" -> c.optString("video").isEmpty()
+    else -> c.optString("video").isEmpty() && c.optString("url").isEmpty()
+  }
 
   fun resolver(c: JSONObject): JSONObject {
     val d = JSONObject(c.toString()).put("senha", "")

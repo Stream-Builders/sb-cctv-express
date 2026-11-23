@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "Anuluj",
   "bandeja.aviso": "Nagrywanie trwa. Kliknij tę ikonę, aby otworzyć ponownie.",
   "lateral.recolher": "Zwiń listę kamer",
-  "lateral.expandir": "Pokaż listę kamer"
+  "lateral.expandir": "Pokaż listę kamer",
+  "zoom.digital": "Zoom cyfrowy",
+  "zoom.mais": "Przybliż",
+  "zoom.menos": "Oddal",
+  "zoom.normal": "Bez zoomu",
+  "zoom.posicao": "Pozycja zoomu (przeciągnij ramkę)",
+  "zoom.dica": "Przeciągnij, aby przesunąć obraz; użyj dwóch palców lub kółka myszy, aby przybliżyć"
 };

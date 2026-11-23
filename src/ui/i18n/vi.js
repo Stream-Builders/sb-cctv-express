@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "Hủy",
   "bandeja.aviso": "Vẫn đang ghi hình. Bấm vào biểu tượng này để mở lại.",
   "lateral.recolher": "Thu gọn danh sách camera",
-  "lateral.expandir": "Hiện danh sách camera"
+  "lateral.expandir": "Hiện danh sách camera",
+  "zoom.digital": "Thu phóng kỹ thuật số",
+  "zoom.mais": "Phóng to",
+  "zoom.menos": "Thu nhỏ",
+  "zoom.normal": "Không thu phóng",
+  "zoom.posicao": "Vị trí thu phóng (kéo khung)",
+  "zoom.dica": "Kéo để di chuyển hình; dùng hai ngón tay hoặc con lăn chuột để thu phóng"
 };

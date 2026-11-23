@@ -170,5 +170,11 @@ export default {
   "fechar.cancelar": "إلغاء",
   "bandeja.aviso": "التسجيل مستمر. انقر على هذا الرمز لفتحه مرة أخرى.",
   "lateral.recolher": "طيّ قائمة الكاميرات",
-  "lateral.expandir": "إظهار قائمة الكاميرات"
+  "lateral.expandir": "إظهار قائمة الكاميرات",
+  "zoom.digital": "تكبير رقمي",
+  "zoom.mais": "تكبير",
+  "zoom.menos": "تصغير",
+  "zoom.normal": "بدون تكبير",
+  "zoom.posicao": "موضع التكبير (اسحب الإطار)",
+  "zoom.dica": "اسحب لتحريك الصورة؛ استخدم إصبعين أو عجلة الفأرة للتكبير"
 };

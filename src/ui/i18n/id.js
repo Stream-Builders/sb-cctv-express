@@ -169,5 +169,11 @@ export default {
   "fechar.cancelar": "Batal",
   "bandeja.aviso": "Masih merekam. Klik ikon ini untuk membuka lagi.",
   "lateral.recolher": "Ciutkan daftar kamera",
-  "lateral.expandir": "Tampilkan daftar kamera"
+  "lateral.expandir": "Tampilkan daftar kamera",
+  "zoom.digital": "Zoom digital",
+  "zoom.mais": "Perbesar",
+  "zoom.menos": "Perkecil",
+  "zoom.normal": "Tanpa zoom",
+  "zoom.posicao": "Posisi zoom (seret bingkai)",
+  "zoom.dica": "Seret untuk menggeser gambar; gunakan dua jari atau roda mouse untuk zoom"
 };
