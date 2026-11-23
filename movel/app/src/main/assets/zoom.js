@@ -61,7 +61,7 @@ export function gestos(quadro, { obter, mudar, fim, proporcao }) {
 
   quadro.addEventListener('pointerdown', (e) => {
     if (ignorar(e)) return;
-    quadro.setPointerCapture(e.pointerId);
+    try { quadro.setPointerCapture(e.pointerId); } catch { /* ponteiro que já saiu: segue sem captura */ }
     dedos.set(e.pointerId, { x: e.clientX, y: e.clientY });
     inicio = { zoom: obter(), dedos: new Map([...dedos].map(([k, v]) => [k, { ...v }])) };
   });
@@ -144,7 +144,7 @@ export function minimapa({ obter, mudar, fim, proporcao, rotulo }) {
     desenhar();
   };
   let arrastando = false;
-  mapa.addEventListener('pointerdown', (e) => { e.stopPropagation(); arrastando = true; mapa.setPointerCapture(e.pointerId); mover(e); });
+  mapa.addEventListener('pointerdown', (e) => { e.stopPropagation(); arrastando = true; try { mapa.setPointerCapture(e.pointerId); } catch { /* sem captura */ } mover(e); });
   mapa.addEventListener('pointermove', (e) => { if (arrastando) mover(e); });
   const acabar = () => { if (arrastando) { arrastando = false; fim(obter()); } };
   mapa.addEventListener('pointerup', acabar);

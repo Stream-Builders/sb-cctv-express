@@ -52,7 +52,10 @@ body { display: flex; flex-direction: column; padding: env(safe-area-inset-top) 
 .cheia .quadro { touch-action: none; }
 .zoom { display: flex; gap: 2px; margin-inline-end: auto; }
 .zoom .zoom__nivel { min-inline-size: 4.2em; font-variant-numeric: tabular-nums; }
-.minimapa { position: absolute; inset-inline-start: 8px; inset-block-end: calc(2.4rem + 20px); inline-size: clamp(96px, 22vw, 180px); background: rgba(7, 8, 10, .55); border: 1px solid #6d6960; touch-action: none; }
+.minimapa { position: absolute; inset-inline-start: 8px; inset-block-start: 34px; inline-size: clamp(96px, 22vw, 180px); background: rgba(7, 8, 10, .55); border: 1px solid #6d6960; touch-action: none; }
 .minimapa__janela { position: absolute; box-sizing: border-box; border: 2px solid var(--accent); background: rgba(239, 230, 208, .12); pointer-events: none; }
 .minimapa:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .selo--zoom { background: #2a1d05; color: #EFE6D0; }
+/* tela estreita: a barra da tela cheia quebra linha e os botões ficam só com o ícone (o nível do zoom continua) */
+.quadro__barra { flex-wrap: wrap; }
+@media (max-width: 720px) { .quadro__barra .sb-btn:not(.zoom__nivel) .sb-btn__body { display: none; } }
